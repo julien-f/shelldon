@@ -51,12 +51,21 @@ int cmd_exit(char *const *args);
 int cmd_help(char *const *args);
 
 /**
- * TODO.
+ * If there are no arguments, shows the list of environment vars, else, defines,
+ * redefines or undefines environment variables.
  *
  * @param args Arguments (last entry must be NULL).
  * @return 0 if success, else -1.
  **/
-int cmd_set(char *const *args);
+int cmd_setenv(char *const *args);
+
+/**
+ * Shows the version of Shelldon.
+ *
+ * @param args Arguments (not used).
+ * @return 0 if success, else -1.
+ **/
+int cmd_version(char *const *args);
 
 #endif
 

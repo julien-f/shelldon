@@ -21,6 +21,7 @@
 
 #include "cmd.h"
 #include "tools.h"
+#include "version.h"
 
 extern const cmd cmd_list[];
 extern char **environ;
@@ -38,7 +39,7 @@ int cmd_cd(char *const *args)
 
 int cmd_exec(char *const *args)
 {
-	if (NULL == *args) // no args.
+	if (NULL == args || NULL == *args) // no args.
 	{
 		fprintf(stderr, "The command exec expects at least one argument.\n");
 		return -1;
@@ -51,28 +52,26 @@ int cmd_exec(char *const *args)
 
 int cmd_exit(char *const *args)
 {
-	printf("Bye.\n");
+	printf("Thx 4 usin' %s.\n", prog_name);
 	exit(0);
 }
 
 int cmd_help(char *const *args)
 {
-	// print_version();
-
 	printf("Available commands:\n");
 
 	const cmd *p = cmd_list;
 	while (NULL != p->cmd)
 	{
-		printf(" - %s\n\t%s\n", p->cmd, p->help);
+		printf("* %s\n  %s\n", p->cmd, p->help);
 		++p;
 	}
 	return 0;
 }
 
-int cmd_set(char *const *args)
+int cmd_setenv(char *const *args)
 {
-	if (NULL == *args) // No args, lists environment.
+	if (NULL == args || NULL == *args) // No args, lists environment.
 	{
 		char **p = environ;
 		while (NULL != *p)
@@ -103,6 +102,12 @@ int cmd_set(char *const *args)
 		}
 	}
 
+	return 0;
+}
+
+int cmd_version(char *const *args)
+{
+	print_version();
 	return 0;
 }
 

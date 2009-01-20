@@ -15,22 +15,17 @@
  * along with Shelldon.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <stdlib.h>
+#include <stdio.h>
 
-#include "tools.h"
+#include "version.h"
 
-size_t get_args_lg(char *const *args)
+void print_version()
 {
-	if (NULL == args)
-	{
-		return 0;
-	}
-
-	size_t lg = 0;
-	while (NULL != args[lg])
-	{
-		++lg;
-	}
-	return lg;
+	#if defined(__DATE__) && defined(__TIME__)
+		printf("%s v%s (built on " __DATE__ ", " __TIME__ ")\n", prog_name,
+				prog_version);
+	#else
+		printf("%s v%s\n", prog_name, prog_version);
+	#endif
 }
 

@@ -34,10 +34,10 @@ typedef struct
  * Counts the number of items in vector of char (char*) ending with a NULL
  * pointer.
  *
- * @param argv The vector.
+ * @param args The vector.
  * @return The number of items.
  **/
-size_t get_args_lg(char *const *argv);
+size_t get_args_lg(char *const *args);
 
 #endif
 

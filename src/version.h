@@ -15,22 +15,16 @@
  * along with Shelldon.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <stdlib.h>
+#ifndef SHELLDON_VERSION_H
+#define SHELLDON_VERSION_H
 
-#include "tools.h"
+#define prog_name "Shelldon"
+#define prog_version "0.08b"
 
-size_t get_args_lg(char *const *args)
-{
-	if (NULL == args)
-	{
-		return 0;
-	}
+/**
+ * Prints version.
+ **/
+void print_version();
 
-	size_t lg = 0;
-	while (NULL != args[lg])
-	{
-		++lg;
-	}
-	return lg;
-}
+#endif
 

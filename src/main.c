@@ -15,7 +15,6 @@
  * along with Shelldon.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#define _GNU_SOURCE
 #include <errno.h>
 #include <error.h>
 #include <stdbool.h>
@@ -32,6 +31,7 @@
 #include "cmd.h"
 #include "parser.h"
 #include "tools.h"
+#include "version.h"
 
 /**
  * Alias definition for infinite loop.
@@ -43,9 +43,12 @@ const cmd cmd_list[] = {
 	{"exec", cmd_exec, "exec PATH: Replaces the current shell with a program."},
 	{"exit", cmd_exit, "Leaves the shell."},
 	{"help", cmd_help, "Shows this help message."},
-	{"set", cmd_set, "Lists and sets environment variables."},
+	{"setenv", cmd_setenv, "Lists and sets environment variables."},
+	{"version", cmd_version, "Shows the version of Shelldon."},
 	{NULL}
 };
+
+const char *prompt = "\33[31;1m>\33[0m ";
 
 /**
  * Executes a built-in command.
@@ -100,12 +103,14 @@ int exec_parsed_cmd_line(char *const *parsed_cmd_line)
 
 int main(int argc, char *const *argv)
 {
+	print_version();
+
 	char *string = NULL;
 	char **parsed_cmd_line = NULL;
 	using_history();
 	forever
 	{
-		string = readline("$ ");
+		string = readline(prompt);
 		if (string == NULL)
 		{
 			putchar('\n');

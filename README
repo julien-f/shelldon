@@ -1,0 +1,28 @@
+Requirements:
+-------------
+- A Unix compatible system such as Linux.
+- A C compiler compatible c99 such as gcc.
+- The following libraries :
+  * readline (libreadline-dev).
+
+
+How to build?
+-------------
+First be sure to be in the same directory as this file, then execute the "make"
+command.
+The program should compile without errors.
+Launch it in a terminal with the following command: "./shelldon".
+
+
+Frequently Asked Questions
+--------------------------
+
+- It does not compile.
+  Be sure that gcc is available on your system, if another c99 compliant C
+  compiler is installed, modify the "Makefile" file in replacing the following
+  line: "COMPILER=gcc" by "COMPILER=the name of your compiler here".
+
+Contact:
+--------
+- Julien Fontanet <julien.fontanet@isonoe.net>
+
