@@ -17,6 +17,7 @@
 
 #include <errno.h>
 #include <error.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -38,6 +39,13 @@
  **/
 #define forever for (;;)
 
+/**
+ * This list contains all the internal commands.
+ *
+ * The functions are defined in "cmd.{h,c}.
+ *
+ * The last entry MUST BE "{NULL}".
+ **/
 const cmd cmd_list[] = {
 	{"cd", cmd_cd, "cd PATH: Changes the current directory."},
 	{"exec", cmd_exec, "exec PATH: Replaces the current shell with a program."},
@@ -48,6 +56,9 @@ const cmd cmd_list[] = {
 	{NULL}
 };
 
+/**
+ * The prompt (pretty obvious isn't it?).
+ **/
 const char *prompt = "\33[31;1m>\33[0m ";
 
 /**
@@ -103,16 +114,28 @@ int exec_parsed_cmd_line(char *const *parsed_cmd_line)
 
 int main(int argc, char *const *argv)
 {
+	{
+		// Prevents SIGINT from stopping the process.
+		struct sigaction handler;
+		handler.sa_handler = SIG_IGN;
+		handler.sa_flags = 0;
+		sigaction(SIGINT, &handler, NULL);
+	}
+
 	print_version();
+
+	const char *history_file = NULL;
 
 	char *string = NULL;
 	char **parsed_cmd_line = NULL;
 	using_history();
+	read_history(history_file);
 	forever
 	{
 		string = readline(prompt);
 		if (string == NULL)
 		{
+			write_history(history_file);
 			putchar('\n');
 			cmd_exit(NULL);
 		}

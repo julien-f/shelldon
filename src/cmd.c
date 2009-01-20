@@ -23,9 +23,11 @@
 #include "tools.h"
 #include "version.h"
 
+// Defined in "main.c"
 extern const cmd cmd_list[];
+
 extern char **environ;
-extern int putenv(char *string);;
+extern int putenv(char *string);
 
 int cmd_cd(char *const *args)
 {
@@ -52,7 +54,6 @@ int cmd_exec(char *const *args)
 
 int cmd_exit(char *const *args)
 {
-	printf("Thx 4 usin' %s.\n", prog_name);
 	exit(0);
 }
 

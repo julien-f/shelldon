@@ -1,5 +1,5 @@
 COMPILER=gcc
-COM_OPTS=-std=c99 -Wall
+COM_OPTS=-std=gnu99 -Wall -pedantic
 LNK_OPTS=-lreadline
 MAIN_FILE=main
 
