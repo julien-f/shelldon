@@ -1,0 +1,12 @@
+- Improve the "cd" command to allow no arguments (change current directory to
+  "~").
+
+- Add "pushd" and "popd" commands such as in Bash.
+
+- A config folder which respects XDG spec:
+  http://standards.freedesktop.org/basedir-spec/latest/
+
+- Set internal environment variables such as SHELL, etc.
+
+- Improve the quitting sequence (loop break, end of the main function).
+
