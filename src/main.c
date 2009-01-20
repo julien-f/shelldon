@@ -1,3 +1,20 @@
+/**
+ * This file is a part of Shelldon.
+ *
+ * Shelldon is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Shelldon is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Shelldon.  If not, see <http://www.gnu.org/licenses/>.
+ **/
+
 #define _GNU_SOURCE
 #include <errno.h>
 #include <error.h>
@@ -12,96 +29,23 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#include "cmd.h"
 #include "parser.h"
+#include "tools.h"
 
 /**
  * Alias definition for infinite loop.
  **/
 #define forever for (;;)
 
-typedef struct
-{
-	char *cmd;
-	bool (*function)(char *const *);
-	char *help;
-} cmd;
-
-/**
- * Counts the number of items in vector of char (char*) ending with a NULL
- * pointer.
- *
- * @param argv The vector.
- * @return The number of items.
- **/
-unsigned int get_argv_lg(char *const *argv)
-{
-	unsigned int lg = 0;
-	while (NULL != argv[lg++]);
-	return lg - 1;
-}
-
-bool cmd_cd(char *const *argv);
-
-bool cmd_exec(char *const *argv);
-
-bool cmd_exit(char *const *argv);
-
-bool cmd_help(char *const *argv);
-
-static const cmd cmd_list[] = {
+const cmd cmd_list[] = {
 	{"cd", cmd_cd, "cd PATH: Changes the current directory."},
 	{"exec", cmd_exec, "exec PATH: Replaces the current shell with a program."},
 	{"exit", cmd_exit, "Leaves the shell."},
 	{"help", cmd_help, "Shows this help message."},
+	{"set", cmd_set, "Lists and sets environment variables."},
 	{NULL}
 };
-
-/**
- * Built-in command cd: change the curent directory.
- **/
-bool cmd_cd(char *const *argv)
-{
-	if (1 != get_argv_lg(argv))
-	{
-		fprintf(stderr, "The command cd expects exactly one argument.\n");
-		return false;
-	}
-	return chdir(argv[0]) == 0;
-}
-
-bool cmd_exec(char *const *argv)
-{
-	if (0 == get_argv_lg(argv))
-	{
-		fprintf(stderr, "The command exec expects at least one argument.\n");
-		return false;
-	}
-	
-	execvp(argv[0], argv);
-	fprintf(stderr, "Error during exec.\n");
-	return false;
-}
-
-bool cmd_exit(char *const *argv)
-{
-	printf("Bye.\n");
-	exit(0);
-}
-
-bool cmd_help(char *const *argv)
-{
-	// print_version();
-
-	printf("Available commands:\n");
-
-	const cmd *p = cmd_list;
-	while (NULL != p->cmd)
-	{
-		printf(" - %s\n\t%s\n", p->cmd, p->help);
-		++p;
-	}
-	return true;
-}
 
 /**
  * Executes a built-in command.
@@ -154,7 +98,7 @@ int exec_parsed_cmd_line(char *const *parsed_cmd_line)
 	
 }
 
-int main(int argc, char **argv)
+int main(int argc, char *const *argv)
 {
 	char *string = NULL;
 	char **parsed_cmd_line = NULL;
@@ -183,3 +127,4 @@ int main(int argc, char **argv)
 
 	return EXIT_SUCCESS;
 }
+

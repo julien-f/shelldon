@@ -3,8 +3,8 @@ COM_OPTS=-std=c99 -Wall
 LNK_OPTS=-lreadline
 MAIN_FILE=main
 
-PRG_NAME=shelldone
-MODULES=parser.o
+PRG_NAME=shelldon
+MODULES=parser.o cmd.o tools.o
 
 # Rules to always execute.
 .PHONY: all clean mrproper
@@ -24,10 +24,16 @@ mrproper: clean
 $(PRG_NAME): $(MAIN_FILE).o $(MODULES)
 	$(COMPILER) $(LNK_OPTS) -o $@ $^
 
-# Generic rules for simple module compilation.
-%.o: %.c %.h
+main.o: src/main.c src/cmd.h src/parser.h src/tools.h
 	$(COMPILER) $(COM_OPTS) -c $<
 
-%.o: %.c
+cmd.o: src/cmd.c src/cmd.h src/parser.h
+	$(COMPILER) $(COM_OPTS) -c $<
+
+# Generic rules for simple module compilation.
+%.o: src/%.c src/%.h
+	$(COMPILER) $(COM_OPTS) -c $<
+
+%.o: src/%.c
 	$(COMPILER) $(COM_OPTS) -c $<
 
