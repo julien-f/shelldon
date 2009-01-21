@@ -3,7 +3,7 @@
 
 - Add "pushd" and "popd" commands such as in Bash.
 
-- A config folder which respects XDG spec:
+- A config directory which respects XDG spec:
   http://standards.freedesktop.org/basedir-spec/latest/ (almost done, to
   improve).
 
