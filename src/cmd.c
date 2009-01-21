@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "cmd.h"
@@ -59,13 +60,29 @@ int cmd_exit(char *const *args)
 
 int cmd_help(char *const *args)
 {
-	printf("Available commands:\n");
-
-	const cmd *p = cmd_list;
-	while (NULL != p->cmd)
+	if (NULL == args || NULL == *args)
 	{
-		printf("* %s\n  %s\n", p->cmd, p->help);
-		++p;
+		printf("Available commands:\n");
+
+		const cmd *p = cmd_list;
+		while (NULL != p->cmd)
+		{
+			printf(" %s\n", p->cmd);
+			++p;
+		}
+	}
+	else
+	{
+		const cmd *p = cmd_list;
+		while (NULL != p->cmd && 0 != strcmp(args[0], p->cmd))
+		{
+			++p;
+		}
+		if (NULL == p) // Command not found.
+		{
+			return -1;
+		}
+		printf("%s usage: %s\n", p->cmd, p->help);
 	}
 	return 0;
 }
@@ -86,19 +103,7 @@ int cmd_setenv(char *const *args)
 		char *const *p = args;
 		while (NULL != *p)
 		{
-			// Checks the length of the string, null char included.
-			size_t lg = 0;
-			char *copy = *p;
-			while ('\0' != copy[lg++]);
-
-			// Copies the string *p into copy.
-			copy = (char *) malloc(sizeof(char) * lg);
-			lg = 0;
-			while ('\0' != (copy[lg++] = (*p)[lg]));
-
-			// Gives it to the environment (so do not free it after).
-			putenv(copy);
-
+			putenv(strdup(*p));
 			++p;
 		}
 	}

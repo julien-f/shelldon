@@ -51,7 +51,8 @@ const cmd cmd_list[] = {
 	{"cd", cmd_cd, "cd PATH: Changes the current directory."},
 	{"exec", cmd_exec, "exec PATH: Replaces the current shell with a program."},
 	{"exit", cmd_exit, "Leaves the shell."},
-	{"help", cmd_help, "Shows this help message."},
+	{"help", cmd_help, "help [COMMAND]: Lists the available commands or shows "
+			"their help message."},
 	{"setenv", cmd_setenv, "Lists and sets environment variables."},
 	{"version", cmd_version, "Shows the version of Shelldon."},
 	{NULL}
