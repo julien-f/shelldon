@@ -78,11 +78,11 @@ int cmd_help(char *const *args)
 		{
 			++p;
 		}
-		if (NULL == p) // Command not found.
+		if (NULL == p->cmd) // Command not found.
 		{
 			return -1;
 		}
-		printf("%s usage: %s\n", p->cmd, p->help);
+		printf("%s\n", p->help);
 	}
 	return 0;
 }

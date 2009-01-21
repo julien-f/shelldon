@@ -48,11 +48,12 @@
  * The last entry MUST BE "{NULL}".
  **/
 const cmd cmd_list[] = {
-	{"cd", cmd_cd, "cd PATH: Changes the current directory."},
-	{"exec", cmd_exec, "exec PATH: Replaces the current shell with a program."},
+	{"cd", cmd_cd, "cd PATH: Changes the current directory to PATH."},
+	{"exec", cmd_exec, "exec PATH: Replaces the current shell with the program "
+			"PATH."},
 	{"exit", cmd_exit, "Leaves the shell."},
 	{"help", cmd_help, "help [COMMAND]: Lists the available commands or shows "
-			"their help message."},
+			"the help message of COMMAND."},
 	{"setenv", cmd_setenv, "Lists and sets environment variables."},
 	{"version", cmd_version, "Shows the version of Shelldon."},
 	{NULL}
