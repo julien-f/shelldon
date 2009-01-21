@@ -136,6 +136,10 @@ int main(int argc, char *const *argv)
 	{
 		config_dir = strcat2(NULL, home_dir, "/.config", NULL);
 	}
+	if (-1 == mkdir(config_dir, 0777) && EEXIST != errno)
+	{
+		error(EXIT_FAILURE, errno, "Error");
+	}
 
 	char *prog_cfg_dir = strcat2(NULL, config_dir, "/" prog_name, NULL);
 	if (-1 == mkdir(prog_cfg_dir, 0777) && EEXIST != errno)
