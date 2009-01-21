@@ -22,10 +22,10 @@
 void print_version()
 {
 	#if defined(__DATE__) && defined(__TIME__)
-		printf("%s v%s (built on " __DATE__ ", " __TIME__ ")\n", prog_name,
-				prog_version);
+		printf(prog_name " v" prog_version " aka \"" prog_version_name "\" "
+				"(built on " __DATE__ ", " __TIME__ ")\n");
 	#else
-		printf("%s v%s\n", prog_name, prog_version);
+		printf(prog_name " v" prog_version " aka \"" prog_version_name "\"\n");
 	#endif
 }
 

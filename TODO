@@ -16,3 +16,5 @@
 
 - Improve architecture.
 
+- Poblems with readline when the prompt contains non-visible characters.
+
