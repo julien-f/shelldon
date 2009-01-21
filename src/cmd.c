@@ -54,7 +54,7 @@ int cmd_exec(char *const *args)
 
 int cmd_exit(char *const *args)
 {
-	exit(0);
+	exit(EXIT_SUCCESS);
 }
 
 int cmd_help(char *const *args)

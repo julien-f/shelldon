@@ -18,6 +18,7 @@
 #ifndef SHELLDON_TOOLS_H
 #define SHELLDON_TOOLS_H
 
+#include <stdarg.h>
 #include <stdlib.h>
 
 /**
@@ -38,6 +39,17 @@ typedef struct
  * @return The number of items.
  **/
 size_t get_args_lg(char *const *args);
+
+/**
+ * Concatenate strings.
+ * All strings are concatenate into the first one.
+ *
+ * @param dest The destination string, can be NULL.
+ * @param ... The strings to concatenate to dest, the last argument must be NULL.
+ * @return NULL if the concatenation failed, else a pointer to the destination
+ *         string (it might have changed).
+ **/
+char *strcat2(char *dest, ...);
 
 #endif
 

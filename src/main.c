@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -124,7 +125,25 @@ int main(int argc, char *const *argv)
 
 	print_version();
 
-	const char *history_file = NULL;
+	char *home_dir = getenv("HOME");
+	if (NULL == home_dir)
+	{
+		home_dir = "/tmp";
+	}
+
+	char *config_dir = getenv("XDG_CONFIG_HOME");
+	if (NULL == config_dir || '\0' == *config_dir)
+	{
+		config_dir = strcat2(NULL, home_dir, "/.config", NULL);
+	}
+
+	char *prog_cfg_dir = strcat2(NULL, config_dir, "/" prog_name, NULL);
+	if (-1 == mkdir(prog_cfg_dir, 0777) && EEXIST != errno)
+	{
+		error(EXIT_FAILURE, errno, "Error");
+	}
+
+	char *history_file = strcat2(NULL, prog_cfg_dir, "/history", NULL);
 
 	char *string = NULL;
 	char **parsed_cmd_line = NULL;

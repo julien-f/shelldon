@@ -15,7 +15,9 @@
  * along with Shelldon.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "tools.h"
 
@@ -32,5 +34,63 @@ size_t get_args_lg(char *const *args)
 		++lg;
 	}
 	return lg;
+}
+
+char *strcat2(char *dest, ...)
+{
+	va_list strings;
+	char *string;
+	size_t dest_length;
+	size_t length;
+
+	if (NULL == dest)
+	{
+		dest_length = 0;
+	}
+	else
+	{
+		dest_length = strlen(dest);
+	}
+
+	// Computes the length of the final string.
+	length = dest_length;
+	va_start(strings, dest);
+	while (NULL != (string = va_arg(strings, char *)))
+	{
+		length += strlen(string);
+	}
+	va_end(strings);
+
+	// Nothing to concatenate, we can stop here.
+	if (dest_length == length)
+	{
+		return dest;
+	}
+
+	// Resizes the memory space pointed by dest to ensure it will fit.
+	dest = (char *) realloc((void *) dest, length + 1);
+
+	// The reallocation failed, so stops.
+	if (NULL == dest)
+	{
+		return NULL;
+	}
+
+	// For an efficient copy.
+	char *p = dest + dest_length; // <=> &dest[dest_length]
+
+	// Copies each string.
+	va_start(strings, dest);
+	while (NULL != (string = va_arg(strings, char *)))
+	{
+		while ('\0' != (*p = *string))
+		{
+			++p;
+			++string;
+		}
+	}
+	va_end(strings);
+
+	return dest;
 }
 

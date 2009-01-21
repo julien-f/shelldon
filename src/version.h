@@ -19,7 +19,7 @@
 #define SHELLDON_VERSION_H
 
 #define prog_name "Shelldon"
-#define prog_version "0.08b"
+#define prog_version "0.09"
 
 /**
  * Prints version.
