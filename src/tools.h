@@ -51,5 +51,20 @@ size_t get_args_lg(char *const *args);
  **/
 char *strcat2(char *dest, ...);
 
+/**
+ * TODO: write help.
+ **/
+const char *get_home_dir();
+
+/**
+ * TODO: write help.
+ **/
+const char *get_user_name();
+
+/**
+ * TODO: write help.
+ **/
+const char *get_real_name();
+
 #endif
 

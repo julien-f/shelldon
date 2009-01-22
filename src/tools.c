@@ -15,11 +15,32 @@
  * along with Shelldon.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <pwd.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "tools.h"
+
+static const struct passwd *get_passwd_info()
+{
+	static struct passwd *passwd = NULL;
+	if (!passwd)
+	{
+		const char *logname = getenv("LOGNAME");
+		if (logname)
+		{
+			passwd = getpwnam(logname);
+		}
+		else
+		{
+			passwd = getpwuid(getuid());
+		}
+	}
+	return passwd;
+}
 
 size_t get_args_lg(char *const *args)
 {
@@ -92,5 +113,58 @@ char *strcat2(char *dest, ...)
 	va_end(strings);
 
 	return dest;
+}
+
+const char *get_home_dir()
+{
+	static char *home_dir = NULL;
+	if (!home_dir)
+	{
+		const struct passwd *passwd = get_passwd_info();
+		if (passwd && passwd->pw_dir)
+		{
+			home_dir = passwd->pw_dir;
+		}
+		else if ( (home_dir = getenv("HOME")) )
+		{
+			home_dir = strdup(home_dir);
+		}
+		else
+		{
+			home_dir = "/tmp";
+		}
+	}
+	return home_dir;
+}
+
+const char *get_user_name()
+{
+	const struct passwd *passwd = get_passwd_info();
+	if (!passwd)
+	{
+		return NULL;
+	}
+	return passwd->pw_name;
+}
+
+const char *get_real_name()
+{
+	char *real_name = NULL;
+	if (!real_name)
+	{
+		const struct passwd *passwd = get_passwd_info();
+		if (!passwd)
+		{
+			return NULL;
+		}
+	/*		char *p = index(passwd->pw_gecos, ',');*/
+	/*		size_t length = (size_t) (p - passwd_gecos);*/
+	/*		real_name = (char *) malloc((size_t) (p - passwd->pw_gecos));*/
+	/*		strcncpy*/
+		char *copy = strdup(passwd->pw_gecos);
+		real_name = strdup(strtok(copy, ","));
+		free(copy);
+	}
+	return real_name;
 }
 

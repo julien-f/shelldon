@@ -32,17 +32,16 @@ extern int putenv(char *string);
 
 int cmd_cd(char *const *args)
 {
-	if (1 != get_args_lg(args))
+	if (!args || !*args) // No args, moves to ~.
 	{
-		fprintf(stderr, "The command cd expects exactly one argument.\n");
-		return -1;
+		return chdir(get_home_dir());
 	}
 	return chdir(args[0]);
 }
 
 int cmd_exec(char *const *args)
 {
-	if (NULL == args || NULL == *args) // no args.
+	if (!args || !*args) // No args.
 	{
 		fprintf(stderr, "The command exec expects at least one argument.\n");
 		return -1;
@@ -60,12 +59,12 @@ int cmd_exit(char *const *args)
 
 int cmd_help(char *const *args)
 {
-	if (NULL == args || NULL == *args)
+	if (!args || !*args)
 	{
 		printf("Available commands:\n");
 
 		const cmd *p = cmd_list;
-		while (NULL != p->cmd)
+		while (p->cmd)
 		{
 			printf(" %s\n", p->cmd);
 			++p;
@@ -74,11 +73,11 @@ int cmd_help(char *const *args)
 	else
 	{
 		const cmd *p = cmd_list;
-		while (NULL != p->cmd && 0 != strcmp(args[0], p->cmd))
+		while (p->cmd && 0 != strcmp(args[0], p->cmd))
 		{
 			++p;
 		}
-		if (NULL == p->cmd) // Command not found.
+		if (!p->cmd) // Command not found.
 		{
 			return -1;
 		}
@@ -89,10 +88,10 @@ int cmd_help(char *const *args)
 
 int cmd_setenv(char *const *args)
 {
-	if (NULL == args || NULL == *args) // No args, lists environment.
+	if (!args || !*args) // No args, lists environment.
 	{
 		char **p = environ;
-		while (NULL != *p)
+		while (*p)
 		{
 			printf("%s\n", *p);
 			++p;
@@ -101,7 +100,7 @@ int cmd_setenv(char *const *args)
 	else
 	{
 		char *const *p = args;
-		while (NULL != *p)
+		while (*p)
 		{
 			putenv(strdup(*p));
 			++p;

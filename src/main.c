@@ -48,7 +48,8 @@
  * The last entry MUST BE "{NULL}".
  **/
 const cmd cmd_list[] = {
-	{"cd", cmd_cd, "cd PATH: Changes the current directory to PATH."},
+	{"cd", cmd_cd, "cd [DIR]: Changes the current directory to DIR if specified, "
+			"else to your home directory."},
 	{"exec", cmd_exec, "exec PATH: Replaces the current shell with the program "
 			"PATH."},
 	{"exit", cmd_exit, "Leaves the shell."},
@@ -72,16 +73,16 @@ const char *prompt = "\33[31;1m>\33[0m ";
  **/
 bool exec_cmd(char *const *cl)
 {
-	if (cl == NULL || cl[0] == NULL)
+	if (!cl || !*cl || '\0' == **cl)
 	{
 		return false;
 	}
 	const cmd *p = cmd_list;
-	while (p->cmd != NULL)
+	while (p->cmd)
 	{
-		if (strcmp(cl[0], p->cmd) == 0)
+		if (0 == strcmp(*cl, p->cmd)) // We found the command.
 		{
-			p->function(++cl);
+			p->function(cl + 1); // cl, except the first entry.
 			return true;
 		}
 		++p;
@@ -107,7 +108,7 @@ int exec_parsed_cmd_line(char *const *parsed_cmd_line)
 			error(EXIT_FAILURE, errno, "Error");
 	}
 	int result;
-	if (waitpid(-1, &result, 0) == -1)
+	if (-1 == waitpid(-1, &result, 0))
 	{
 		error(EXIT_FAILURE, errno, "Error");
 	}
@@ -127,16 +128,10 @@ int main(int argc, char *const *argv)
 
 	print_version();
 
-	char *home_dir = getenv("HOME");
-	if (NULL == home_dir)
-	{
-		home_dir = "/tmp";
-	}
-
 	char *config_dir = getenv("XDG_CONFIG_HOME");
-	if (NULL == config_dir || '\0' == *config_dir)
+	if (!config_dir || '\0' == *config_dir)
 	{
-		config_dir = strcat2(NULL, home_dir, "/.config", NULL);
+		config_dir = strcat2(NULL, get_home_dir(), "/.config", NULL);
 	}
 	if (-1 == mkdir(config_dir, 0777) && EEXIST != errno)
 	{
@@ -157,17 +152,19 @@ int main(int argc, char *const *argv)
 	read_history(history_file);
 	forever
 	{
-		string = readline(prompt);
-		if (string == NULL)
+		char *p = strcat2(get_current_dir_name(), prompt, NULL);
+		string = readline(p);
+		free(p);
+		if (!string) // readline only received EOF.
 		{
 			write_history(history_file);
 			putchar('\n');
 			cmd_exit(NULL);
 		}
-		if (strlen(string) != 0)
+		if ('\0' != *string) // The string is not empty.
 		{
 			parsed_cmd_line = parse_cmd_line(string);
-			if (parsed_cmd_line != NULL)
+			if (parsed_cmd_line)
 			{
 				add_history(string);
 				exec_cmd(parsed_cmd_line) ||

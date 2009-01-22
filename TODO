@@ -1,5 +1,7 @@
 - Improve the "cd" command to allow no arguments (change current directory to
-  "~").
+  "~"). (Done)
+
+- Improve the "cd" command to allow to move with the previous directory (cd -).
 
 - Add "pushd" and "popd" commands such as in Bash.
 

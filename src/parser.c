@@ -33,17 +33,17 @@
 static void add_character_on_string(char character, char **pstring,
 		size_t *psize, size_t *plength)
 {
-	if (++*plength > *psize)
+	if (*plength >= *psize)
 	{
 		*psize += 25;
-		*pstring = realloc(*pstring, sizeof(char) * *psize);
-		if (*pstring == NULL)
+		*pstring = (char *) realloc((void *) *pstring, *psize);
+		if (NULL == *pstring)
 		{
 			error(EXIT_FAILURE, 0, "Error: realloc failed.\n");
 		}
 	}
-	(*pstring)[*plength - 1] = character;
-	(*pstring)[*plength] = 0;
+	(*pstring)[*plength] = character;
+	(*pstring)[++*plength] = '\0';
 }
 
 /**
@@ -58,18 +58,20 @@ static void add_character_on_string(char character, char **pstring,
 static void add_string_on_vector(const char *string, size_t string_lg,
 		char ***pvector, size_t *psize, size_t *plength)
 {
-	if (++*plength > *psize)
+	if (*plength >= *psize)
 	{
 		*psize += 10;
-		*pvector = realloc(*pvector, sizeof(char *) * *psize);
-		if (*pvector == NULL)
+		*pvector = (char **) realloc((void *) *pvector, sizeof(char *) * *psize);
+		if (NULL == *pvector)
 		{
 			error(EXIT_FAILURE, 0, "Error: realloc failed.\n");
 		}
 	}
-	(*pvector)[*plength - 1] = malloc(sizeof(char) * (string_lg + 1));
-	strcpy((*pvector)[*plength - 1], string);
-	(*pvector)[*plength] = NULL;
+	if (NULL == ((*pvector)[*plength] = strdup(string)))
+	{
+		error(EXIT_FAILURE, 0, "Error: strdup failed.\n");
+	}
+	(*pvector)[++*plength] = NULL;
 }
 
 /**
