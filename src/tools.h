@@ -38,7 +38,8 @@ typedef struct
  * @param args The vector.
  * @return The number of items.
  **/
-size_t get_args_lg(char *const *args);
+size_t
+get_args_lg(char *const *args);
 
 /**
  * Concatenate strings.
@@ -49,22 +50,26 @@ size_t get_args_lg(char *const *args);
  * @return NULL if the concatenation failed, else a pointer to the destination
  *         string (it might have changed).
  **/
-char *strcat2(char *dest, ...);
+char *
+strcat2(char *dest, ...);
 
 /**
  * TODO: write help.
  **/
-const char *get_home_dir();
+const char *
+get_home_dir();
 
 /**
  * TODO: write help.
  **/
-const char *get_user_name();
+const char 
+*get_user_name();
 
 /**
  * TODO: write help.
  **/
-const char *get_real_name();
+const char *
+get_real_name();
 
 #endif
 

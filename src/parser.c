@@ -30,8 +30,9 @@
  * @param psize A pointer to size of the string in memory.
  * @param plength A pointer to the length of the string.
  **/
-static void add_character_on_string(char character, char **pstring,
-		size_t *psize, size_t *plength)
+static void
+add_character_on_string(char character, char **pstring, size_t *psize,
+		size_t *plength)
 {
 	if (*plength >= *psize)
 	{
@@ -55,7 +56,8 @@ static void add_character_on_string(char character, char **pstring,
  * @param psize A pointer to size of the vector in memory.
  * @param plength A pointer to the length of the vector.
  **/
-static void add_string_on_vector(const char *string, size_t string_lg,
+static void
+add_string_on_vector(const char *string, size_t string_lg,
 		char ***pvector, size_t *psize, size_t *plength)
 {
 	if (*plength >= *psize)
@@ -80,7 +82,8 @@ static void add_string_on_vector(const char *string, size_t string_lg,
  * @param cmd_line The command line to parse.
  * @return The command line parsed.
  **/
-char **parse_cmd_line(const char *cmd_line)
+char **
+parse_cmd_line(const char *cmd_line)
 {
 	size_t cmd_line_lg = strlen(cmd_line);
 
@@ -155,7 +158,8 @@ char **parse_cmd_line(const char *cmd_line)
  *
  * @param parsed_cmd_line A pointer to the parsed command line to free.
  **/
-void free_parsed_cmd_line(char **parsed_cmd_line)
+void
+free_parsed_cmd_line(char **parsed_cmd_line)
 {
 	for (register size_t i = 0; parsed_cmd_line[i] != NULL; ++i)
 	{

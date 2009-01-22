@@ -71,7 +71,8 @@ const char *prompt = "\33[31;1m>\33[0m ";
  * @param The command line parsed with parse_cmd_line(const char *str).
  * @return True if the command exists, else false.
  **/
-bool exec_cmd(char *const *cl)
+bool
+exec_cmd(char *const *cl)
 {
 	if (!cl || !*cl || '\0' == **cl)
 	{
@@ -96,7 +97,8 @@ bool exec_cmd(char *const *cl)
  * @param parsed_cmd_line The command line parsed.
  * @return The result returned by the command.
  **/
-int exec_parsed_cmd_line(char *const *parsed_cmd_line)
+int
+exec_parsed_cmd_line(char *const *parsed_cmd_line)
 {
 	switch (fork())
 	{
@@ -116,7 +118,8 @@ int exec_parsed_cmd_line(char *const *parsed_cmd_line)
 	
 }
 
-int main(int argc, char *const *argv)
+int
+main(int argc, char *const *argv)
 {
 	{
 		// Prevents SIGINT from stopping the process.

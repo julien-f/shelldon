@@ -24,7 +24,8 @@
 
 #include "tools.h"
 
-static const struct passwd *get_passwd_info()
+static const struct passwd *
+get_passwd_info()
 {
 	static struct passwd *passwd = NULL;
 	if (!passwd)
@@ -42,7 +43,8 @@ static const struct passwd *get_passwd_info()
 	return passwd;
 }
 
-size_t get_args_lg(char *const *args)
+size_t
+get_args_lg(char *const *args)
 {
 	if (NULL == args)
 	{
@@ -57,7 +59,8 @@ size_t get_args_lg(char *const *args)
 	return lg;
 }
 
-char *strcat2(char *dest, ...)
+char *
+strcat2(char *dest, ...)
 {
 	va_list strings;
 	char *string;
@@ -115,7 +118,8 @@ char *strcat2(char *dest, ...)
 	return dest;
 }
 
-const char *get_home_dir()
+const char *
+get_home_dir()
 {
 	static char *home_dir = NULL;
 	if (!home_dir)
@@ -137,7 +141,8 @@ const char *get_home_dir()
 	return home_dir;
 }
 
-const char *get_user_name()
+const char *
+get_user_name()
 {
 	const struct passwd *passwd = get_passwd_info();
 	if (!passwd)
@@ -147,7 +152,8 @@ const char *get_user_name()
 	return passwd->pw_name;
 }
 
-const char *get_real_name()
+const char *
+get_real_name()
 {
 	char *real_name = NULL;
 	if (!real_name)

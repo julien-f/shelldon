@@ -26,7 +26,8 @@
 /**
  * Prints version.
  **/
-void print_version();
+void
+print_version();
 
 #endif
 

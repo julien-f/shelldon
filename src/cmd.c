@@ -30,7 +30,8 @@ extern const cmd cmd_list[];
 extern char **environ;
 extern int putenv(char *string);
 
-int cmd_cd(char *const *args)
+int
+cmd_cd(char *const *args)
 {
 	if (!args || !*args) // No args, moves to ~.
 	{
@@ -39,7 +40,8 @@ int cmd_cd(char *const *args)
 	return chdir(args[0]);
 }
 
-int cmd_exec(char *const *args)
+int
+cmd_exec(char *const *args)
 {
 	if (!args || !*args) // No args.
 	{
@@ -52,12 +54,14 @@ int cmd_exec(char *const *args)
 	return -1;
 }
 
-int cmd_exit(char *const *args)
+int
+cmd_exit(char *const *args)
 {
 	exit(EXIT_SUCCESS);
 }
 
-int cmd_help(char *const *args)
+int
+cmd_help(char *const *args)
 {
 	if (!args || !*args)
 	{
@@ -86,7 +90,8 @@ int cmd_help(char *const *args)
 	return 0;
 }
 
-int cmd_setenv(char *const *args)
+int
+cmd_setenv(char *const *args)
 {
 	if (!args || !*args) // No args, lists environment.
 	{
@@ -110,7 +115,8 @@ int cmd_setenv(char *const *args)
 	return 0;
 }
 
-int cmd_version(char *const *args)
+int
+cmd_version(char *const *args)
 {
 	print_version();
 	return 0;

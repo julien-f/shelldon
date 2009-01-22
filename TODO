@@ -20,3 +20,6 @@
 
 - Poblems with readline when the prompt contains non-visible characters.
 
+- Implement a char *get_cwd() function which returns a string copy (because it
+  might change at any moment) of the cwd.
+
