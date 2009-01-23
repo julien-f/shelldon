@@ -55,6 +55,7 @@ const cmd cmd_list[] = {
 	{"exit", cmd_exit, "Leaves the shell."},
 	{"help", cmd_help, "help [COMMAND]: Lists the available commands or shows "
 			"the help message of COMMAND."},
+	{"pwd", cmd_pwd, "Shows the current working directory."},
 	{"setenv", cmd_setenv, "Lists and sets environment variables."},
 	{"version", cmd_version, "Shows the version of Shelldon."},
 	{NULL}
@@ -129,6 +130,8 @@ main(int argc, char *const *argv)
 		sigaction(SIGINT, &handler, NULL);
 	}
 
+	printf("You are %s (%s).\n\n", get_real_name(), get_user_name());
+
 	print_version();
 
 	char *config_dir = getenv("XDG_CONFIG_HOME");
@@ -155,7 +158,7 @@ main(int argc, char *const *argv)
 	read_history(history_file);
 	forever
 	{
-		char *p = strcat2(get_current_dir_name(), prompt, NULL);
+		char *p = strcat2(get_cwd(), prompt, NULL);
 		string = readline(p);
 		free(p);
 		if (!string) // readline only received EOF.

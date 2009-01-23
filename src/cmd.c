@@ -33,11 +33,66 @@ extern int putenv(char *string);
 int
 cmd_cd(char *const *args)
 {
-	if (!args || !*args) // No args, moves to ~.
+	char *new_pwd;
+	if (args && *args)
 	{
-		return chdir(get_home_dir());
+		if (0 == strcmp("-", *args))
+		{
+			if ( (new_pwd = getenv("OLDPWD")) )
+			{
+				new_pwd = strdup(new_pwd);
+			}
+			else
+			{
+				fprintf(stderr, "Failed to get previous directory.\n");
+				return -1;
+			}
+		}
+		else
+		{
+			new_pwd = strdup(*args);
+		}
 	}
-	return chdir(args[0]);
+	else if (!get_home_dir())
+	{
+		fprintf(stderr, "Failed to get home directory.\n");
+		return -1;
+	}
+	else
+	{
+		new_pwd = strdup(get_home_dir());
+	}
+
+	char *old_pwd = get_cwd();
+	if (0 != chdir(new_pwd))
+	{
+		fprintf(stderr, "Failed to change directory to \"%s\".\n", new_pwd);
+		return -1;
+	}
+	// Because new_cwd does not contain an absolute path.
+	free(new_pwd);
+
+	if (old_pwd)
+	{
+		setenv("OLDPWD", old_pwd, 1);
+		free(old_pwd);
+	}
+	else
+	{
+		unsetenv("OLDPWD");
+	}
+
+	if ( (new_pwd = get_cwd()) )
+	{
+		setenv("PWD", new_pwd, 1);
+		free(new_pwd);
+	}
+	else
+	{
+		unsetenv("PWD");
+	}
+
+	return 0;
 }
 
 int
@@ -87,6 +142,20 @@ cmd_help(char *const *args)
 		}
 		printf("%s\n", p->help);
 	}
+	return 0;
+}
+
+int
+cmd_pwd(char *const *args)
+{
+	char *cwd = get_cwd();
+	if (!cwd)
+	{
+		fprintf(stderr, "Failed to get current working directory.\n");
+		return -1;
+	}
+	printf("%s\n", cwd);
+	free(cwd);
 	return 0;
 }
 

@@ -15,12 +15,16 @@
  * along with Shelldon.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <errno.h>
+#include <error.h>
 #include <pwd.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+#include <stdio.h>
 
 #include "tools.h"
 
@@ -67,7 +71,7 @@ strcat2(char *dest, ...)
 	size_t dest_length;
 	size_t length;
 
-	if (NULL == dest)
+	if (!dest)
 	{
 		dest_length = 0;
 	}
@@ -79,7 +83,7 @@ strcat2(char *dest, ...)
 	// Computes the length of the final string.
 	length = dest_length;
 	va_start(strings, dest);
-	while (NULL != (string = va_arg(strings, char *)))
+	while ( (string = va_arg(strings, char *)) )
 	{
 		length += strlen(string);
 	}
@@ -95,7 +99,7 @@ strcat2(char *dest, ...)
 	dest = (char *) realloc((void *) dest, length + 1);
 
 	// The reallocation failed, so stops.
-	if (NULL == dest)
+	if (!dest)
 	{
 		return NULL;
 	}
@@ -105,7 +109,7 @@ strcat2(char *dest, ...)
 
 	// Copies each string.
 	va_start(strings, dest);
-	while (NULL != (string = va_arg(strings, char *)))
+	while ( (string = va_arg(strings, char *)) )
 	{
 		while ('\0' != (*p = *string))
 		{
@@ -163,14 +167,64 @@ get_real_name()
 		{
 			return NULL;
 		}
-	/*		char *p = index(passwd->pw_gecos, ',');*/
-	/*		size_t length = (size_t) (p - passwd_gecos);*/
-	/*		real_name = (char *) malloc((size_t) (p - passwd->pw_gecos));*/
-	/*		strcncpy*/
-		char *copy = strdup(passwd->pw_gecos);
-		real_name = strdup(strtok(copy, ","));
-		free(copy);
+
+		// Make a copy of passwd->pw_gecos until the first ",".
+		char *p = strchr(passwd->pw_gecos, ',');
+		if (p)
+		{
+			real_name = strndup(passwd->pw_gecos, (size_t) (p - passwd->pw_gecos));
+		}
+		else // No "," found, duplicates the whole string.
+		{
+			real_name = strdup(passwd->pw_gecos);
+		}
 	}
 	return real_name;
 }
+
+char *
+get_cwd()
+{
+	char *cwd = NULL;
+	char *buffer = NULL;
+	for (size_t size = 128; (buffer = (char *) realloc((void *) buffer, size))
+			&& !(cwd = getcwd(buffer, size)) && ERANGE == errno; size <<= 1);
+	if (buffer)
+	{
+		if (cwd)
+		{
+			return strdup(cwd);
+		}
+		else
+		{
+			error (0, 0, "Error");
+		}
+		free(buffer);
+	}
+	return NULL;
+//	return (char *) realloc((void *) cwd, strlen(cwd) + 1);
+} 
+
+#ifndef _GNU_SOURCE
+
+char *
+strndup(const char *s, size_t n)
+{
+	{
+		size_t len = strlen(s);
+		if (len < n)
+		{
+			n = len;
+		}
+	}
+	char *r = (char *) malloc(n + 1);
+	if (r)
+	{
+		r = strncpy(r, s, n);
+		r[n] = '\0';
+	}
+	return r;
+}
+
+#endif
 

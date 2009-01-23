@@ -71,5 +71,24 @@ const char
 const char *
 get_real_name();
 
+/**
+ * TODO: write help.
+ **/
+char *
+get_cwd();
+
+// strndup() is a GNU extensions, so we have to define it ourselves if it is not
+// already defined.
+#ifndef _GNU_SOURCE
+
+/**
+ * TODO: write help.
+ **/
+char *
+strndup(const char *s, size_t n);
+
+#endif
+
+
 #endif
 

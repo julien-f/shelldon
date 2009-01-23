@@ -38,7 +38,7 @@ add_character_on_string(char character, char **pstring, size_t *psize,
 	{
 		*psize += 25;
 		*pstring = (char *) realloc((void *) *pstring, *psize);
-		if (NULL == *pstring)
+		if (!*pstring)
 		{
 			error(EXIT_FAILURE, 0, "Error: realloc failed.\n");
 		}
@@ -64,12 +64,12 @@ add_string_on_vector(const char *string, size_t string_lg,
 	{
 		*psize += 10;
 		*pvector = (char **) realloc((void *) *pvector, sizeof(char *) * *psize);
-		if (NULL == *pvector)
+		if (!*pvector)
 		{
 			error(EXIT_FAILURE, 0, "Error: realloc failed.\n");
 		}
 	}
-	if (NULL == ((*pvector)[*plength] = strdup(string)))
+	if (!((*pvector)[*plength] = strdup(string)))
 	{
 		error(EXIT_FAILURE, 0, "Error: strdup failed.\n");
 	}
@@ -161,10 +161,14 @@ parse_cmd_line(const char *cmd_line)
 void
 free_parsed_cmd_line(char **parsed_cmd_line)
 {
-	for (register size_t i = 0; parsed_cmd_line[i] != NULL; ++i)
+	if (parsed_cmd_line)
 	{
-		free(parsed_cmd_line[i]);
+		char **p = parsed_cmd_line;
+		while (*p)
+		{
+			free(*(p++));
+		}
+		free(parsed_cmd_line);
 	}
-	free(parsed_cmd_line);
 }
 

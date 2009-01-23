@@ -30,7 +30,7 @@ cmd_cd(char *const *args);
 /**
  * Replaces the shell by the program args[0].
  *
- * @param args Arguments (last entry must be NULL).
+ * @param args A NULL-terminated array of arguments.
  * @return 0 if success, else -1.
  **/
 int
@@ -39,7 +39,7 @@ cmd_exec(char *const *args);
 /**
  * Ends the shell.
  *
- * @param args Arguments (not used).
+ * @param args A NULL-terminated array of arguments (not used).
  * @return Nothing, because the process is destroyed.
  **/
 int
@@ -48,17 +48,26 @@ cmd_exit(char *const *args);
 /**
  * Lists available commands and their description.
  *
- * @param args Arguments (last entry must be NULL).
+ * @param args A NULL-terminated array of arguments.
  * @return 0 if success, else -1.
  **/
 int
 cmd_help(char *const *args);
 
 /**
+ * Shows the current working directory.
+ *
+ * @param args A NULL-terminated array of arguments (not used).
+ * @return 0 if success, else -1.
+ **/
+int
+cmd_pwd(char *const *args);
+
+/**
  * If there are no arguments, shows the list of environment vars, else, defines,
  * redefines or undefines environment variables.
  *
- * @param args Arguments (last entry must be NULL).
+ * @param args A NULL-terminated array of arguments.
  * @return 0 if success, else -1.
  **/
 int
@@ -67,7 +76,7 @@ cmd_setenv(char *const *args);
 /**
  * Shows the version of Shelldon.
  *
- * @param args Arguments (not used).
+ * @param args A NULL-terminated array of arguments (not used).
  * @return 0 if success, else -1.
  **/
 int
