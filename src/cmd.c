@@ -132,12 +132,18 @@ cmd_help(char *const *args)
 	else
 	{
 		const cmd *p = cmd_list;
-		while (p->cmd && 0 != strcmp(args[0], p->cmd))
+		while (p->cmd && 0 != strcmp(*args, p->cmd))
 		{
 			++p;
 		}
 		if (!p->cmd) // Command not found.
 		{
+			fprintf(stderr, "No command \"%s\" found.\n", *args);
+			return -1;
+		}
+		if (!p->help)
+		{
+			fprintf(stderr, "No help available for this command.\n");
 			return -1;
 		}
 		printf("%s\n", p->help);
@@ -187,7 +193,34 @@ cmd_setenv(char *const *args)
 int
 cmd_version(char *const *args)
 {
+	if (args && *args)
+	{
+		if (0 == strcmp("-v", *args) || 0 == strcmp("--version", *args))
+		{
+			printf(prog_version "\n");
+			return 0;
+		}
+		else if (0 == strcmp("-vn", *args) || 0 == strcmp("--version-name", *args))
+		{
+			printf(prog_version_name "\n");
+			return 0;
+		}
+	}
 	print_version();
+	return 0;
+}
+
+int
+cmd_test(char *const *args)
+{
+	printf(
+		"%s\n%s\n%s\n%s\n%s\n",
+		get_user_name(),
+		get_real_name(),
+		get_home_dir(),
+		get_tmp_dir(),
+		get_cwd()
+	);
 	return 0;
 }
 

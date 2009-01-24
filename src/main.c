@@ -58,6 +58,8 @@ const cmd cmd_list[] = {
 	{"pwd", cmd_pwd, "Shows the current working directory."},
 	{"setenv", cmd_setenv, "Lists and sets environment variables."},
 	{"version", cmd_version, "Shows the version of Shelldon."},
+
+	{"test", cmd_test, NULL},
 	{NULL}
 };
 
@@ -127,10 +129,9 @@ main(int argc, char *const *argv)
 		struct sigaction handler;
 		handler.sa_handler = SIG_IGN;
 		handler.sa_flags = 0;
+//		handler.sa_mask = 0;
 		sigaction(SIGINT, &handler, NULL);
 	}
-
-	printf("You are %s (%s).\n\n", get_real_name(), get_user_name());
 
 	print_version();
 

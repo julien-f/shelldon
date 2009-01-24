@@ -39,7 +39,7 @@ typedef struct
  * @return The number of items.
  **/
 size_t
-get_args_lg(char *const *args);
+get_args_lg(const char *const *args);
 
 /**
  * Concatenate strings.
@@ -54,31 +54,43 @@ char *
 strcat2(char *dest, ...);
 
 /**
- * TODO: write help.
+ * Returns the current user's home directory.
+ * The directory is search in the password database and in the HOME environment
+ * variable in that order. If none found, the value returned is get_tmp_dir().
+ *
+ * @return The home directory.
  **/
 const char *
 get_home_dir();
 
 /**
- * TODO: write help.
+ * Returns the current user's name or NULL if not found.
+ *
+ * @param The user name.
  **/
 const char 
 *get_user_name();
 
 /**
- * TODO: write help.
+ * Returns the current user's real name or NULL if not found.
+ *
+ * @param The real name.
  **/
 const char *
 get_real_name();
 
 /**
- * TODO: write help.
+ * Returns the directory to use for temporary file.
+ * The directory is search in the TMPDIR, TMP and TEMP environment variables in
+ * that order. If none found, the value returned is "/tmp".
+ *
+ * @param The real name.
  **/
-char *
-get_cwd();
+const char *
+get_tmp_dir();
 
-// strndup() is a GNU extensions, so we have to define it ourselves if it is not
-// already defined.
+// get_current_dir_name() and strndup() are GNU extensions, so we have to define
+// them ourselves if they are not already defined.
 #ifndef _GNU_SOURCE
 
 /**
@@ -86,6 +98,19 @@ get_cwd();
  **/
 char *
 strndup(const char *s, size_t n);
+
+/**
+ * TODO: write help.
+ **/
+char *
+get_cwd();
+
+#else
+
+/**
+ * TODO: write help.
+ **/
+#define get_cwd() get_current_dir_name()
 
 #endif
 

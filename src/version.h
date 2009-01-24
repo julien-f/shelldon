@@ -21,7 +21,7 @@
 #define prog_name "Shelldon"
 
 #define prog_version "0.10a"
-#define prog_version_name "Shimamura"
+#define prog_version_name "Caterpie"
 
 /**
  * Prints version.

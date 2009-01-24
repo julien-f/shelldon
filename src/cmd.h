@@ -82,5 +82,8 @@ cmd_setenv(char *const *args);
 int
 cmd_version(char *const *args);
 
+int
+cmd_test(char *const *args);
+
 #endif
 

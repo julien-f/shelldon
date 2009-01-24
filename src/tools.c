@@ -48,7 +48,7 @@ get_passwd_info()
 }
 
 size_t
-get_args_lg(char *const *args)
+get_args_lg(const char *const *args)
 {
 	if (NULL == args)
 	{
@@ -131,7 +131,7 @@ get_home_dir()
 		const struct passwd *passwd = get_passwd_info();
 		if (passwd && passwd->pw_dir)
 		{
-			home_dir = passwd->pw_dir;
+			home_dir = strdup(passwd->pw_dir);
 		}
 		else if ( (home_dir = getenv("HOME")) )
 		{
@@ -139,7 +139,7 @@ get_home_dir()
 		}
 		else
 		{
-			home_dir = "/tmp";
+			home_dir = strdup(get_tmp_dir());
 		}
 	}
 	return home_dir;
@@ -182,34 +182,41 @@ get_real_name()
 	return real_name;
 }
 
-char *
-get_cwd()
+const char *
+get_tmp_dir()
 {
-	char *cwd = NULL;
-	char *buffer = NULL;
-	for (size_t size = 128; (buffer = (char *) realloc((void *) buffer, size))
-			&& !(cwd = getcwd(buffer, size)) && ERANGE == errno; size <<= 1);
-	if (buffer)
+	static char *tmp_dir = NULL;
+	if (!tmp_dir)
 	{
-		if (cwd)
+		if ( (tmp_dir = getenv("TMPDIR")) )
 		{
-			return strdup(cwd);
+			tmp_dir = strdup(tmp_dir);
+		}
+		else if ( (tmp_dir = getenv("TMP")) )
+		{
+			tmp_dir = strdup(tmp_dir);
+		}
+		else if ( (tmp_dir = getenv("TEMP")) )
+		{
+			tmp_dir = strdup(tmp_dir);
 		}
 		else
 		{
-			error (0, 0, "Error");
+			tmp_dir = strdup("/tmp");
 		}
-		free(buffer);
 	}
-	return NULL;
-//	return (char *) realloc((void *) cwd, strlen(cwd) + 1);
-} 
+	return tmp_dir;
+}
 
 #ifndef _GNU_SOURCE
 
 char *
 strndup(const char *s, size_t n)
 {
+	if (!s)
+	{
+		return NULL;
+	}
 	{
 		size_t len = strlen(s);
 		if (len < n)
@@ -225,6 +232,25 @@ strndup(const char *s, size_t n)
 	}
 	return r;
 }
+
+char *
+get_cwd()
+{
+	char *cwd = NULL;
+	char *buffer = NULL;
+	for (size_t size = 128; (buffer = (char *) realloc((void *) buffer, size))
+			&& !(cwd = getcwd(buffer, size)) && ERANGE == errno; size <<= 1);
+	if (cwd)
+	{
+		return (char *) realloc((void *) cwd, strlen(cwd) + 1);
+	}
+	if (buffer)
+	{
+		error (0, 0, "Error");
+		free(buffer);
+	}
+	return NULL;
+} 
 
 #endif
 
