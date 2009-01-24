@@ -26,14 +26,25 @@
  **/
 typedef struct
 {
+	/**
+	 * String corresponding to the command (i.e. its name).
+	 **/
 	char *cmd;
-	int (*function)(char *const *);
+
+	/**
+	 * A pointer to the function to execute for this command.
+	 **/
+	int (*function)(const char *const *);
+
+	/**
+	 * String containing a help message for this command, or NULL if none. 
+	 **/
 	char *help;
 } cmd;
 
 /**
- * Counts the number of items in vector of char (char*) ending with a NULL
- * pointer.
+ * Counts the number of items in a NULL-terminated vector of strings
+ * (i.e. char**).
  *
  * @param args The vector.
  * @return The number of items.
@@ -42,11 +53,12 @@ size_t
 get_args_lg(const char *const *args);
 
 /**
- * Concatenate strings.
- * All strings are concatenate into the first one.
+ * Concatenates a variable number of strings into @dest. @dest is automatically
+ * resized to fit. If @dest is NULL, a new string will be allocated via malloc.
  *
- * @param dest The destination string, can be NULL.
- * @param ... The strings to concatenate to dest, the last argument must be NULL.
+ * @param dest The destination string or NULL.
+ * @param ... The strings to concatenate to @dest, the last argument must be
+ *            NULL.
  * @return NULL if the concatenation failed, else a pointer to the destination
  *         string (it might have changed).
  **/

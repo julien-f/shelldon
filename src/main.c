@@ -75,7 +75,7 @@ const char *prompt = "\33[31;1m>\33[0m ";
  * @return True if the command exists, else false.
  **/
 bool
-exec_cmd(char *const *cl)
+exec_cmd(const char *const *cl)
 {
 	if (!cl || !*cl || '\0' == **cl)
 	{
@@ -174,7 +174,7 @@ main(int argc, char *const *argv)
 			if (parsed_cmd_line)
 			{
 				add_history(string);
-				exec_cmd(parsed_cmd_line) ||
+				exec_cmd((const char* const*) parsed_cmd_line) ||
 						exec_parsed_cmd_line(parsed_cmd_line);
 				free_parsed_cmd_line(parsed_cmd_line);
 			}

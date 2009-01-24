@@ -31,7 +31,7 @@ extern char **environ;
 extern int putenv(char *string);
 
 int
-cmd_cd(char *const *args)
+cmd_cd(const char *const *args)
 {
 	char *new_pwd;
 	if (args && *args)
@@ -96,27 +96,28 @@ cmd_cd(char *const *args)
 }
 
 int
-cmd_exec(char *const *args)
+cmd_exec(const char *const *args)
 {
 	if (!args || !*args) // No args.
 	{
 		fprintf(stderr, "The command exec expects at least one argument.\n");
 		return -1;
 	}
-	
-	execvp(args[0], args);
+
+	// We don't care if exec changes args because this program will be destroyed.
+	execvp(args[0], (char *const *) args);
 	fprintf(stderr, "Error during exec.\n");
 	return -1;
 }
 
 int
-cmd_exit(char *const *args)
+cmd_exit(const char *const *args)
 {
 	exit(EXIT_SUCCESS);
 }
 
 int
-cmd_help(char *const *args)
+cmd_help(const char *const *args)
 {
 	if (!args || !*args)
 	{
@@ -152,7 +153,7 @@ cmd_help(char *const *args)
 }
 
 int
-cmd_pwd(char *const *args)
+cmd_pwd(const char *const *args)
 {
 	char *cwd = get_cwd();
 	if (!cwd)
@@ -166,7 +167,7 @@ cmd_pwd(char *const *args)
 }
 
 int
-cmd_setenv(char *const *args)
+cmd_setenv(const char *const *args)
 {
 	if (!args || !*args) // No args, lists environment.
 	{
@@ -179,7 +180,7 @@ cmd_setenv(char *const *args)
 	}
 	else
 	{
-		char *const *p = args;
+		const char *const *p = args;
 		while (*p)
 		{
 			putenv(strdup(*p));
@@ -191,7 +192,7 @@ cmd_setenv(char *const *args)
 }
 
 int
-cmd_version(char *const *args)
+cmd_version(const char *const *args)
 {
 	if (args && *args)
 	{
@@ -211,7 +212,7 @@ cmd_version(char *const *args)
 }
 
 int
-cmd_test(char *const *args)
+cmd_test(const char *const *args)
 {
 	printf(
 		"%s\n%s\n%s\n%s\n%s\n",
