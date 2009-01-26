@@ -102,7 +102,7 @@ cmd_exec(const char *const *args)
 		return -1;
 	}
 
-	execute(*args, args, EXEC_FG);
+	execute(*args, args, EXEC_REPLACE);
 	fprintf(stderr, "Error during exec.\n");
 	return -1;
 }
