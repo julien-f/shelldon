@@ -37,6 +37,18 @@ int
 cmd_exec(const char *const *args);
 
 /**
+ * TODO: write help.
+ **/
+int
+cmd_execbg(const char *const *args);
+
+/**
+ * TODO: write help.
+ **/
+int
+cmd_execfg(const char *const *args);
+
+/**
  * Ends the shell.
  *
  * @param args A NULL-terminated array of arguments (not used).

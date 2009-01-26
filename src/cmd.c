@@ -21,11 +21,9 @@
 #include <unistd.h>
 
 #include "cmd.h"
+#include "shell.h"
 #include "tools.h"
 #include "version.h"
-
-// Defined in "main.c"
-extern const cmd cmd_list[];
 
 extern char **environ;
 extern int putenv(char *string);
@@ -104,10 +102,33 @@ cmd_exec(const char *const *args)
 		return -1;
 	}
 
-	// We don't care if exec changes args because this program will be destroyed.
-	execvp(args[0], (char *const *) args);
+	execute(*args, args, EXEC_FG);
 	fprintf(stderr, "Error during exec.\n");
 	return -1;
+}
+
+int
+cmd_execbg(const char *const *args)
+{
+	if (!args || !*args) // No args.
+	{
+		fprintf(stderr, "The command execbg expects at least one argument.\n");
+		return -1;
+	}
+
+	return execute(*args, args, EXEC_BG);
+}
+
+int
+cmd_execfg(const char *const *args)
+{
+	if (!args || !*args) // No args.
+	{
+		fprintf(stderr, "The command execfg expects at least one argument.\n");
+		return -1;
+	}
+
+	return execute(*args, args, EXEC_FG);
 }
 
 int
@@ -123,7 +144,7 @@ cmd_help(const char *const *args)
 	{
 		printf("Available commands:\n");
 
-		const cmd *p = cmd_list;
+		const cmd *p = get_cmd_list();
 		while (p->cmd)
 		{
 			printf(" %s\n", p->cmd);
@@ -132,12 +153,8 @@ cmd_help(const char *const *args)
 	}
 	else
 	{
-		const cmd *p = cmd_list;
-		while (p->cmd && 0 != strcmp(*args, p->cmd))
-		{
-			++p;
-		}
-		if (!p->cmd) // Command not found.
+		const cmd *p = get_cmd(*args);
+		if (!p) // Command not found.
 		{
 			fprintf(stderr, "No command \"%s\" found.\n", *args);
 			return -1;

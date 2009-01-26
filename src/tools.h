@@ -21,26 +21,18 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-/**
- * This type is used to register a new internal command.
- **/
-typedef struct
+typedef enum
 {
-	/**
-	 * String corresponding to the command (i.e. its name).
-	 **/
-	char *cmd;
+	EXEC_FG,
+	EXEC_BG,
+	EXEC_REPLACE
+} exec_mode;
 
-	/**
-	 * A pointer to the function to execute for this command.
-	 **/
-	int (*function)(const char *const *);
-
-	/**
-	 * String containing a help message for this command, or NULL if none. 
-	 **/
-	char *help;
-} cmd;
+/**
+ * TODO: write help.
+ **/
+int
+execute(const char *file, const char *const *args, exec_mode mode);
 
 /**
  * Counts the number of items in a NULL-terminated vector of strings

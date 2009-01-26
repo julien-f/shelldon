@@ -32,6 +32,7 @@
 
 #include "cmd.h"
 #include "parser.h"
+#include "shell.h"
 #include "tools.h"
 #include "version.h"
 
@@ -41,84 +42,31 @@
 #define forever for (;;)
 
 /**
- * This list contains all the internal commands.
- *
- * The functions are defined in "cmd.{h,c}.
- *
- * The last entry MUST BE "{NULL}".
- **/
-const cmd cmd_list[] = {
-	{"cd", cmd_cd, "cd [DIR]: Changes the current directory to DIR if specified, "
-			"else to your home directory."},
-	{"exec", cmd_exec, "exec PATH: Replaces the current shell with the program "
-			"PATH."},
-	{"exit", cmd_exit, "Leaves the shell."},
-	{"help", cmd_help, "help [COMMAND]: Lists the available commands or shows "
-			"the help message of COMMAND."},
-	{"pwd", cmd_pwd, "Shows the current working directory."},
-	{"setenv", cmd_setenv, "Lists and sets environment variables."},
-	{"version", cmd_version, "Shows the version of Shelldon."},
-
-	{"test", cmd_test, NULL},
-	{NULL}
-};
-
-/**
  * The prompt (pretty obvious isn't it?).
  **/
 const char *prompt = "\33[31;1m>\33[0m ";
 
 /**
- * Executes a built-in command.
- *
- * @param The command line parsed with parse_cmd_line(const char *str).
- * @return True if the command exists, else false.
+ * TODO: write help.
  **/
-bool
+int
 exec_cmd(const char *const *cl)
 {
 	if (!cl || !*cl || '\0' == **cl)
 	{
-		return false;
+		return 0;
 	}
-	const cmd *p = cmd_list;
-	while (p->cmd)
+	const cmd *p = get_cmd(*cl);
+	if (p)
 	{
-		if (0 == strcmp(*cl, p->cmd)) // We found the command.
-		{
-			p->function(cl + 1); // cl, except the first entry.
-			return true;
-		}
-		++p;
+		return p->function(cl + 1);
 	}
-	return false;
-}
-
-/**
- * Executes a command line parsed by the parse_cmd_line function.
- *
- * @param parsed_cmd_line The command line parsed.
- * @return The result returned by the command.
- **/
-int
-exec_parsed_cmd_line(char *const *parsed_cmd_line)
-{
-	switch (fork())
+	p = get_default_cmd();
+	if (!p)
 	{
-		case -1:
-			printf("Error: fork failed.\n");
-			exit(EXIT_FAILURE);
-		case 0:
-			execvp(parsed_cmd_line[0], parsed_cmd_line);
-			error(EXIT_FAILURE, errno, "Error");
+		return -1;
 	}
-	int result;
-	if (-1 == waitpid(-1, &result, 0))
-	{
-		error(EXIT_FAILURE, errno, "Error");
-	}
-	return result;
-	
+	return p->function(cl);
 }
 
 int
@@ -174,8 +122,7 @@ main(int argc, char *const *argv)
 			if (parsed_cmd_line)
 			{
 				add_history(string);
-				exec_cmd((const char* const*) parsed_cmd_line) ||
-						exec_parsed_cmd_line(parsed_cmd_line);
+				exec_cmd((const char* const*) parsed_cmd_line);
 				free_parsed_cmd_line(parsed_cmd_line);
 			}
 		}

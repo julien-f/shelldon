@@ -6,6 +6,8 @@
 
 - Add "pushd" and "popd" commands such as in Bash.
 
+- Add an "alias" command.
+
 - A config directory which respects XDG spec:
   http://standards.freedesktop.org/basedir-spec/latest/ (almost done, to
   improve).
@@ -22,5 +24,5 @@
 - Poblems with readline when the prompt contains non-visible characters.
 
 - Implement a char *get_cwd() function which returns a string copy (because it
-  might change at any moment) of the cwd.
+  might change at any moment) of the cwd. (Done)
 

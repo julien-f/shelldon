@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include <stdio.h>
@@ -45,6 +46,38 @@ get_passwd_info()
 		}
 	}
 	return passwd;
+}
+
+int
+execute(const char *file, const char *const *args, exec_mode mode)
+{
+	pid_t pid;
+	if (EXEC_REPLACE != mode)
+	{
+		pid = fork();
+		if (-1 == pid) // The fork failed.
+		{
+			return -1;
+		}
+	}
+	else
+	{
+		pid = 0;
+	}
+	if (!pid) // If we are in the child or the EXEC_REPLACE is active.
+	{
+		// We don't care if exec changes args because this program will be
+		// destroyed.
+		execvp(file, (char *const *) args);
+		error(EXIT_FAILURE, errno, "Error");
+	}
+	if (EXEC_BG == mode) // The program is run in bakground.
+	{
+		return 0;
+	}
+	int status;
+	waitpid(pid, &status, 0);
+	return status;
 }
 
 size_t
