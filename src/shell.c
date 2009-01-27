@@ -85,18 +85,9 @@ exec_cmd(const char *const *cl, int *status)
 	const cmd *p = get_cmd(*cl);
 	if (p)
 	{
-		if (status)
-		{
-			*status = p->function(cl + 1);
-		}
-		else
-		{
-			p->function(cl + 1);
-		}
-		return 0;
+		++cl;
 	}
-	p = get_default_cmd();
-	if (!p)
+	else if ( !(p = get_default_cmd()) )
 	{
 		return -1;
 	}
