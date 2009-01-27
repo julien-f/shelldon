@@ -46,29 +46,6 @@
  **/
 const char *prompt = "\33[31;1m>\33[0m ";
 
-/**
- * TODO: write help.
- **/
-int
-exec_cmd(const char *const *cl)
-{
-	if (!cl || !*cl || '\0' == **cl)
-	{
-		return 0;
-	}
-	const cmd *p = get_cmd(*cl);
-	if (p)
-	{
-		return p->function(cl + 1);
-	}
-	p = get_default_cmd();
-	if (!p)
-	{
-		return -1;
-	}
-	return p->function(cl);
-}
-
 int
 main(int argc, char *const *argv)
 {

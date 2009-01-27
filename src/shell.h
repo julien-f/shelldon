@@ -57,5 +57,11 @@ get_cmd_list();
 const cmd *
 get_default_cmd();
 
+/**
+ * TODO: write help.
+ **/
+int
+exec_cmd(const char *const *cl);
+
 #endif
 
