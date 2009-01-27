@@ -61,7 +61,7 @@ get_default_cmd();
  * TODO: write help.
  **/
 int
-exec_cmd(const char *const *cl);
+exec_cmd(const char *const *cl, int *status);
 
 #endif
 

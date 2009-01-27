@@ -99,7 +99,7 @@ main(int argc, char *const *argv)
 			if (parsed_cmd_line)
 			{
 				add_history(string);
-				exec_cmd((const char* const*) parsed_cmd_line);
+				exec_cmd((const char* const*) parsed_cmd_line, NULL);
 				free_parsed_cmd_line(parsed_cmd_line);
 			}
 		}

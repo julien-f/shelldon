@@ -76,7 +76,7 @@ get_default_cmd()
 
 
 int
-exec_cmd(const char *const *cl)
+exec_cmd(const char *const *cl, int *status)
 {
 	if (!cl || !*cl || '\0' == **cl)
 	{
@@ -85,13 +85,29 @@ exec_cmd(const char *const *cl)
 	const cmd *p = get_cmd(*cl);
 	if (p)
 	{
-		return p->function(cl + 1);
+		if (status)
+		{
+			*status = p->function(cl + 1);
+		}
+		else
+		{
+			p->function(cl + 1);
+		}
+		return 0;
 	}
 	p = get_default_cmd();
 	if (!p)
 	{
 		return -1;
 	}
-	return p->function(cl);
+	if (status)
+	{
+		*status = p->function(cl);
+	}
+	else
+	{
+		p->function(cl);
+	}
+	return 0;
 }
 
