@@ -21,6 +21,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -156,6 +157,30 @@ strcat2(char *dest, ...)
 	va_end(strings);
 
 	return dest;
+}
+
+const char *
+get_config_dir()
+{
+	static char *config_dir = NULL;
+	if (!config_dir)
+	{
+		config_dir = getenv("XDG_CONFIG_HOME");
+		if (config_dir && '\0' != *config_dir)
+		{
+			config_dir = strdup(config_dir);
+		}
+		else
+		{
+			config_dir = strcat2(NULL, get_home_dir(), "/.config", NULL);
+		}
+		if (-1 == mkdir(config_dir, 0777) && EEXIST != errno)
+		{
+			free(config_dir);
+			config_dir = NULL;
+		}
+	}
+	return config_dir;
 }
 
 const char *

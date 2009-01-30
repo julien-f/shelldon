@@ -15,10 +15,22 @@
  * along with Shelldon.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <errno.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#include <readline/readline.h>
+#include <readline/history.h>
 
 #include "cmd.h"
 #include "shell.h"
+#include "tools.h"
+#include "version.h"
+
+#define DEFAULT_PROMPT "\33[31;1m>\33[0m "
+
+char shell_done = 0;
 
 /**
  * This list contains all the internal commands.
@@ -46,6 +58,56 @@ static const cmd cmd_list[] = {
 };
 
 static char *default_cmd = "execfg";
+
+/**
+ * The prompt (pretty obvious isn't it?).
+ **/
+static char *prompt = NULL;
+
+static char *history_file = NULL;
+
+static char *shell_config_dir = NULL;
+
+static const char *
+get_shell_config_dir()
+{
+	if (!shell_config_dir)
+	{
+		const char *config_dir = get_config_dir();
+		if (config_dir)
+		{
+			shell_config_dir = strcat2(NULL, config_dir, "/" prog_name, NULL);
+			if (-1 == mkdir(shell_config_dir, 0777) && EEXIST != errno)
+			{
+				free(shell_config_dir),
+				shell_config_dir = NULL;
+			}
+		}
+	}
+	return shell_config_dir;
+}
+
+static void
+initialize_readline()
+{
+	rl_readline_name = prog_name;
+	using_history();
+	const char *shell_config_dir = get_shell_config_dir();
+	if (shell_config_dir)
+	{
+		history_file = strcat2(NULL, shell_config_dir, "/history", NULL);
+		read_history(history_file);
+	}
+}
+
+static void
+finalize_readline()
+{
+	if (history_file)
+	{
+		write_history(history_file);
+	}
+}
 
 const cmd *
 get_cmd(const char *name)
@@ -100,5 +162,64 @@ exec_cmd(const char *const *cl, int *status)
 		p->function(cl);
 	}
 	return 0;
+}
+
+void
+initialize_shell()
+{
+	if (!prompt)
+	{
+		prompt = strdup(DEFAULT_PROMPT);
+	}
+
+	initialize_readline();
+	shell_done = 0;
+}
+
+void
+finalize_shell()
+{
+	finalize_readline();
+	if (history_file)
+	{
+		free(history_file);
+		history_file = NULL;
+	}
+	if (prompt)
+	{
+		free(prompt);
+		prompt = NULL;
+	}
+	if (shell_config_dir)
+	{
+		free(shell_config_dir);
+		shell_config_dir = NULL;
+	}
+	shell_done = 1;
+}
+
+char *
+get_cmd_line()
+{
+	char *string = readline(prompt);
+	if (!string)
+	{
+		putchar('\n');
+		stop_shell();
+		return NULL;
+	}
+	if ('\0' == *string || shell_done)
+	{
+		free(string);
+		return NULL;
+	}
+	add_history(string);
+	return string;
+}
+
+void
+stop_shell()
+{
+	shell_done = 1;
 }
 

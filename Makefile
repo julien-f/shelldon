@@ -24,10 +24,13 @@ mrproper: clean
 $(PRG_NAME): $(MAIN_FILE).o $(MODULES)
 	$(COMPILER) $(LNK_OPTS) -o $@ $^
 
-main.o: src/main.c src/cmd.h src/parser.h src/shell.h src/tools.h src/version.h
+main.o: src/main.c src/parser.h src/shell.h src/version.h
 	$(COMPILER) $(COM_OPTS) -c $<
 
-cmd.o: src/cmd.c src/cmd.h src/parser.h src/shell.h src/version.h
+cmd.o: src/cmd.c src/cmd.h src/shell.h src/tools.h src/version.h
+	$(COMPILER) $(COM_OPTS) -c $<
+
+shell.o: src/shell.c src/cmd.h src/shell.h src/tools.h src/version.h
 	$(COMPILER) $(COM_OPTS) -c $<
 
 # Generic rules for simple module compilation.

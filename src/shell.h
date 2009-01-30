@@ -42,6 +42,11 @@ typedef struct
 /**
  * TODO: write help.
  **/
+extern char shell_done;
+
+/**
+ * TODO: write help.
+ **/
 const cmd *
 get_cmd(const char *);
 
@@ -62,6 +67,30 @@ get_default_cmd();
  **/
 int
 exec_cmd(const char *const *cl, int *status);
+
+/**
+ * Initializes the shell.
+ **/
+void
+initialize_shell();
+
+/**
+ * Finalizes the shell.
+ **/
+void
+finalize_shell();
+
+/**
+ * TODO: write help.
+ **/
+char *
+get_cmd_line();
+
+/**
+ * TODO: write help.
+ **/
+void
+stop_shell();
 
 #endif
 

@@ -68,6 +68,17 @@ char *
 strcat2(char *dest, ...);
 
 /**
+ * Returns the current user's config directory according to XDG spec.
+ * The directory is search in the XDG_CONFIG_HOME environment variable, or set
+ * to "~/.config". If the directory does not exist or could not be made, NULL
+ * is returned.
+ *
+ * @return The config directory.
+ **/
+const char *
+get_config_dir();
+
+/**
  * Returns the current user's home directory.
  * The directory is search in the password database and in the HOME environment
  * variable in that order. If none found, the value returned is get_tmp_dir().

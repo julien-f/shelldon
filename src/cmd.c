@@ -140,7 +140,8 @@ cmd_execfg(const char *const *args)
 int
 cmd_exit(const char *const *args)
 {
-	exit(EXIT_SUCCESS);
+	stop_shell();
+	return 0;
 }
 
 int
