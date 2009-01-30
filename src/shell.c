@@ -52,8 +52,6 @@ static const cmd cmd_list[] = {
 	{"pwd", cmd_pwd, "Shows the current working directory."},
 	{"setenv", cmd_setenv, "Lists and sets environment variables."},
 	{"version", cmd_version, "Shows the version of Shelldon."},
-
-	{"test", cmd_test, NULL},
 	{NULL}
 };
 

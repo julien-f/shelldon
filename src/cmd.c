@@ -235,17 +235,3 @@ cmd_version(const char *const *args)
 	return 0;
 }
 
-int
-cmd_test(const char *const *args)
-{
-	printf(
-		"%s\n%s\n%s\n%s\n%s\n",
-		get_user_name(),
-		get_real_name(),
-		get_home_dir(),
-		get_tmp_dir(),
-		get_cwd()
-	);
-	return 0;
-}
-
