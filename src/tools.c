@@ -69,6 +69,10 @@ execute(const char *file, const char *const *args, exec_mode mode, int *status)
 		// We don't care if exec changes args because this program will be
 		// destroyed.
 		execvp(file, (char *const *) args);
+		if (EXEC_REPLACE == mode)
+		{
+			return -1;
+		}
 		error(EXIT_FAILURE, errno, "Error");
 	}
 	if (EXEC_BG == mode) // The program is run in bakground.

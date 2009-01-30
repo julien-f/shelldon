@@ -38,6 +38,8 @@ typedef enum
  * @param mode The execution mode (background, foreground, replace).
  * @param status If not NULL and if the program is started in foreground, it
  *               will contain the return value of the child process.
+ * @return The return value of fork() in EXEC_BG or EXEC_FG modes, or, in
+ *         EXEC_REPLACE, -1 if we failed in starting the program.
  **/
 int
 execute(const char *file, const char *const *args, exec_mode mode, int *status);

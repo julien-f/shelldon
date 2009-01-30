@@ -102,7 +102,7 @@ cmd_exec(const char *const *args)
 		return -1;
 	}
 
-	execute(*args, args, EXEC_REPLACE);
+	execute(*args, args, EXEC_REPLACE, NULL);
 	fprintf(stderr, "Error during exec.\n");
 	return -1;
 }
@@ -116,7 +116,7 @@ cmd_execbg(const char *const *args)
 		return -1;
 	}
 
-	return execute(*args, args, EXEC_BG);
+	return execute(*args, args, EXEC_BG, NULL);
 }
 
 int
@@ -128,7 +128,13 @@ cmd_execfg(const char *const *args)
 		return -1;
 	}
 
-	return execute(*args, args, EXEC_FG);
+	int status;
+	if (-1 == execute(*args, args, EXEC_FG, &status))
+	{
+		fprintf(stderr, "fork() failed.\n");
+		return -1;
+	}
+	return status;
 }
 
 int
