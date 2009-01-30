@@ -49,7 +49,7 @@ get_passwd_info()
 }
 
 int
-execute(const char *file, const char *const *args, exec_mode mode)
+execute(const char *file, const char *const *args, exec_mode mode, int *status)
 {
 	pid_t pid;
 	if (EXEC_REPLACE != mode)
@@ -75,9 +75,8 @@ execute(const char *file, const char *const *args, exec_mode mode)
 	{
 		return 0;
 	}
-	int status;
-	waitpid(pid, &status, 0);
-	return status;
+	waitpid(pid, status, 0);
+	return 0;
 }
 
 size_t

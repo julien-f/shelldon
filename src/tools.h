@@ -29,10 +29,18 @@ typedef enum
 } exec_mode;
 
 /**
- * TODO: write help.
+ * Executes the program @file (searched in PATH if not absolute) with @args as
+ * arguments. The program can be started in background, foreground, or even
+ * replaced the current process.
+ *
+ * @param file The program name.
+ * @param args The arguments.
+ * @param mode The execution mode (background, foreground, replace).
+ * @param status If not NULL and if the program is started in foreground, it
+ *               will contain the return value of the child process.
  **/
 int
-execute(const char *file, const char *const *args, exec_mode mode);
+execute(const char *file, const char *const *args, exec_mode mode, int *status);
 
 /**
  * Counts the number of items in a NULL-terminated vector of strings
