@@ -58,6 +58,8 @@ get_cmd_list();
 
 /**
  * TODO: write help.
+ *
+ * @return 
  **/
 const cmd *
 get_default_cmd();
@@ -82,6 +84,8 @@ finalize_shell();
 
 /**
  * TODO: write help.
+ *
+ * @return 
  **/
 char *
 get_cmd_line();

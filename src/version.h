@@ -20,7 +20,7 @@
 
 #define prog_name "Shelldon"
 
-#define prog_version "0.10a"
+#define prog_version "0.10"
 #define prog_version_name "Caterpie"
 
 /**
