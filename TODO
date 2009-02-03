@@ -17,11 +17,11 @@
 - Improve the quitting sequence:
   * loop break, end of the main function;
   * SIGTERM handling;
-  * stop readline with "rl_done = 1;".
+  * stop readline with "rl_done = 1;". (Done)
 
-- Improve architecture.
+- Improve architecture. (In progress)
 
-- Poblems with readline when the prompt contains non-visible characters.
+- Problems with readline when the prompt contains non-visible characters.
 
 - Implement a char *get_cwd() function which returns a string copy (because it
   might change at any moment) of the cwd. (Done)

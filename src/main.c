@@ -27,7 +27,7 @@ int
 main(int argc, char *const *argv)
 {
 	{
-		// Prevents SIGINT from stopping the process.
+		// Prevents SIGINT & SIGTSTP from stopping the process.
 		struct sigaction handler;
 		handler.sa_handler = SIG_IGN;
 		handler.sa_flags = 0;
