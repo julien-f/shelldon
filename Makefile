@@ -1,10 +1,11 @@
 COMPILER=gcc
-COM_OPTS=-std=gnu99 -Wall -pedantic -ggdb# -D_GNU_SOURCE
+#COM_OPTS=-std=gnu99 -Wall -pedantic -DDISABLE_DEBUG -DDISABLE_ASSERT -O3 -D_GNU_SOURCE
+COM_OPTS=-std=gnu99 -Wall -pedantic -ggdb
 LNK_OPTS=-lreadline
 MAIN_FILE=main
 
 PRG_NAME=shelldon
-MODULES=parser.o cmd.o shell.o tools.o version.o array.o object.o
+MODULES=parser.o cmd.o shell.o tools.o version.o array.o object.o expression.o expression_list.o
 
 # Rules to always execute.
 .PHONY: all clean mrproper

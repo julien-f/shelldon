@@ -32,11 +32,11 @@ typedef struct ExpressionClass ExpressionClass;
 #define EXPRESSION_GET_CLASS(pointer) (EXPRESSION_CLASS(OBJECT(pointer)->klass))
 
 /**
- * Represents an expression class.
+ * Represents an Expression class.
  */
 struct ExpressionClass {
 	ObjectClass parent;
-	int (*evaluate) (Expression *);
+	int (*evaluate) (void *);
 };
 
 /**
@@ -47,7 +47,7 @@ struct ExpressionClass {
  * This function is only useful to create a derivated class of Expression.
  */
 ExpressionClass *
-expression_class_allocate (size_t size);
+expression_class_allocate (size_t size, void *parent_class, char *name);
 
 /**
  * Returns the Expression class.
@@ -56,14 +56,6 @@ expression_class_allocate (size_t size);
  */
 const ExpressionClass *
 expression_class_get ();
-
-/**
- * Allocates and initialized the Expression class.
- *
- * This function must be called before any use of the class Expression.
- */
-void
-expression_class_initialize ();
 
 /**
  * Represents an instance of the Expression type.
@@ -76,25 +68,22 @@ struct Expression {
  * Allocates a new Expression object.
  */
 Expression *
-expression_allocate (size_t size);
-
-/**
- * Initializes a new Expression object.
- */
-void
-expression_initialize (Expression *expression);
+expression_construct (size_t size, void *klass);
 
 /**
  * Allocates and initializes a new Expression object.
  */
-Expression *
-expression_new ();
+static inline Expression *
+expression_new ()
+{
+	return expression_construct (sizeof (Expression), (void *) expression_class_get ());
+}
 
 /**
  * Evaluates an Expression.
  */
 int
-expression_evaluate (Expression *expression);
+expression_evaluate (void *self);
 
 #endif
 

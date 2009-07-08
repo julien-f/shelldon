@@ -8,7 +8,7 @@
 #define INITIAL_CAPACITY 16
 
 static void
-array_real_finalize (void *self);
+array_real_finalize (void *);
 
 static void
 array_ensure_capacity (Array *self, size_t capacity);
@@ -44,23 +44,12 @@ array_class_get ()
 	return object_class_ref (klass);
 }
 
-void
-array_class_initialize ()
-{
-	if (klass) // Already initialized
-	{
-		return;
-	}
-}
-
 Array *
 array_construct (size_t size, void *klass, destroy_func_t destroy_func)
 {
 	assert (size >= sizeof (Array));
 
 	Array *self =  ARRAY (object_construct (size, klass));
-
-	OBJECT (self)->klass = OBJECT_CLASS (klass);
 
 	self->capacity = 0;
 	self->length = 0;
@@ -128,7 +117,8 @@ array_real_finalize (void *self)
 
 	free (ARRAY(self)->array);
 
-	OBJECT_GET_PARENT_CLASS (self)->finalize (self);
+	assert (klass);
+	OBJECT_CLASS_GET_PARENT (klass)->finalize (self);
 }
 
 static void

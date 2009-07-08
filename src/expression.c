@@ -6,22 +6,21 @@
 #include "object.h"
 
 static int
-expression_real_evaluate (Expression *);
+expression_real_evaluate (void *);
 
 static void
-expression_real_finalize (void *object);
+expression_real_finalize (void *);
 
 
 static ExpressionClass *klass = NULL;
 
-static const ObjectClass *parent_class = NULL;
-
 ExpressionClass *
-expression_class_allocate (size_t size)
+expression_class_allocate (size_t size, void *parent_class, char *name)
 {
+	assert (name);
 	assert (size >= sizeof (ExpressionClass));
 
-	ExpressionClass *expression_class = EXPRESSION_CLASS (object_class_allocate (size));
+	ExpressionClass *expression_class = EXPRESSION_CLASS (object_class_allocate (size, parent_class, name));
 	if (!expression_class) // Allocation failed
 	{
 		return NULL;
@@ -38,76 +37,43 @@ expression_class_get ()
 {
 	if (!klass) // The Object class is not yet initalized.
 	{
-		expression_class_initialize ();
+		klass = expression_class_allocate (sizeof (ExpressionClass), (void *) object_class_get (), "Expression");
+		return klass;
 	}
 
-	return klass;
-}
-
-void
-expression_class_initialize ()
-{
-	if (klass) // Already initialized
-	{
-		return;
-	}
-
-	klass = expression_class_allocate (sizeof (ExpressionClass));
-	if (!klass) //Allocation failed
-	{
-		return;
-	}
-
-	parent_class = object_class_get ();
-	if (!parent_class) // Failed to get the parent class.
-	{
-		return;
-	}
-
-	OBJECT_CLASS (klass)->name = "Expression";
+	return object_class_ref (klass);
 }
 
 Expression *
-expression_allocate (size_t size)
+expression_construct (size_t size, void *klass)
 {
 	assert (size >= sizeof (Expression));
 
-	return EXPRESSION (object_construct (size));
-}
+	Expression *self =  EXPRESSION (object_construct (size, klass));
 
-void
-expression_initialize (Expression *expression)
-{
-	assert (expression);
-}
-
-Expression *
-expression_new () {
-	Expression *expression = expression_allocate (sizeof (Expression));
-	expression_initialize (expression);
-	OBJECT (expression)->klass = OBJECT_CLASS (klass);
-	return expression;
+	return self;
 }
 
 int
-expression_evaluate (Expression *expression)
+expression_evaluate (void *self)
 {
-	assert (expression);
+	assert (self);
 
-	return EXPRESSION_GET_CLASS(expression)->evaluate (expression);
+	return EXPRESSION_GET_CLASS(self)->evaluate (self);
 }
 
 static int
-expression_real_evaluate (Expression *expression)
+expression_real_evaluate (void *self)
 {
 	return 0;
 }
 
 static void
-expression_real_finalize (void *object)
+expression_real_finalize (void *self)
 {
 	// Finalizes if necessary.
 
-	parent_class->finalize (object);
+	assert (klass);
+	OBJECT_CLASS_GET_PARENT (klass)->finalize (self);
 }
 

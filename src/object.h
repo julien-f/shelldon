@@ -28,7 +28,7 @@
 
 #define OBJECT_GET_CLASS(pointer) (OBJECT(pointer)->klass)
 
-#define OBJECT_GET_PARENT_CLASS(pointer) (OBJECT_CLASS_GET_PARENT (OBJECT_GET_CLASS (pointer)))
+//#define OBJECT_GET_PARENT_CLASS(pointer) (OBJECT_CLASS_GET_PARENT (OBJECT_GET_CLASS (pointer)))
 
 typedef struct Object Object;
 typedef struct ObjectClass ObjectClass;

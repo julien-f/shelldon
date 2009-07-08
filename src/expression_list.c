@@ -6,82 +6,66 @@
 #include "expression.h"
 
 static int
-expression_list_real_evaluate (Expression *);
+expression_list_real_evaluate (void *);
 
 static void
-expression_list_real_finalize (void *object);
+expression_list_real_finalize (void *);
+
 
 static ExpressionListClass *klass = NULL;
 
-static const ExpressionClass *parent_class = NULL;
-
-ExpressionListClass *expression_list_class_allocate (size_t size)
+ExpressionListClass *
+expression_list_class_allocate (size_t size, void *parent_class, char *name)
 {
+	assert (name);
 	assert (size >= sizeof (ExpressionListClass));
 
-	ExpressionListClass *expression_list_class = EXPRESSION_LIST_CLASS (expression_class_allocate (size));
-	return expression_list_class;
-}
-
-void
-expression_list_class_initialize ()
-{
-	if (klass) // Already initialized
+	ExpressionListClass *klass = EXPRESSION_LIST_CLASS (expression_class_allocate (size, parent_class, name));
+	if (!klass) // Allocation failed
 	{
-		return;
+		return NULL;
 	}
 
-	klass = expression_list_class_allocate (sizeof (ExpressionListClass));
-	if (!klass) //Allocation failed
-	{
-		return;
-	}
-
-	parent_class = expression_class_get ();
-	if (!parent_class) // Failed to get the parent class.
-	{
-		return;
-	}
-
-	OBJECT_CLASS (klass)->name = "ExpressionList";
 	OBJECT_CLASS (klass)->finalize = expression_list_real_finalize;
-
 	EXPRESSION_CLASS (klass)->evaluate = expression_list_real_evaluate;
+
+	return klass;
 }
 
-ExpressionList *expression_list_allocate (size_t size)
+const ExpressionListClass *
+expression_list_class_get ()
+{
+	if (!klass) // The Expression class is not yet initalized.
+	{
+		klass = expression_list_class_allocate (sizeof (ExpressionListClass), (void *) expression_class_get (), "ExpressionList");
+		return klass;
+	}
+
+	return object_class_ref (klass);
+}
+
+ExpressionList *
+expression_list_construct (size_t size, void *klass)
 {
 	assert (size >= sizeof (ExpressionList));
 
-	return EXPRESSION_LIST (expression_allocate (size));
+	ExpressionList *self =  EXPRESSION_LIST (expression_construct (size, klass));
+
+	return self;
 }
 
-void expression_list_initialize (ExpressionList *expression_list, int value)
+static int
+expression_list_real_evaluate (void *self)
 {
-	assert (expression_list);
-
-	expression_initialize (EXPRESSION (expression_list));
-
-	expression_list->value = value;
-}
-
-ExpressionList *expression_list_new (int value) {
-	ExpressionList *expression_list = expression_list_allocate (sizeof (ExpressionList));
-	expression_list_initialize (expression_list, value);
-	OBJECT (expression_list)->klass = OBJECT_CLASS (klass);
-	return expression_list;
-}
-
-static int expression_list_real_evaluate (Expression *expression)
-{
-	return EXPRESSION_LIST (expression)->value;
+	return ((int) self) % 100;
 }
 
 static void
-expression_list_real_finalize (void *object)
+expression_list_real_finalize (void *self)
 {
 	// Finalizes if necessary.
 
-	OBJECT_CLASS (parent_class)->finalize (object);
+	assert (klass);
+	OBJECT_CLASS_GET_PARENT (klass)->finalize (self);
 }
 

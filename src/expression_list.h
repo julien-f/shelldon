@@ -36,57 +36,48 @@ typedef struct ExpressionListClass ExpressionListClass;
  */
 struct ExpressionListClass {
 	ExpressionClass parent;
+	int (*evaluate) (ExpressionList *);
 };
 
 /**
  * Allocates and initializes a new ExpressionList class of size "size".
  *
- * All fields are initialized except Object.name.
+ * All fields are initialized except Expression.name.
  *
  * This function is only useful to create a derivated class of ExpressionList.
  */
 ExpressionListClass *
-expression_list_class_allocate (size_t size);
+expression_list_class_allocate (size_t size, void *parent_class, char *name);
 
 /**
- * Allocates and initialized the ExpressionList class.
+ * Returns the ExpressionList class.
  *
- * This function must be called before any use of the class ExpressionList.
+ * This function is only useful to create a derivated class of ExpressionList.
  */
-void
-expression_list_class_initialize ();
+const ExpressionListClass *
+expression_list_class_get ();
 
 /**
  * Represents an instance of the ExpressionList type.
  */
 struct ExpressionList {
 	Expression parent;
-	int value;
 };
 
 /**
  * Allocates a new ExpressionList object.
  */
 ExpressionList *
-expression_list_allocate (size_t size);
-
-/**
- * Initializes a new ExpressionList object.
- */
-void
-expression_list_initialize (ExpressionList *expression_list, int value);
+expression_list_construct (size_t size, void *klass);
 
 /**
  * Allocates and initializes a new ExpressionList object.
  */
-ExpressionList *
-expression_list_new (int value);
-
-/**
- * Evaluates an ExpressionList.
- */
-int
-expression_list_evaluate (Expression *expression);
+static inline ExpressionList *
+expression_list_new ()
+{
+	return expression_list_construct (sizeof (ExpressionList), (void *) expression_list_class_get ());
+}
 
 #endif
 

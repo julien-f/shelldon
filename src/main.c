@@ -25,6 +25,8 @@
 
 #include "object.h"
 #include "array.h"
+#include "expression.h"
+#include "expression_list.h"
 
 int
 main(int argc, char *const *argv)
@@ -32,9 +34,18 @@ main(int argc, char *const *argv)
 	{
 		void *a = array_new (object_unref);
 
-		for (size_t i = 0; i < 10; ++i)
+		for (size_t i = 0; i < 5; ++i)
 		{
-			array_add (a, object_new ());
+			array_add (a, expression_new ());
+		}
+		for (size_t i = 0; i < 5; ++i)
+		{
+			array_add (a, expression_list_new ());
+		}
+
+		for (size_t i = 0, n = array_get_length (a); i < n; ++i)
+		{
+			printf ("%d\n", expression_evaluate (array_get (a, i)));
 		}
 
 		object_unref (a);
