@@ -28,9 +28,9 @@
 
 #	define debug(...) \
 	{\
-		printf ("** %s:%d: ", __FILE__, __LINE__);\
-		printf (__VA_ARGS__);\
-		printf ("\n");\
+		fprintf (stderr, "** DEBUG (%s:%d): ", __FILE__, __LINE__);\
+		fprintf (stderr, __VA_ARGS__);\
+		fprintf (stderr, "\n");\
 	}
 
 #endif

@@ -18,26 +18,34 @@
 #ifndef ASSERT_H
 #define ASSERT_H
 
-#include <stdio.h>
+#ifdef DISABLE_ASSERT
 
-/* From glib */
-/* Provide a string identifying the current function, non-concatenatable */
-#if defined (__GNUC__)
-#  define G_STRFUNC     ((const char*) (__PRETTY_FUNCTION__))
-#elif defined (__STDC_VERSION__) && __STDC_VERSION__ >= 19901L
-#  define G_STRFUNC     ((const char*) (__func__))
+#	define assert(expr)
+
 #else
-#  define G_STRFUNC     ((const char*) ("???"))
-#endif
 
-#define assert(expr) \
-{\
-	if (!(expr)) \
+#	include <stdio.h>
+
+	/* From glib */
+	/* Provide a string identifying the current function, non-concatenatable */
+#	if defined (__GNUC__)
+# 	 define G_STRFUNC     ((const char*) (__PRETTY_FUNCTION__))
+#	elif defined (__STDC_VERSION__) && __STDC_VERSION__ >= 19901L
+# 	 define G_STRFUNC     ((const char*) (__func__))
+#	else
+# 	 define G_STRFUNC     ((const char*) ("???"))
+#	endif
+
+#	define assert(expr) \
 	{\
-		fprintf (stderr, "**\nAssertion failed: %s:%d:%s: %s\n", __FILE__, __LINE__, G_STRFUNC, #expr);\
-		abort ();\
-	}\
-}
+		if (!(expr)) \
+		{\
+			fprintf (stderr, "**\nAssertion failed (%s:%d:%s) %s\n", __FILE__, __LINE__, G_STRFUNC, #expr);\
+			abort ();\
+		}\
+	}
+
+#endif
 
 #endif
 

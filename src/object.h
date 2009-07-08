@@ -77,12 +77,30 @@ object_new ()
 	return object_construct (sizeof (Object), (void *) object_class_get ());
 }
 
+/**
+ * Returns the class name of the object.
+ *
+ * @param self The object (must not be null).
+ * @return The class name.
+ */
 const char *
 object_get_class_name (const void *self);
 
+/**
+ * Registers a new reference to this object.
+ *
+ * @param self The object (must not be null).
+ * @return The same object.
+ */
 void *
 object_ref (void *self);
 
+/**
+ * Unregisters a reference of this object. If there is no references left, the
+ * object is freed.
+ *
+ * @param self The object (must not be null).
+ */
 void
 object_unref (void *self);
 

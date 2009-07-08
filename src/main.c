@@ -30,18 +30,14 @@ int
 main(int argc, char *const *argv)
 {
 	{
-		void *o = object_new (NULL);
-		void *a = array_new (NULL);
-		void *o2 = object_new (NULL);
-		void *a2 = array_new (NULL);
+		void *a = array_new (object_unref);
 
-		printf ("%s\n", object_get_class_name (o));
-		printf ("%s\n", object_get_class_name (a));
+		for (size_t i = 0; i < 10; ++i)
+		{
+			array_add (a, object_new ());
+		}
 
-		object_unref (o);
 		object_unref (a);
-		object_unref (o2);
-		object_unref (a2);
 	}
 
 /*	{*/
