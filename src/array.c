@@ -8,21 +8,20 @@
 #define INITIAL_CAPACITY 16
 
 static void
-array_real_finalize (Object *self);
+array_real_finalize (void *self);
 
 static void
 array_ensure_capacity (Array *self, size_t capacity);
 
 static ArrayClass *klass = NULL;
 
-static const ObjectClass *parent_class = NULL;
-
 ArrayClass *
-array_class_allocate (size_t size)
+array_class_allocate (size_t size, void *parent_class, char *name)
 {
+	assert (name);
 	assert (size >= sizeof (ArrayClass));
 
-	ArrayClass *array_class = ARRAY_CLASS (object_class_allocate (size));
+	ArrayClass *array_class = ARRAY_CLASS (object_class_allocate (size, parent_class, name));
 	if (!array_class) // Allocation failed
 	{
 		return NULL;
@@ -38,10 +37,11 @@ array_class_get ()
 {
 	if (!klass) // The Object class is not yet initalized.
 	{
-		array_class_initialize ();
+		klass = array_class_allocate (sizeof (ArrayClass), (void *) object_class_get (), "Array");
+		return klass;
 	}
 
-	return klass;
+	return object_class_ref (klass);
 }
 
 void
@@ -51,49 +51,23 @@ array_class_initialize ()
 	{
 		return;
 	}
-
-	klass = array_class_allocate (sizeof (ArrayClass));
-	if (!klass) //Allocation failed
-	{
-		return;
-	}
-
-	parent_class = object_class_get ();
-	if (!parent_class) // Failed to get the parent class.
-	{
-		return;
-	}
-
-	OBJECT_CLASS (klass)->name = "Array";
 }
 
 Array *
-array_allocate (size_t size)
+array_construct (size_t size, void *klass, destroy_func_t destroy_func)
 {
 	assert (size >= sizeof (Array));
 
-	return ARRAY (object_allocate (size));
-}
+	Array *self =  ARRAY (object_construct (size, klass));
 
-void
-array_initialize (Array *self, destroy_func_t destroy_func)
-{
-	assert (self);
-
-	object_initialize (OBJECT (self));
+	OBJECT (self)->klass = OBJECT_CLASS (klass);
 
 	self->capacity = 0;
 	self->length = 0;
 	self->array = NULL;
 	self->destroy_func = destroy_func;
-}
 
-Array *
-array_new (destroy_func_t destroy_func) {
-	Array *array = array_allocate (sizeof (Array));
-	array_initialize (array, destroy_func);
-	OBJECT (array)->klass = OBJECT_CLASS (klass);
-	return array;
+	return self;
 }
 
 size_t
@@ -148,13 +122,13 @@ array_clear (Array *self)
 }
 
 static void
-array_real_finalize (Object *self)
+array_real_finalize (void *self)
 {
 	array_clear (ARRAY (self));
 
 	free (ARRAY(self)->array);
 
-	parent_class->finalize (self);
+	OBJECT_GET_PARENT_CLASS (self)->finalize (self);
 }
 
 static void

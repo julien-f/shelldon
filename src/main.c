@@ -23,42 +23,60 @@
 #include "shell.h"
 #include "version.h"
 
+#include "object.h"
+#include "array.h"
+
 int
 main(int argc, char *const *argv)
 {
 	{
-		// Prevents SIGINT & SIGTSTP from stopping the process.
-		struct sigaction handler;
-		handler.sa_handler = SIG_IGN;
-		handler.sa_flags = 0;
-//		handler.sa_mask = 0;
-		sigaction(SIGINT, &handler, NULL);
-		sigaction(SIGTSTP, &handler, NULL);
+		void *o = object_new (NULL);
+		void *a = array_new (NULL);
+		void *o2 = object_new (NULL);
+		void *a2 = array_new (NULL);
+
+		printf ("%s\n", object_get_class_name (o));
+		printf ("%s\n", object_get_class_name (a));
+
+		object_unref (o);
+		object_unref (a);
+		object_unref (o2);
+		object_unref (a2);
 	}
 
-	initialize_shell();
+/*	{*/
+/*		// Prevents SIGINT & SIGTSTP from stopping the process.*/
+/*		struct sigaction handler;*/
+/*		handler.sa_handler = SIG_IGN;*/
+/*		handler.sa_flags = 0;*/
+/*//		handler.sa_mask = 0;*/
+/*		sigaction(SIGINT, &handler, NULL);*/
+/*		sigaction(SIGTSTP, &handler, NULL);*/
+/*	}*/
 
-	print_version();
+/*	initialize_shell();*/
 
-	char *string = NULL;
-	char **parsed_cmd_line = NULL;
-	while (!shell_done)
-	{
-		if ( (string = get_cmd_line()) ) // The string is not empty.
-		{
-			parsed_cmd_line = parse_cmd_line(string);
-			if (parsed_cmd_line)
-			{
-				exec_cmd((const char* const*) parsed_cmd_line, NULL);
-				free_parsed_cmd_line(parsed_cmd_line);
-			}
-			free(string);
-		}
-	}
+/*	print_version();*/
 
-	finalize_shell();
+/*	char *string = NULL;*/
+/*	char **parsed_cmd_line = NULL;*/
+/*	while (!shell_done)*/
+/*	{*/
+/*		if ( (string = get_cmd_line()) ) // The string is not empty.*/
+/*		{*/
+/*			parsed_cmd_line = parse_cmd_line(string);*/
+/*			if (parsed_cmd_line)*/
+/*			{*/
+/*				exec_cmd((const char* const*) parsed_cmd_line, NULL);*/
+/*				free_parsed_cmd_line(parsed_cmd_line);*/
+/*			}*/
+/*			free(string);*/
+/*		}*/
+/*	}*/
 
-	printf("Bye.\n");
+/*	finalize_shell();*/
+
+/*	printf("Bye.\n");*/
 
 	return EXIT_SUCCESS;
 }

@@ -9,7 +9,7 @@ static int
 expression_list_real_evaluate (Expression *);
 
 static void
-expression_list_real_finalize (Object *object);
+expression_list_real_finalize (void *object);
 
 static ExpressionListClass *klass = NULL;
 
@@ -78,7 +78,7 @@ static int expression_list_real_evaluate (Expression *expression)
 }
 
 static void
-expression_list_real_finalize (Object *object)
+expression_list_real_finalize (void *object)
 {
 	// Finalizes if necessary.
 

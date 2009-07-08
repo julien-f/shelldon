@@ -4,7 +4,7 @@ LNK_OPTS=-lreadline
 MAIN_FILE=main
 
 PRG_NAME=shelldon
-MODULES=parser.o cmd.o shell.o tools.o version.o
+MODULES=parser.o cmd.o shell.o tools.o version.o array.o object.o
 
 # Rules to always execute.
 .PHONY: all clean mrproper
@@ -14,7 +14,7 @@ all: $(PRG_NAME)
 
 # Delete the object files.
 clean:
-	rm -f *.o
+	rm -f $(MAIN_FILE).o $(MODULES)
 
 # Delete the object files and the compiled program.
 mrproper: clean
@@ -24,6 +24,7 @@ mrproper: clean
 $(PRG_NAME): $(MAIN_FILE).o $(MODULES)
 	$(COMPILER) $(LNK_OPTS) -o $@ $^
 
+# Compilation.
 main.o: src/main.c src/parser.h src/shell.h src/version.h
 	$(COMPILER) $(COM_OPTS) -c $<
 
@@ -31,6 +32,9 @@ cmd.o: src/cmd.c src/cmd.h src/shell.h src/tools.h src/version.h
 	$(COMPILER) $(COM_OPTS) -c $<
 
 shell.o: src/shell.c src/cmd.h src/shell.h src/tools.h src/version.h
+	$(COMPILER) $(COM_OPTS) -c $<
+
+array.o: src/array.c src/array.h src/object.h
 	$(COMPILER) $(COM_OPTS) -c $<
 
 # Generic rules for simple module compilation.

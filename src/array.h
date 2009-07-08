@@ -32,37 +32,33 @@ typedef struct ArrayClass ArrayClass;
 #define ARRAY_GET_CLASS(pointer) (ARRAY_CLASS(OBJECT(pointer)->klass))
 
 /**
- * Represents an expression class.
+ * Represents the Array class or an Array-based class.
  */
 struct ArrayClass {
 	ObjectClass parent;
 };
 
 /**
- * Allocates and initializes a new Expression class of size "size".
+ * Allocates and initializes a new Array class of size "size" with name "name".
  *
- * All fields are initialized except Object.name.
+ * This function is only useful to create a derivated class of Array.
  *
- * This function is only useful to create a derivated class of Expression.
+ * @param size The size of the structure of the class to allocate (must be
+ *             greater or equal to "sizeof (ArrayClass)".
+ * @param parent_class The parent class.
+ * @param name The name of the class (must not be NULL).
+ * @return The new allocated memory with all fields filled.
  */
 ArrayClass *
-array_class_allocate (size_t size);
+array_class_allocate (size_t size, void *parent_class, char *name);
 
 /**
- * Returns the Expression class.
+ * Returns the Array class.
  *
  * This function is only useful to create a derivated class of Expression.
  */
 const ArrayClass *
 array_class_get ();
-
-/**
- * Allocates and initialized the Array class.
- *
- * This function must be called before any use of the class Array.
- */
-void
-array_class_initialize ();
 
 /**
  * A function of this type is called when an item of the array is about to be
@@ -83,22 +79,23 @@ struct Array {
 };
 
 /**
- * Allocates a new Array object.
+ * Allocates a memory space of size "size" and initializes the Array object.
+ *
+ * "size" must be greater or equal to "sizeof (Array)".
  */
 Array *
-array_allocate (size_t size);
-
-/**
- * Initializes a new Array object.
- */
-void
-array_initialize (Array *self, destroy_func_t destroy_func);
+array_construct (size_t size, void *klass, destroy_func_t destroy_func);
 
 /**
  * Allocates and initializes a new Array object.
+ *
+ * Equivalent to "array_construct (sizeof (Array), array_class_get (), destroy_func))".
  */
-Array *
-array_new (destroy_func_t destroy_func);
+static inline Array *
+array_new (destroy_func_t destroy_func)
+{
+	return array_construct (sizeof (Array), (void *) array_class_get (), destroy_func);
+}
 
 /**
  * Returns the size of the array.

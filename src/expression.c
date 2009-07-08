@@ -9,7 +9,7 @@ static int
 expression_real_evaluate (Expression *);
 
 static void
-expression_real_finalize (Object *object);
+expression_real_finalize (void *object);
 
 
 static ExpressionClass *klass = NULL;
@@ -72,15 +72,13 @@ expression_allocate (size_t size)
 {
 	assert (size >= sizeof (Expression));
 
-	return EXPRESSION (object_allocate (size));
+	return EXPRESSION (object_construct (size));
 }
 
 void
 expression_initialize (Expression *expression)
 {
 	assert (expression);
-
-	object_initialize (OBJECT (expression));
 }
 
 Expression *
@@ -106,7 +104,7 @@ expression_real_evaluate (Expression *expression)
 }
 
 static void
-expression_real_finalize (Object *object)
+expression_real_finalize (void *object)
 {
 	// Finalizes if necessary.
 
