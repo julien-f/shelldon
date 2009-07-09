@@ -32,22 +32,46 @@ int
 main(int argc, char *const *argv)
 {
 	{
+		size_t n = 5;
 		void *a = array_new (object_unref);
 
-		array_add (a, NULL);
-		for (size_t i = 0; i < 5; ++i)
+		for (size_t i = 0; i < n; ++i)
 		{
 			array_add (a, expression_new ());
 		}
-		for (size_t i = 0; i < 5; ++i)
+		for (size_t i = 0; i < n; ++i)
 		{
 			array_add (a, expression_list_new ());
 		}
 
-/*		for (size_t i = 0, n = array_get_length (a); i < n; ++i)*/
-/*		{*/
-/*			printf ("%d\n", expression_evaluate (array_get (a, i)));*/
-/*		}*/
+		for (size_t i = 0, n = array_get_length (a); i < n; ++i)
+		{
+			void *o = array_get (a, i);
+			assert (o);
+			printf ("%s.evaluate (): %d\n", object_get_class_name (o), expression_evaluate (o));
+		}
+
+		object_unref (a);
+	}
+	{
+		size_t n = 5;
+		void *a = array_new (object_unref);
+
+		for (size_t i = 0; i < n; ++i)
+		{
+			array_add (a, expression_new ());
+		}
+		for (size_t i = 0; i < n; ++i)
+		{
+			array_add (a, expression_list_new ());
+		}
+
+		for (size_t i = 0, n = array_get_length (a); i < n; ++i)
+		{
+			void *o = array_get (a, i);
+			assert (o);
+			printf ("%s.evaluate (): %d\n", object_get_class_name (o), expression_evaluate (o));
+		}
 
 		object_unref (a);
 	}

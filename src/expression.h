@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 
+#include "assert.h"
 #include "object.h"
 
 typedef struct Expression Expression;
@@ -82,8 +83,13 @@ expression_new ()
 /**
  * Evaluates an Expression.
  */
-int
-expression_evaluate (void *self);
+static inline int
+expression_evaluate (void *self)
+{
+	assert (self);
+
+	return EXPRESSION_GET_CLASS (self)->evaluate (self);
+}
 
 #endif
 

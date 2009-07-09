@@ -11,6 +11,9 @@ expression_real_evaluate (void *);
 static void
 expression_real_finalize (void *);
 
+static void
+expression_class_real_finalize (void *);
+
 
 static ExpressionClass *klass = NULL;
 
@@ -38,6 +41,7 @@ expression_class_get ()
 	if (!klass) // The Object class is not yet initalized.
 	{
 		klass = expression_class_allocate (sizeof (ExpressionClass), (void *) object_class_get (), "Expression");
+		OBJECT_CLASS (klass)->finalize_class = expression_class_real_finalize;
 		return klass;
 	}
 
@@ -54,14 +58,6 @@ expression_construct (size_t size, void *klass)
 	return self;
 }
 
-int
-expression_evaluate (void *self)
-{
-	assert (self);
-
-	return EXPRESSION_GET_CLASS(self)->evaluate (self);
-}
-
 static int
 expression_real_evaluate (void *self)
 {
@@ -75,5 +71,12 @@ expression_real_finalize (void *self)
 
 	assert (klass);
 	OBJECT_CLASS_GET_PARENT (klass)->finalize (self);
+}
+
+static void
+expression_class_real_finalize (void *_klass)
+{
+	assert (_klass == klass);
+	klass = NULL;
 }
 

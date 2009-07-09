@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 
+#include "assert.h"
 #include "expression.h"
 
 typedef struct ExpressionList ExpressionList;

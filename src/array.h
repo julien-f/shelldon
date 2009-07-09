@@ -40,7 +40,8 @@ struct ArrayClass {
 };
 
 /**
- * Allocates and initializes a new Array class of size "size" with name "name".
+ * Allocates and initializes a new Array-based class of size "size" with name
+ * "name".
  *
  * This function is only useful to create a derivated class of Array.
  *
@@ -59,11 +60,11 @@ array_class_allocate (size_t size, void *parent_class, char *name);
  * When no longer needed, the reference should be unreferenced by calling
  * "object_class_unref (void *)".
  *
- * This function is only useful to create a derivated class of Expression.
+ * This function is only useful to create a derivated class of Array.
  *
  * @return The reference.
  */
-const ArrayClass *
+ArrayClass *
 array_class_get ();
 
 /**

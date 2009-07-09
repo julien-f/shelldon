@@ -11,6 +11,9 @@ expression_list_real_evaluate (void *);
 static void
 expression_list_real_finalize (void *);
 
+static void
+expression_list_class_real_finalize (void *);
+
 
 static ExpressionListClass *klass = NULL;
 
@@ -38,6 +41,7 @@ expression_list_class_get ()
 	if (!klass) // The Expression class is not yet initalized.
 	{
 		klass = expression_list_class_allocate (sizeof (ExpressionListClass), (void *) expression_class_get (), "ExpressionList");
+		OBJECT_CLASS (klass)->finalize_class = expression_list_class_real_finalize;
 		return klass;
 	}
 
@@ -67,5 +71,12 @@ expression_list_real_finalize (void *self)
 
 	assert (klass);
 	OBJECT_CLASS_GET_PARENT (klass)->finalize (self);
+}
+
+static void
+expression_list_class_real_finalize (void *_klass)
+{
+	assert (_klass == klass);
+	klass = NULL;
 }
 

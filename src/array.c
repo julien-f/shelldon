@@ -11,6 +11,9 @@
 static void
 array_real_finalize (void *);
 
+static void
+array_class_real_finalize (void *);
+
 static ArrayClass *klass = NULL;
 
 ArrayClass *
@@ -30,12 +33,13 @@ array_class_allocate (size_t size, void *parent_class, char *name)
 	return array_class;
 }
 
-const ArrayClass *
+ArrayClass *
 array_class_get ()
 {
 	if (!klass) // The Object class is not yet initalized.
 	{
-		klass = array_class_allocate (sizeof (ArrayClass), (void *) object_class_get (), "Array");
+		klass = array_class_allocate (sizeof (ArrayClass), object_class_get (), "Array");
+		OBJECT_CLASS (klass)->finalize_class = array_class_real_finalize;
 		return klass;
 	}
 
@@ -138,5 +142,12 @@ array_real_finalize (void *self)
 
 	assert (klass);
 	OBJECT_CLASS_GET_PARENT (klass)->finalize (self);
+}
+
+static void
+array_class_real_finalize (void *_klass)
+{
+	assert (_klass == klass);
+	klass = NULL;
 }
 
