@@ -34,7 +34,7 @@ typedef struct
 	int (*function)(const char *const *);
 
 	/**
-	 * String containing a help message for this command, or NULL if none. 
+	 * String containing a help message for this command, or NULL if none.
 	 **/
 	char *help;
 } cmd;
@@ -59,7 +59,7 @@ get_cmd_list();
 /**
  * TODO: write help.
  *
- * @return 
+ * @return
  **/
 const cmd *
 get_default_cmd();
@@ -68,7 +68,7 @@ get_default_cmd();
  * TODO: write help.
  **/
 int
-exec_cmd(const char *const *cl, int *status);
+exec_cmd(void **cl, int *status);
 
 /**
  * Initializes the shell.
@@ -85,7 +85,7 @@ finalize_shell();
 /**
  * TODO: write help.
  *
- * @return 
+ * @return
  **/
 char *
 get_cmd_line();

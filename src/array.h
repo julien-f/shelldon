@@ -18,6 +18,7 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
+#include <stdbool.h>
 #include <stdlib.h>
 
 #include "assert.h"
@@ -103,19 +104,16 @@ array_construct (size_t size, void *klass, destroy_func_t destroy_func);
  * @return The new Array or NULL if there was an error.
  */
 static inline Array *
-array_new (destroy_func_t destroy_func)
-{
-	return array_construct (sizeof (Array), (void *) array_class_get (), destroy_func);
-}
+array_new (destroy_func_t destroy_func);
 
 /**
- * Adds a new item at the end of the Array.
+ * Appends a new item to the Array.
  *
  * @param self The Array.
  * @param item The item to add.
  */
 void
-array_add (void *self, void *item);
+array_append (void *self, void *item);
 
 /**
  * Clears the Array (i.e. removes all the containing items).
@@ -143,14 +141,23 @@ array_ensure_capacity (void *self, size_t capacity);
  *              length).
  * @return The item.
  */
-
 static inline void *
-array_get (void *self, size_t index)
-{
-	assert (index < ARRAY (self)->length);
+array_get (const void *self, size_t index);
 
-	return ARRAY (self)->array[index];
-}
+/**
+ * Returns a plain C-array copy of the Array.
+ *
+ * If the dynamic allocation fails, or if there is no items in the Array and
+ * "null_terminated" is false, NULL will be returned.
+ *
+ * The array should be freed when no longer needed.
+ *
+ * @param self The Array.
+ * @param null_terminated If true, the array will have one more item: NULL.
+ * @return The C-array.
+ */
+void **
+array_get_array (const void *self, bool null_terminated);
 
 /**
  * Returns the capacity of the Array.
@@ -159,11 +166,7 @@ array_get (void *self, size_t index)
  * @return The number of items the Array can contain.
  */
 static inline size_t
-array_get_capacity (void *self)
-{
-	assert (self);
-	return ARRAY (self)->capacity;
-}
+array_get_capacity (const void *self);
 
 /**
  * Returns the size of the Array.
@@ -172,19 +175,58 @@ array_get_capacity (void *self)
  * @return The number of items the Array contains.
  */
 static inline size_t
-array_get_length (void *self)
-{
-	assert (self);
-	return ARRAY (self)->length;
-}
+array_get_length (const void *self);
+
+/**
+ * Removes the item at index "index".
+ *
+ * @param self The Array.
+ * @param index Index of the item to remove (must be lesser than the Array's
+ *              length).
+ */
+void
+array_remove_at (void *self, size_t index);
 
 /**
  * Sets the item at the given index.
  *
  * @param self The Array.
+ * @param index Index where to set the item (must be lesser than the Array's
+ *              length).
  */
 void
 array_set (void *self, size_t index, void *item);
+
+
+// Inline functions:
+
+static inline Array *
+array_new (destroy_func_t destroy_func)
+{
+	return array_construct (sizeof (Array), (void *) array_class_get (), destroy_func);
+}
+
+static inline void *
+array_get (const void *self, size_t index)
+{
+	assert (index < ARRAY (self)->length);
+
+	return ARRAY (self)->array[index];
+}
+
+static inline size_t
+array_get_length (const void *self)
+{
+	assert (self);
+	return ARRAY (self)->length;
+}
+
+static inline size_t
+array_get_capacity (const void *self)
+{
+	assert (self);
+	return ARRAY (self)->capacity;
+}
 
 #endif
 

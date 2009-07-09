@@ -23,6 +23,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#include "assert.h"
+#include "array.h"
 #include "cmd.h"
 #include "shell.h"
 #include "tools.h"
@@ -136,13 +138,13 @@ get_default_cmd()
 
 
 int
-exec_cmd(const char *const *cl, int *status)
+exec_cmd(void **_cl, int *status)
 {
-	if (!cl || !*cl || '\0' == **cl)
-	{
-		return 0;
-	}
-	const cmd *p = get_cmd(*cl);
+	assert (_cl);
+	assert_cmpuint (array_get_length (_cl), !=, 0);
+	const cmd *p = get_cmd(array_get (_cl, 0));
+
+	const char *const *cl = (const char *const *) array_get_array (_cl, true);
 	if (p)
 	{
 		++cl;
@@ -159,6 +161,8 @@ exec_cmd(const char *const *cl, int *status)
 	{
 		p->function(cl);
 	}
+
+	free ((void *) cl);
 	return 0;
 }
 

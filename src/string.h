@@ -152,10 +152,10 @@ string_append_string (void *self, void *string);
 /**
  * Clears the String (i.e. sets its length to 0).
  *
- * @param self The Array.
+ * @param self The String.
  */
 static inline void
-array_clear (void *self);
+string_clear (void *self);
 
 /**
  * Increases the String's capacity if necessary to ensure that it can hold
@@ -175,7 +175,7 @@ string_ensure_capacity (void *self, size_t capacity);
  *         contain.
  */
 static inline size_t
-string_get_capacity (void *self);
+string_get_capacity (const void *self);
 
 /**
  * Returns the size of the String.
@@ -185,7 +185,7 @@ string_get_capacity (void *self);
  *         String contains.
  */
 static inline size_t
-string_get_length (void *self);
+string_get_length (const void *self);
 
 /**
  * Returns the string of the String.
@@ -194,11 +194,7 @@ string_get_length (void *self);
  * @return The string contained
  */
 static inline const char *
-string_get_str (void *self)
-{
-	assert (self);
-	return STRING (self)->string;
-}
+string_get_str (const void *self);
 
 
 // Inline functions:
@@ -225,7 +221,7 @@ string_append_string (void *self, void *string)
 }
 
 static inline void
-array_clear (void *self)
+string_clear (void *self)
 {
 	assert (self);
 	STRING (self)->length = 0;
@@ -233,17 +229,24 @@ array_clear (void *self)
 }
 
 static inline size_t
-string_get_capacity (void *self)
+string_get_capacity (const void *self)
 {
 	assert (self);
 	return STRING (self)->capacity;
 }
 
 static inline size_t
-string_get_length (void *self)
+string_get_length (const void *self)
 {
 	assert (self);
 	return STRING (self)->length;
+}
+
+static inline const char *
+string_get_str (const void *self)
+{
+	assert (self);
+	return STRING (self)->string;
 }
 
 #endif

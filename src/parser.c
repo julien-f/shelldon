@@ -15,85 +15,22 @@
  * along with Shelldon.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <error.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "parser.h"
+#include "array.h"
+#include "string.h"
 
-/**
- * Add a character to a string.
- *
- * @param character The character to add.
- * @param pstring A pointer to the string.
- * @param psize A pointer to size of the string in memory.
- * @param plength A pointer to the length of the string.
- **/
-static void
-add_character_on_string(char character, char **pstring, size_t *psize,
-		size_t *plength)
-{
-	if (*plength >= *psize)
-	{
-		*psize += 25;
-		*pstring = (char *) realloc((void *) *pstring, *psize);
-		if (!*pstring)
-		{
-			error(EXIT_FAILURE, 0, "Error: realloc failed.\n");
-		}
-	}
-	(*pstring)[*plength] = character;
-	(*pstring)[++*plength] = '\0';
-}
-
-/**
- * Add a string to a vector.
- *
- * @param string The string to add.
- * @param string_lg The length of the string.
- * @param pvector A pointer to the vector.
- * @param psize A pointer to size of the vector in memory.
- * @param plength A pointer to the length of the vector.
- **/
-static void
-add_string_on_vector(const char *string, size_t string_lg,
-		char ***pvector, size_t *psize, size_t *plength)
-{
-	if (*plength >= *psize)
-	{
-		*psize += 10;
-		*pvector = (char **) realloc((void *) *pvector, sizeof(char *) * *psize);
-		if (!*pvector)
-		{
-			error(EXIT_FAILURE, 0, "Error: realloc failed.\n");
-		}
-	}
-	if (!((*pvector)[*plength] = strdup(string)))
-	{
-		error(EXIT_FAILURE, 0, "Error: strdup failed.\n");
-	}
-	(*pvector)[++*plength] = NULL;
-}
-
-/**
- * Parse a command line.
- *
- * @param cmd_line The command line to parse.
- * @return The command line parsed.
- **/
-char **
+void *
 parse_cmd_line(const char *cmd_line)
 {
-	size_t cmd_line_lg = strlen(cmd_line);
+	size_t cmd_line_lg = strlen (cmd_line);
 
-	char **result = NULL;
-	size_t result_lg = 0;
-	size_t result_size = 0;
+	void *result = array_new (free);
 
-	char *buffer = NULL;
-	size_t buffer_lg = 0;
-	size_t buffer_size = 0;
+	void *buffer = string_new ();
 
 	char current_delim = ' ';
 	bool escaped = false;
@@ -106,23 +43,19 @@ parse_cmd_line(const char *cmd_line)
 		}
 		else if (!escaped && cmd_line[i] == ' ' && current_delim == ' ')
 		{
-			if (buffer_lg != 0)
+			if (string_get_length (buffer) != 0)
 			{
-				add_string_on_vector(buffer, buffer_lg, &result,
-						&result_size, &result_lg);
-				buffer_lg = 0;
-				buffer[0] = 0;
+				array_append (result, strdup (string_get_str (buffer)));
+				string_clear (buffer);
 			}
 		}
 		else if (!escaped && ((cmd_line[i] == '\'' && current_delim != '"')
 				|| (cmd_line[i] == '"' && current_delim != '\'')))
 		{
-			if (buffer_lg != 0)
+			if (string_get_length (buffer) != 0)
 			{
-				add_string_on_vector(buffer, buffer_lg, &result,
-						&result_size, &result_lg);
-				buffer_lg = 0;
-				buffer[0] = 0;
+				array_append (result, strdup (string_get_str (buffer)));
+				string_clear (buffer);
 			}
 			if (current_delim == ' ')
 			{
@@ -139,36 +72,15 @@ parse_cmd_line(const char *cmd_line)
 			{
 				escaped = false;
 			}
-			add_character_on_string(cmd_line[i], &buffer, &buffer_size,
-					&buffer_lg);
+			string_append_char (buffer, cmd_line[i]);
 		}
 	}
-	if (buffer_lg != 0)
+	if (string_get_length (buffer) != 0)
 	{
-		add_string_on_vector(buffer, buffer_lg, &result, &result_size,
-				&result_lg);
+		array_append (result, strdup (string_get_str (buffer)));
 	}
-	free(buffer);
+	object_unref (buffer);
 
 	return result;
-}
-
-/**
- * Free a parsed command line return by parse_cmd_line.
- *
- * @param parsed_cmd_line A pointer to the parsed command line to free.
- **/
-void
-free_parsed_cmd_line(char **parsed_cmd_line)
-{
-	if (parsed_cmd_line)
-	{
-		char **p = parsed_cmd_line;
-		while (*p)
-		{
-			free(*(p++));
-		}
-		free(parsed_cmd_line);
-	}
 }
 

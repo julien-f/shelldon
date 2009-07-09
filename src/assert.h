@@ -22,6 +22,10 @@
 
 #	define assert(expr)
 
+#	define assert_cmpint(i1, op, i2)
+
+#	define assert_cmpuint(i1, op, i2)
+
 #else
 
 #	include <stdio.h>
@@ -41,6 +45,28 @@
 		if (!(expr)) \
 		{\
 			fprintf (stderr, "**\nAssertion failed (%s:%d:%s) %s\n", __FILE__, __LINE__, G_STRFUNC, #expr);\
+			abort ();\
+		}\
+	}
+
+#	define assert_cmpint(i1, op, i2) \
+	{\
+		int _i1 = i1;\
+		int _i2 = i2;\
+		if (!(_i1 op _i2)) \
+		{\
+			fprintf (stderr, "**\nAssertion failed (%s:%d:%s) %s (%d %s %d)\n", __FILE__, __LINE__, G_STRFUNC, #i1 " " #op " " #i2, _i1, #op, _i2);\
+			abort ();\
+		}\
+	}
+
+#	define assert_cmpuint(i1, op, i2) \
+	{\
+		unsigned int _i1 = i1;\
+		unsigned int _i2 = i2;\
+		if (!(_i1 op _i2)) \
+		{\
+			fprintf (stderr, "**\nAssertion failed (%s:%d:%s) %s (%u %s %u)\n", __FILE__, __LINE__, G_STRFUNC, #i1 " " #op " " #i2, _i1, #op, _i2);\
 			abort ();\
 		}\
 	}

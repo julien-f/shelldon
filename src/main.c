@@ -15,10 +15,12 @@
  * along with Shelldon.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <stdbool.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "array.h"
 #include "parser.h"
 #include "shell.h"
 #include "version.h"
@@ -41,7 +43,7 @@ main(int argc, char *const *argv)
 	print_version();
 
 	char *string = NULL;
-	char **parsed_cmd_line = NULL;
+	void *parsed_cmd_line = NULL;
 	while (!shell_done)
 	{
 		if ( (string = get_cmd_line()) ) // The string is not empty.
@@ -49,8 +51,8 @@ main(int argc, char *const *argv)
 			parsed_cmd_line = parse_cmd_line(string);
 			if (parsed_cmd_line)
 			{
-				exec_cmd((const char* const*) parsed_cmd_line, NULL);
-				free_parsed_cmd_line(parsed_cmd_line);
+				exec_cmd (parsed_cmd_line, NULL);
+				object_unref (parsed_cmd_line);
 			}
 			free(string);
 		}

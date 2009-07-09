@@ -1,6 +1,7 @@
 #include "array.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "assert.h"
 #include "debug.h"
@@ -62,7 +63,7 @@ array_construct (size_t size, void *klass, destroy_func_t destroy_func)
 }
 
 void
-array_add (void *self, void *item)
+array_append (void *self, void *item)
 {
 	assert (self);
 
@@ -88,6 +89,34 @@ array_clear (void *self)
 	}
 
 	ARRAY (self)->length = 0;
+}
+
+void **
+array_get_array (const void *self, bool null_terminated)
+{
+	assert (self);
+
+	void **array;
+	if (null_terminated)
+	{
+		array = (void **) malloc (sizeof (void *) * (ARRAY (self)->length + 1));
+		if (!array)
+		{
+			return NULL;
+		}
+		array[ARRAY (self)->length] = NULL;
+	}
+	else
+	{
+		array = (void **) malloc (sizeof (void *) * (ARRAY (self)->length));
+		if (!array)
+		{
+			return NULL;
+		}
+	}
+
+	memcpy (array, ARRAY (self)->array, sizeof (void *) * ARRAY (self)->length);
+	return array;
 }
 
 void
@@ -120,6 +149,22 @@ array_ensure_capacity (void *self, size_t capacity)
 	ARRAY (self)->capacity = new_capacity;
 
 	debug ("New Array capacity: %u", new_capacity);
+}
+
+void
+array_remove_at (void *self, size_t index)
+{
+	assert_cmpuint (index, <, ARRAY (self)->length);
+
+	if (ARRAY (self)->destroy_func && ARRAY (self)->array[index])
+	{
+		ARRAY (self)->destroy_func (ARRAY (self)->array[index]);
+	}
+
+	void **p = ARRAY (self)->array + index;
+	memmove (p, p + 1, sizeof (void *) * (ARRAY (self)->length - index));
+
+	--(ARRAY (self)->length);
 }
 
 void

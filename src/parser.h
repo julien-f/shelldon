@@ -19,21 +19,14 @@
 #define SHELLDON_PARSER_H
 
 /**
- * Parse a command line.
+ * Parses a command line and return a string containing Array which should be
+ * deallocate when no longer needed with "object_unref (void *)".
  *
  * @param cmd_line The command line to parse.
- * @return The command line parsed.
+ * @return The Array.
  **/
-char **
+void *
 parse_cmd_line(const char *cmd_line);
-
-/**
- * Free a parsed command line return by parse_cmd_line.
- *
- * @param parsed_cmd_line The parsed command line to free.
- **/
-void
-free_parsed_cmd_line(char **parsed_cmd_line);
 
 #endif
 
