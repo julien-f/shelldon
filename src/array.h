@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 
+#include "assert.h"
 #include "object.h"
 
 typedef struct Array Array;
@@ -90,6 +91,10 @@ array_construct (size_t size, void *klass, destroy_func_t destroy_func);
  * Allocates and initializes a new Array object.
  *
  * Equivalent to "array_construct (sizeof (Array), array_class_get (), destroy_func))".
+ *
+ * @param destroy_func The function which will be called before removing any
+ *                     non-NULL item from the Array, or NULL.
+ * @return The new Array or NULL if there was an error.
  */
 static inline Array *
 array_new (destroy_func_t destroy_func)
@@ -99,33 +104,74 @@ array_new (destroy_func_t destroy_func)
 
 /**
  * Returns the size of the array.
+ *
+ * @param self The Array.
+ * @return The number of items the Array contains.
  */
-size_t
-array_get_length (Array *self);
+static inline size_t
+array_get_length (void *self)
+{
+	assert (self);
+	return ARRAY (self)->length;
+}
+
+/**
+ * Returns the capacity of the array.
+ *
+ * @param self The Array.
+ * @return The number of items the Array can contain.
+ */
+static inline size_t
+array_get_capacity (void *self)
+{
+	assert (self);
+	return ARRAY (self)->capacity;
+}
 
 /**
  * Gets the item at the given index.
+ *
+ * @param self The Array.
+ * @param index Index of the item to retrieve (must be lesser than the Array's
+ *              length).
+ * @return The item.
  */
 void *
-array_get (Array *self, size_t index);
+array_get (void *self, size_t index);
 
 /**
  * Adds a new item at the end of the array.
+ *
+ * @param self The Array.
  */
 void
-array_add (Array *self, void *item);
+array_add (void *self, void *item);
 
 /**
  * Sets the item at the given index.
+ *
+ * @param self The Array.
  */
 void
-array_set (Array *self, size_t index, void *item);
+array_set (void *self, size_t index, void *item);
 
 /**
  * Clear the array (i.e. remove all the containing items.
+ *
+ * @param self The Array.
  */
 void
-array_clear (Array *self);
+array_clear (void *self);
+
+/**
+ * Increases the Array's capacity if necessary to ensure that it can hold
+ * "capacity" items.
+ *
+ * @param self The Array.
+ * @param capacity
+ */
+void
+array_ensure_capacity (void *self, size_t capacity);
 
 #endif
 

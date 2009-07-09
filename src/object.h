@@ -37,7 +37,7 @@ struct ObjectClass {
 	void *parent_class;
 	char *name;
 	void (*finalize) (void *);
-	unsigned char ref_count;
+	unsigned int ref_count;
 };
 
 ObjectClass *
@@ -55,7 +55,7 @@ object_class_unref (void *klass);
 
 struct Object {
 	ObjectClass *klass;
-	unsigned char ref_count;
+	unsigned int ref_count;
 };
 
 /**

@@ -3,15 +3,13 @@
 #include <stdlib.h>
 
 #include "assert.h"
+#include "debug.h"
 #include "object.h"
 
 #define INITIAL_CAPACITY 16
 
 static void
 array_real_finalize (void *);
-
-static void
-array_ensure_capacity (Array *self, size_t capacity);
 
 static ArrayClass *klass = NULL;
 
@@ -59,55 +57,81 @@ array_construct (size_t size, void *klass, destroy_func_t destroy_func)
 	return self;
 }
 
-size_t
-array_get_length (Array *self)
-{
-	return self->length;
-}
-
 void *
-array_get (Array *self, size_t index)
+array_get (void *self, size_t index)
 {
-	assert (index < self->length);
+	assert (index < ARRAY (self)->length);
 
-	return self->array[index];
+	return ARRAY (self)->array[index];
 }
 
 void
-array_add (Array *self, void *item)
+array_add (void *self, void *item)
 {
-	size_t new_length = self->length + 1;
+	size_t new_length = ARRAY (self)->length + 1;
 	array_ensure_capacity (self, new_length);
 
-	self->array[self->length] = item;
-	self->length = new_length;
+	ARRAY (self)->array[ARRAY (self)->length] = item;
+	ARRAY (self)->length = new_length;
 }
 
 void
-array_set (Array *self, size_t index, void *item)
+array_set (void *self, size_t index, void *item)
 {
-	assert (index < self->length);
+	assert (index < ARRAY (self)->length);
 
-	if (self->destroy_func)
+	if (ARRAY (self)->destroy_func)
 	{
-		self->destroy_func (self->array[index]);
+		ARRAY (self)->destroy_func (ARRAY (self)->array[index]);
 	}
 
-	self->array[index] = item;
+	ARRAY (self)->array[index] = item;
 }
 
 void
-array_clear (Array *self)
+array_clear (void *self)
 {
-	if (self->destroy_func)
+	if (ARRAY (self)->destroy_func)
 	{
-		for (size_t i = 0; i < self->length; ++i)
+		for (size_t i = 0; i < ARRAY (self)->length; ++i)
 		{
-			self->destroy_func (self->array[i]);
+			ARRAY (self)->destroy_func (ARRAY (self)->array[i]);
 		}
 	}
 
-	self->length = 0;
+	ARRAY (self)->length = 0;
+}
+
+void
+array_ensure_capacity (void *self, size_t capacity)
+{
+	if (ARRAY (self)->capacity >= capacity) // Current capacity is correct
+	{
+		return;
+	}
+
+	size_t new_capacity;
+	if (ARRAY (self)->capacity == 0)
+	{
+		new_capacity = INITIAL_CAPACITY;
+	}
+	else
+	{
+		new_capacity = ARRAY (self)->capacity << 1;
+	}
+
+	while (new_capacity < capacity)
+	{
+		new_capacity <<= 1;
+	}
+
+	void **p = (void **) realloc (ARRAY (self)->array, sizeof (void *) * new_capacity);
+	assert (p);
+
+	ARRAY (self)->array = p;
+	ARRAY (self)->capacity = new_capacity;
+
+	debug ("New Array capacity: %u", new_capacity);
 }
 
 static void
@@ -119,35 +143,5 @@ array_real_finalize (void *self)
 
 	assert (klass);
 	OBJECT_CLASS_GET_PARENT (klass)->finalize (self);
-}
-
-static void
-array_ensure_capacity (Array *self, size_t capacity)
-{
-	if (self->capacity >= capacity) // Current capacity is correct
-	{
-		return;
-	}
-
-	size_t new_capacity;
-	if (self->capacity == 0)
-	{
-		new_capacity = INITIAL_CAPACITY;
-	}
-	else
-	{
-		new_capacity = self->capacity << 1;
-	}
-
-	while (new_capacity < capacity)
-	{
-		new_capacity <<= 1;
-	}
-
-	void **p = (void **) realloc (self->array, sizeof (void *) * new_capacity);
-	assert (p);
-
-	self->array = p;
-	self->capacity = new_capacity;
 }
 
