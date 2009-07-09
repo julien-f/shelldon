@@ -18,7 +18,7 @@ ObjectClass *
 object_class_allocate (size_t size, void *parent_class, char *name)
 {
 	assert (name);
-	assert (size >= sizeof (ObjectClass));
+	assert_cmpuint (size, >=, sizeof (ObjectClass));
 
 	debug ("Class creation: %s", name);
 
@@ -89,7 +89,7 @@ Object *
 object_construct (size_t size, void *klass)
 {
 	assert (klass);
-	assert (size >= sizeof (Object));
+	assert_cmpuint (size, >=, sizeof (Object));
 
 	debug ("Instance creation: %s", OBJECT_CLASS (klass)->name);
 

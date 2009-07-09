@@ -19,6 +19,7 @@
 #include <error.h>
 #include <pwd.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -29,6 +30,14 @@
 #include <stdio.h>
 
 #include "tools.h"
+
+#include "array.h"
+
+static void cleaner (int i, void *ptr)
+{
+	free (ptr);
+	printf ("One more cleaned\n");
+}
 
 static const struct passwd *
 get_passwd_info()
@@ -50,7 +59,7 @@ get_passwd_info()
 }
 
 int
-execute(const char *file, const char *const *args, exec_mode mode, int *status)
+execute(const char *file, void **args, exec_mode mode, int *status)
 {
 	pid_t pid;
 	if (EXEC_REPLACE != mode)
@@ -67,9 +76,9 @@ execute(const char *file, const char *const *args, exec_mode mode, int *status)
 	}
 	if (!pid) // If we are in the child or the EXEC_REPLACE is active.
 	{
-		// We don't care if exec changes args because this program will be
-		// destroyed.
-		execvp(file, (char *const *) args);
+		void *arr = array_get_array (args, true);
+		execvp(file, arr);
+		free (arr); // If there was an error, we must free arr.
 		if (EXEC_REPLACE == mode)
 		{
 			return -1;
@@ -179,6 +188,7 @@ get_config_dir()
 			free(config_dir);
 			config_dir = NULL;
 		}
+		on_exit (cleaner, config_dir);
 	}
 	return config_dir;
 }
@@ -202,6 +212,7 @@ get_home_dir()
 		{
 			home_dir = strdup(get_tmp_dir());
 		}
+		on_exit (cleaner, home_dir);
 	}
 	return home_dir;
 }
@@ -239,6 +250,7 @@ get_real_name()
 		{
 			real_name = strdup(passwd->pw_gecos);
 		}
+		on_exit (cleaner, real_name);
 	}
 	return real_name;
 }
@@ -265,6 +277,7 @@ get_tmp_dir()
 		{
 			tmp_dir = strdup("/tmp");
 		}
+		on_exit (cleaner, tmp_dir);
 	}
 	return tmp_dir;
 }
@@ -311,7 +324,7 @@ get_cwd()
 		free(buffer);
 	}
 	return NULL;
-} 
+}
 
 #endif
 

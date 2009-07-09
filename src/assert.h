@@ -18,7 +18,7 @@
 #ifndef ASSERT_H
 #define ASSERT_H
 
-#ifdef DISABLE_ASSERT
+#ifdef DISABLE_ASSERTS
 
 #	define assert(expr)
 

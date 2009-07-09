@@ -21,7 +21,7 @@ StringClass *
 string_class_allocate (size_t size, void *parent_class, char *name)
 {
 	assert (name);
-	assert (size >= sizeof (StringClass));
+	assert_cmpuint (size, >=, sizeof (StringClass));
 
 	StringClass *string_class = STRING_CLASS (object_class_allocate (size, parent_class, name));
 	if (!string_class) // Allocation failed
@@ -50,7 +50,7 @@ string_class_get ()
 String *
 string_construct (size_t size, void *klass)
 {
-	assert (size >= sizeof (String));
+	assert_cmpuint (size, >=, sizeof (String));
 
 	String *self =  STRING (object_construct (size, klass));
 
@@ -106,6 +106,8 @@ string_append_char (void *self, char c)
 void
 string_ensure_capacity (void *self, size_t capacity)
 {
+	assert (self);
+
 	if (STRING (self)->capacity >= capacity) // Current capacity is correct
 	{
 		return;
@@ -131,6 +133,8 @@ string_ensure_capacity (void *self, size_t capacity)
 static void
 string_real_finalize (void *self)
 {
+	assert (self);
+
 	free (STRING (self)->string);
 
 	assert (klass);

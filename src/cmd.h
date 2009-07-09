@@ -21,81 +21,78 @@
 /**
  * Changes current directory.
  *
- * @param args Arguments (last entry must be NULL).
+ * @param args An Array which contains the arguments.
  * @return 0 if success, else -1.
  **/
 int
-cmd_cd(const char *const *args);
+cmd_cd(void *args);
 
 /**
  * Replaces the shell by the program args[0].
  *
- * @param args A NULL-terminated array of arguments.
+ * @param args An Array which contains the arguments.
  * @return 0 if success, else -1.
  **/
 int
-cmd_exec(const char *const *args);
+cmd_exec(void *args);
 
 /**
  * TODO: write help.
  **/
 int
-cmd_execbg(const char *const *args);
+cmd_execbg(void *args);
 
 /**
  * TODO: write help.
  **/
 int
-cmd_execfg(const char *const *args);
+cmd_execfg(void *args);
 
 /**
  * Ends the shell.
  *
- * @param args A NULL-terminated array of arguments (not used).
+ * @param args An Array which contains the arguments (not used).
  * @return Nothing, because the process is destroyed.
  **/
 int
-cmd_exit(const char *const *args);
+cmd_exit(void *args);
 
 /**
  * Lists available commands and their description.
  *
- * @param args A NULL-terminated array of arguments.
+ * @param args An Array which contains the arguments.
  * @return 0 if success, else -1.
  **/
 int
-cmd_help(const char *const *args);
+cmd_help(void *args);
 
 /**
  * Shows the current working directory.
  *
- * @param args A NULL-terminated array of arguments (not used).
+ * @param args An Array which contains the arguments (not used).
  * @return 0 if success, else -1.
  **/
 int
-cmd_pwd(const char *const *args);
+cmd_pwd(void *args);
 
 /**
  * If there are no arguments, shows the list of environment vars, else, defines,
  * redefines or undefines environment variables.
  *
- * @param args A NULL-terminated array of arguments.
+ * @param args An Array which contains the arguments.
  * @return 0 if success, else -1.
  **/
 int
-cmd_setenv(const char *const *args);
+cmd_setenv(void *args);
 
 /**
  * Shows the version of Shelldon.
  *
- * @param args A NULL-terminated array of arguments (not used).
+ * @param args An Array which contains the arguments (not used).
  * @return 0 if success, else -1.
  **/
 int
-cmd_version(const char *const *args);
-
-int
-cmd_test(const char *const *args);
+cmd_version(void *args);
 
 #endif
 

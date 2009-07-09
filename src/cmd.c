@@ -15,11 +15,14 @@
  * along with Shelldon.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <error.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
+#include "array.h"
 #include "cmd.h"
 #include "shell.h"
 #include "tools.h"
@@ -29,12 +32,12 @@ extern char **environ;
 extern int putenv(char *string);
 
 int
-cmd_cd(const char *const *args)
+cmd_cd(void *args)
 {
 	char *new_pwd;
-	if (args && *args)
+	if (args && array_get_length (args))
 	{
-		if (0 == strcmp("-", *args))
+		if (0 == strcmp("-", array_get (args, 0)))
 		{
 			if ( (new_pwd = getenv("OLDPWD")) )
 			{
@@ -48,7 +51,7 @@ cmd_cd(const char *const *args)
 		}
 		else
 		{
-			new_pwd = strdup(*args);
+			new_pwd = strdup(array_get (args, 0));
 		}
 	}
 	else if (!get_home_dir())
@@ -94,42 +97,42 @@ cmd_cd(const char *const *args)
 }
 
 int
-cmd_exec(const char *const *args)
+cmd_exec(void *args)
 {
-	if (!args || !*args) // No args.
+	if (!args || !array_get_length (args)) // No args.
 	{
 		fprintf(stderr, "The command exec expects at least one argument.\n");
 		return -1;
 	}
 
-	execute(*args, args, EXEC_REPLACE, NULL);
-	fprintf(stderr, "Error during exec.\n");
+	execute(array_get (args, 0), args, EXEC_REPLACE, NULL);
+	error (0, errno, "Error");
 	return -1;
 }
 
 int
-cmd_execbg(const char *const *args)
+cmd_execbg(void *args)
 {
-	if (!args || !*args) // No args.
+	if (!args || !array_get_length (args)) // No args.
 	{
 		fprintf(stderr, "The command execbg expects at least one argument.\n");
 		return -1;
 	}
 
-	return execute(*args, args, EXEC_BG, NULL);
+	return execute(array_get (args, 0), args, EXEC_BG, NULL);
 }
 
 int
-cmd_execfg(const char *const *args)
+cmd_execfg(void *args)
 {
-	if (!args || !*args) // No args.
+	if (!args || !array_get_length (args)) // No args.
 	{
 		fprintf(stderr, "The command execfg expects at least one argument.\n");
 		return -1;
 	}
 
 	int status;
-	if (-1 == execute(*args, args, EXEC_FG, &status))
+	if (-1 == execute(array_get (args, 0), args, EXEC_FG, &status))
 	{
 		fprintf(stderr, "fork() failed.\n");
 		return -1;
@@ -138,16 +141,16 @@ cmd_execfg(const char *const *args)
 }
 
 int
-cmd_exit(const char *const *args)
+cmd_exit(void *args)
 {
 	stop_shell();
 	return 0;
 }
 
 int
-cmd_help(const char *const *args)
+cmd_help(void *args)
 {
-	if (!args || !*args)
+	if (!args || !array_get_length (args)) // No args.
 	{
 		printf("Available commands:\n");
 
@@ -160,10 +163,11 @@ cmd_help(const char *const *args)
 	}
 	else
 	{
-		const cmd *p = get_cmd(*args);
+		const char *name = array_get (args, 0);
+		const cmd *p = get_cmd(name);
 		if (!p) // Command not found.
 		{
-			fprintf(stderr, "No command \"%s\" found.\n", *args);
+			fprintf(stderr, "No command \"%s\" found.\n", name);
 			return -1;
 		}
 		if (!p->help)
@@ -177,7 +181,7 @@ cmd_help(const char *const *args)
 }
 
 int
-cmd_pwd(const char *const *args)
+cmd_pwd(void *args)
 {
 	char *cwd = get_cwd();
 	if (!cwd)
@@ -191,9 +195,9 @@ cmd_pwd(const char *const *args)
 }
 
 int
-cmd_setenv(const char *const *args)
+cmd_setenv(void *args)
 {
-	if (!args || !*args) // No args, lists environment.
+	if (!args || !array_get_length (args)) // No args.
 	{
 		char **p = environ;
 		while (*p)
@@ -204,11 +208,9 @@ cmd_setenv(const char *const *args)
 	}
 	else
 	{
-		const char *const *p = args;
-		while (*p)
+		for (size_t i = 0, n = array_get_length (args); i < n; ++i)
 		{
-			putenv(strdup(*p));
-			++p;
+			putenv (strdup (array_get (args, i)));
 		}
 	}
 
@@ -216,16 +218,17 @@ cmd_setenv(const char *const *args)
 }
 
 int
-cmd_version(const char *const *args)
+cmd_version(void *args)
 {
-	if (args && *args)
+	if (args && array_get_length (args))
 	{
-		if (0 == strcmp("-v", *args) || 0 == strcmp("--version", *args))
+		const char *arg = array_get (args, 0);
+		if (0 == strcmp("-v", arg) || 0 == strcmp("--version", arg))
 		{
 			printf(prog_version "\n");
 			return 0;
 		}
-		else if (0 == strcmp("-vn", *args) || 0 == strcmp("--version-name", *args))
+		else if (0 == strcmp("-vn", arg) || 0 == strcmp("--version-name", arg))
 		{
 			printf(prog_version_name "\n");
 			return 0;

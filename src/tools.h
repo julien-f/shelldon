@@ -34,7 +34,7 @@ typedef enum
  * replaced the current process.
  *
  * @param file The program name.
- * @param args The arguments.
+ * @param args An Array containing the arguments.
  * @param mode The execution mode (background, foreground, replace).
  * @param status If not NULL and if the program is started in foreground, it
  *               will contain the return value of the child process.
@@ -42,7 +42,7 @@ typedef enum
  *         EXEC_REPLACE, -1 if we failed in starting the program.
  **/
 int
-execute(const char *file, const char *const *args, exec_mode mode, int *status);
+execute(const char *file, void **args, exec_mode mode, int *status);
 
 /**
  * Counts the number of items in a NULL-terminated vector of strings
@@ -93,7 +93,7 @@ get_home_dir();
  *
  * @param The user name.
  **/
-const char 
+const char
 *get_user_name();
 
 /**

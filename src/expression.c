@@ -21,7 +21,7 @@ ExpressionClass *
 expression_class_allocate (size_t size, void *parent_class, char *name)
 {
 	assert (name);
-	assert (size >= sizeof (ExpressionClass));
+	assert_cmpuint (size, >=, sizeof (ExpressionClass));
 
 	ExpressionClass *expression_class = EXPRESSION_CLASS (object_class_allocate (size, parent_class, name));
 	if (!expression_class) // Allocation failed
@@ -51,7 +51,7 @@ expression_class_get ()
 Expression *
 expression_construct (size_t size, void *klass)
 {
-	assert (size >= sizeof (Expression));
+	assert_cmpuint (size, >=, sizeof (Expression));
 
 	Expression *self =  EXPRESSION (object_construct (size, klass));
 

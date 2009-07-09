@@ -26,7 +26,7 @@
 #include "version.h"
 
 int
-main(int argc, char *const *argv)
+main (int argc, char *const *argv)
 {
 	{
 		// Prevents SIGINT & SIGTSTP from stopping the process.
@@ -34,33 +34,33 @@ main(int argc, char *const *argv)
 		handler.sa_handler = SIG_IGN;
 		handler.sa_flags = 0;
 //		handler.sa_mask = 0;
-		sigaction(SIGINT, &handler, NULL);
-		sigaction(SIGTSTP, &handler, NULL);
+		sigaction (SIGINT, &handler, NULL);
+		sigaction (SIGTSTP, &handler, NULL);
 	}
 
-	initialize_shell();
+	initialize_shell ();
 
-	print_version();
+	print_version ();
 
 	char *string = NULL;
 	void *parsed_cmd_line = NULL;
 	while (!shell_done)
 	{
-		if ( (string = get_cmd_line()) ) // The string is not empty.
+		if ( (string = get_cmd_line ()) ) // The string is not empty.
 		{
-			parsed_cmd_line = parse_cmd_line(string);
+			parsed_cmd_line = parse_cmd_line (string);
 			if (parsed_cmd_line)
 			{
 				exec_cmd (parsed_cmd_line, NULL);
 				object_unref (parsed_cmd_line);
 			}
-			free(string);
+			free (string);
 		}
 	}
 
-	finalize_shell();
+	finalize_shell ();
 
-	printf("Bye.\n");
+	printf ("Bye.\n");
 
 	return EXIT_SUCCESS;
 }

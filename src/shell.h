@@ -31,7 +31,7 @@ typedef struct
 	/**
 	 * A pointer to the function to execute for this command.
 	 **/
-	int (*function)(const char *const *);
+	int (*function)(void *);
 
 	/**
 	 * String containing a help message for this command, or NULL if none.

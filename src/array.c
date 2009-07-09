@@ -21,7 +21,7 @@ ArrayClass *
 array_class_allocate (size_t size, void *parent_class, char *name)
 {
 	assert (name);
-	assert (size >= sizeof (ArrayClass));
+	assert_cmpuint (size, >=, sizeof (ArrayClass));
 
 	ArrayClass *array_class = ARRAY_CLASS (object_class_allocate (size, parent_class, name));
 	if (!array_class) // Allocation failed
@@ -50,7 +50,7 @@ array_class_get ()
 Array *
 array_construct (size_t size, void *klass, destroy_func_t destroy_func)
 {
-	assert (size >= sizeof (Array));
+	assert_cmpuint (size, >=, sizeof (Array));
 
 	Array *self =  ARRAY (object_construct (size, klass));
 
@@ -77,6 +77,8 @@ array_append (void *self, void *item)
 void
 array_clear (void *self)
 {
+	assert (self);
+
 	if (ARRAY (self)->destroy_func)
 	{
 		for (size_t i = 0; i < ARRAY (self)->length; ++i)
@@ -122,6 +124,8 @@ array_get_array (const void *self, bool null_terminated)
 void
 array_ensure_capacity (void *self, size_t capacity)
 {
+	assert (self);
+
 	if (ARRAY (self)->capacity >= capacity) // Current capacity is correct
 	{
 		return;
@@ -154,6 +158,7 @@ array_ensure_capacity (void *self, size_t capacity)
 void
 array_remove_at (void *self, size_t index)
 {
+	assert (self);
 	assert_cmpuint (index, <, ARRAY (self)->length);
 
 	if (ARRAY (self)->destroy_func && ARRAY (self)->array[index])
@@ -170,7 +175,8 @@ array_remove_at (void *self, size_t index)
 void
 array_set (void *self, size_t index, void *item)
 {
-	assert (index < ARRAY (self)->length);
+	assert (self);
+	assert_cmpuint (index, <, ARRAY (self)->length);
 
 	if (ARRAY (self)->destroy_func && ARRAY (self)->array[index])
 	{
@@ -183,6 +189,8 @@ array_set (void *self, size_t index, void *item)
 static void
 array_real_finalize (void *self)
 {
+	assert (self);
+
 	array_clear (ARRAY (self));
 
 	free (ARRAY (self)->array);
