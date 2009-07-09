@@ -68,26 +68,16 @@ array_add (void *self, void *item)
 }
 
 void
-array_set (void *self, size_t index, void *item)
-{
-	assert (index < ARRAY (self)->length);
-
-	if (ARRAY (self)->destroy_func)
-	{
-		ARRAY (self)->destroy_func (ARRAY (self)->array[index]);
-	}
-
-	ARRAY (self)->array[index] = item;
-}
-
-void
 array_clear (void *self)
 {
 	if (ARRAY (self)->destroy_func)
 	{
 		for (size_t i = 0; i < ARRAY (self)->length; ++i)
 		{
-			ARRAY (self)->destroy_func (ARRAY (self)->array[i]);
+			if (ARRAY (self)->array[i])
+			{
+				ARRAY (self)->destroy_func (ARRAY (self)->array[i]);
+			}
 		}
 	}
 
@@ -124,6 +114,19 @@ array_ensure_capacity (void *self, size_t capacity)
 	ARRAY (self)->capacity = new_capacity;
 
 	debug ("New Array capacity: %u", new_capacity);
+}
+
+void
+array_set (void *self, size_t index, void *item)
+{
+	assert (index < ARRAY (self)->length);
+
+	if (ARRAY (self)->destroy_func && ARRAY (self)->array[index])
+	{
+		ARRAY (self)->destroy_func (ARRAY (self)->array[index]);
+	}
+
+	ARRAY (self)->array[index] = item;
 }
 
 static void

@@ -46,7 +46,7 @@ struct ArrayClass {
  *
  * @param size The size of the structure of the class to allocate (must be
  *             greater or equal to "sizeof (ArrayClass)".
- * @param parent_class The parent class.
+ * @param parent_class An owned reference to the parent class.
  * @param name The name of the class (must not be NULL).
  * @return The new allocated memory with all fields filled.
  */
@@ -54,15 +54,20 @@ ArrayClass *
 array_class_allocate (size_t size, void *parent_class, char *name);
 
 /**
- * Returns the Array class.
+ * Returns an owned reference the Array class.
+ *
+ * When no longer needed, the reference should be unreferenced by calling
+ * "object_class_unref (void *)".
  *
  * This function is only useful to create a derivated class of Expression.
+ *
+ * @return The reference.
  */
 const ArrayClass *
 array_class_get ();
 
 /**
- * A function of this type is called when an item of the array is about to be
+ * A function of this type is called when a non-NULL item is about to be
  * removed from the array.
  */
 typedef void (*destroy_func_t) (void *item);
@@ -103,30 +108,30 @@ array_new (destroy_func_t destroy_func)
 }
 
 /**
- * Returns the size of the array.
+ * Adds a new item at the end of the array.
  *
  * @param self The Array.
- * @return The number of items the Array contains.
  */
-static inline size_t
-array_get_length (void *self)
-{
-	assert (self);
-	return ARRAY (self)->length;
-}
+void
+array_add (void *self, void *item);
 
 /**
- * Returns the capacity of the array.
+ * Clears the array (i.e. removes all the containing items.
  *
  * @param self The Array.
- * @return The number of items the Array can contain.
  */
-static inline size_t
-array_get_capacity (void *self)
-{
-	assert (self);
-	return ARRAY (self)->capacity;
-}
+void
+array_clear (void *self);
+
+/**
+ * Increases the Array's capacity if necessary to ensure that it can hold
+ * "capacity" items.
+ *
+ * @param self The Array.
+ * @param capacity
+ */
+void
+array_ensure_capacity (void *self, size_t capacity);
 
 /**
  * Gets the item at the given index.
@@ -146,12 +151,30 @@ array_get (void *self, size_t index)
 }
 
 /**
- * Adds a new item at the end of the array.
+ * Returns the capacity of the array.
  *
  * @param self The Array.
+ * @return The number of items the Array can contain.
  */
-void
-array_add (void *self, void *item);
+static inline size_t
+array_get_capacity (void *self)
+{
+	assert (self);
+	return ARRAY (self)->capacity;
+}
+
+/**
+ * Returns the size of the array.
+ *
+ * @param self The Array.
+ * @return The number of items the Array contains.
+ */
+static inline size_t
+array_get_length (void *self)
+{
+	assert (self);
+	return ARRAY (self)->length;
+}
 
 /**
  * Sets the item at the given index.
@@ -160,24 +183,6 @@ array_add (void *self, void *item);
  */
 void
 array_set (void *self, size_t index, void *item);
-
-/**
- * Clear the array (i.e. remove all the containing items.
- *
- * @param self The Array.
- */
-void
-array_clear (void *self);
-
-/**
- * Increases the Array's capacity if necessary to ensure that it can hold
- * "capacity" items.
- *
- * @param self The Array.
- * @param capacity
- */
-void
-array_ensure_capacity (void *self, size_t capacity);
 
 #endif
 

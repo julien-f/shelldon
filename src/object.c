@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "assert.h"
+#define DISABLE_DEBUG
 #include "debug.h"
 
 static void

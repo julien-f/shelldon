@@ -34,6 +34,7 @@ main(int argc, char *const *argv)
 	{
 		void *a = array_new (object_unref);
 
+		array_add (a, NULL);
 		for (size_t i = 0; i < 5; ++i)
 		{
 			array_add (a, expression_new ());
@@ -43,10 +44,10 @@ main(int argc, char *const *argv)
 			array_add (a, expression_list_new ());
 		}
 
-		for (size_t i = 0, n = array_get_length (a); i < n; ++i)
-		{
-			printf ("%d\n", expression_evaluate (array_get (a, i)));
-		}
+/*		for (size_t i = 0, n = array_get_length (a); i < n; ++i)*/
+/*		{*/
+/*			printf ("%d\n", expression_evaluate (array_get (a, i)));*/
+/*		}*/
 
 		object_unref (a);
 	}
