@@ -136,8 +136,14 @@ array_get_capacity (void *self)
  *              length).
  * @return The item.
  */
-void *
-array_get (void *self, size_t index);
+
+static inline void *
+array_get (void *self, size_t index)
+{
+	assert (index < ARRAY (self)->length);
+
+	return ARRAY (self)->array[index];
+}
 
 /**
  * Adds a new item at the end of the array.

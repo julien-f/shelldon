@@ -57,14 +57,6 @@ array_construct (size_t size, void *klass, destroy_func_t destroy_func)
 	return self;
 }
 
-void *
-array_get (void *self, size_t index)
-{
-	assert (index < ARRAY (self)->length);
-
-	return ARRAY (self)->array[index];
-}
-
 void
 array_add (void *self, void *item)
 {
