@@ -64,6 +64,8 @@ array_construct (size_t size, void *klass, destroy_func_t destroy_func)
 void
 array_add (void *self, void *item)
 {
+	assert (self);
+
 	size_t new_length = ARRAY (self)->length + 1;
 	array_ensure_capacity (self, new_length);
 
@@ -138,7 +140,7 @@ array_real_finalize (void *self)
 {
 	array_clear (ARRAY (self));
 
-	free (ARRAY(self)->array);
+	free (ARRAY (self)->array);
 
 	assert (klass);
 	OBJECT_CLASS_GET_PARENT (klass)->finalize (self);

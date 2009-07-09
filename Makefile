@@ -5,7 +5,7 @@ LNK_OPTS=-lreadline
 MAIN_FILE=main
 
 PRG_NAME=shelldon
-MODULES=parser.o cmd.o shell.o tools.o version.o array.o object.o expression.o expression_list.o
+MODULES=parser.o cmd.o shell.o tools.o version.o array.o string.o object.o expression.o expression_list.o
 
 # Rules to always execute.
 .PHONY: all clean mrproper
@@ -36,6 +36,9 @@ shell.o: src/shell.c src/cmd.h src/shell.h src/tools.h src/version.h
 	$(COMPILER) $(COM_OPTS) -c $<
 
 array.o: src/array.c src/array.h src/object.h
+	$(COMPILER) $(COM_OPTS) -c $<
+
+string.o: src/string.c src/string.h src/object.h
 	$(COMPILER) $(COM_OPTS) -c $<
 
 # Generic rules for simple module compilation.

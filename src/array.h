@@ -43,7 +43,7 @@ struct ArrayClass {
  * Allocates and initializes a new Array-based class of size "size" with name
  * "name".
  *
- * This function is only useful to create a derivated class of Array.
+ * This function is only useful to create a Array-based class.
  *
  * @param size The size of the structure of the class to allocate (must be
  *             greater or equal to "sizeof (ArrayClass)".
@@ -60,7 +60,7 @@ array_class_allocate (size_t size, void *parent_class, char *name);
  * When no longer needed, the reference should be unreferenced by calling
  * "object_class_unref (void *)".
  *
- * This function is only useful to create a derivated class of Array.
+ * This function is only useful to create a Array-based class.
  *
  * @return The reference.
  */
@@ -69,7 +69,7 @@ array_class_get ();
 
 /**
  * A function of this type is called when a non-NULL item is about to be
- * removed from the array.
+ * removed from the Array.
  */
 typedef void (*destroy_func_t) (void *item);
 
@@ -96,7 +96,7 @@ array_construct (size_t size, void *klass, destroy_func_t destroy_func);
 /**
  * Allocates and initializes a new Array object.
  *
- * Equivalent to "array_construct (sizeof (Array), array_class_get (), destroy_func))".
+ * Equivalent to "array_construct (sizeof (Array), array_class_get (), destroy_func)".
  *
  * @param destroy_func The function which will be called before removing any
  *                     non-NULL item from the Array, or NULL.
@@ -109,15 +109,16 @@ array_new (destroy_func_t destroy_func)
 }
 
 /**
- * Adds a new item at the end of the array.
+ * Adds a new item at the end of the Array.
  *
  * @param self The Array.
+ * @param item The item to add.
  */
 void
 array_add (void *self, void *item);
 
 /**
- * Clears the array (i.e. removes all the containing items.
+ * Clears the Array (i.e. removes all the containing items).
  *
  * @param self The Array.
  */
@@ -152,7 +153,7 @@ array_get (void *self, size_t index)
 }
 
 /**
- * Returns the capacity of the array.
+ * Returns the capacity of the Array.
  *
  * @param self The Array.
  * @return The number of items the Array can contain.
@@ -165,7 +166,7 @@ array_get_capacity (void *self)
 }
 
 /**
- * Returns the size of the array.
+ * Returns the size of the Array.
  *
  * @param self The Array.
  * @return The number of items the Array contains.
