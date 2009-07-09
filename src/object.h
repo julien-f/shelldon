@@ -18,7 +18,10 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include <stdbool.h>
 #include <stdlib.h>
+
+#include "assert.h"
 
 /**
  * This macro casts the pointer to "Object *".
@@ -113,6 +116,17 @@ ObjectClass *
 object_class_get ();
 
 /**
+ * Returns true if "klass" is a reference to the class called "name" or a
+ * subclass of it.
+ *
+ * @param klass The klass to check (must not be NULL);
+ * @param name The name of the class.
+ * @return True if yes, else false.
+ */
+bool
+object_class_is_a (const void *klass, const void *name);
+
+/**
  * Registers a new reference to this class.
  *
  * @param klass The class (must not be null).
@@ -160,10 +174,7 @@ object_construct (size_t size, void *klass);
  * Equivalent to "object_construct (sizeof (Object), object_class_get ())".
  */
 static inline Object *
-object_new ()
-{
-	return object_construct (sizeof (Object), (void *) object_class_get ());
-}
+object_new ();
 
 /**
  * Returns the class name of the object.
@@ -173,6 +184,17 @@ object_new ()
  */
 const char *
 object_get_class_name (const void *self);
+
+/**
+ * Returns true if "object" is a reference to an instance of the class called
+ * "name" or a of a subclass of it.
+ *
+ * @param object The object to check (must not be NULL);
+ * @param name The name of the class.
+ * @return True if yes, else false.
+ */
+static inline bool
+object_is_a (const void *object, const void *name);
 
 /**
  * Registers a new reference to this object.
@@ -191,6 +213,23 @@ object_ref (void *self);
  */
 void
 object_unref (void *self);
+
+
+// Inline functions.
+
+static inline Object *
+object_new ()
+{
+	return object_construct (sizeof (Object), (void *) object_class_get ());
+}
+
+static inline bool
+object_is_a (const void *object, const void *name)
+{
+	assert (object);
+
+	return object_class_is_a (OBJECT_GET_CLASS (object), name);
+}
 
 #endif
 

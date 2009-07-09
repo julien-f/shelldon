@@ -1,6 +1,7 @@
 #include "object.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "assert.h"
 //#define DISABLE_DEBUG
@@ -47,6 +48,23 @@ object_class_get ()
 		return klass;
 	}
 	return object_class_ref (klass);
+}
+
+bool
+object_class_is_a (const void *klass, const void *name)
+{
+	assert (klass);
+	assert (name);
+
+	if (strcmp (OBJECT_CLASS (klass)->name, name) == 0)
+	{
+		return true;
+	}
+	if (OBJECT_CLASS_GET_PARENT (klass))
+	{
+		return object_class_is_a (OBJECT_CLASS_GET_PARENT (klass), name);
+	}
+	return false;
 }
 
 void *

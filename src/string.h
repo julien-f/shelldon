@@ -34,7 +34,7 @@ typedef struct StringClass StringClass;
 #define STRING_GET_CLASS(pointer) (STRING_CLASS(OBJECT(pointer)->klass))
 
 /**
- * Represents the String class or an String-based class.
+ * Represents the String class or a String-based class.
  */
 struct StringClass {
 	ObjectClass parent;
