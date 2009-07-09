@@ -25,7 +25,7 @@
  * @return 0 if success, else -1.
  **/
 int
-cmd_cd(void *args);
+cmd_cd (void *args);
 
 /**
  * Replaces the shell by the program args[0].
@@ -34,19 +34,19 @@ cmd_cd(void *args);
  * @return 0 if success, else -1.
  **/
 int
-cmd_exec(void *args);
+cmd_exec (void *args);
 
 /**
  * TODO: write help.
  **/
 int
-cmd_execbg(void *args);
+cmd_execbg (void *args);
 
 /**
  * TODO: write help.
  **/
 int
-cmd_execfg(void *args);
+cmd_execfg (void *args);
 
 /**
  * Ends the shell.
@@ -55,7 +55,7 @@ cmd_execfg(void *args);
  * @return Nothing, because the process is destroyed.
  **/
 int
-cmd_exit(void *args);
+cmd_exit (void *args);
 
 /**
  * Lists available commands and their description.
@@ -64,7 +64,7 @@ cmd_exit(void *args);
  * @return 0 if success, else -1.
  **/
 int
-cmd_help(void *args);
+cmd_help (void *args);
 
 /**
  * Shows the current working directory.
@@ -73,7 +73,7 @@ cmd_help(void *args);
  * @return 0 if success, else -1.
  **/
 int
-cmd_pwd(void *args);
+cmd_pwd (void *args);
 
 /**
  * If there are no arguments, shows the list of environment vars, else, defines,
@@ -83,7 +83,7 @@ cmd_pwd(void *args);
  * @return 0 if success, else -1.
  **/
 int
-cmd_setenv(void *args);
+cmd_setenv (void *args);
 
 /**
  * Shows the version of Shelldon.
@@ -92,7 +92,7 @@ cmd_setenv(void *args);
  * @return 0 if success, else -1.
  **/
 int
-cmd_version(void *args);
+cmd_version (void *args);
 
 #endif
 

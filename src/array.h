@@ -178,6 +178,16 @@ static inline size_t
 array_get_length (const void *self);
 
 /**
+ * Class method which returns true if "array" is NULL or if it references an
+ * empty Array.
+ *
+ * @param array The reference.
+ * @return True if "array" is NULL or references an empty Array.
+ */
+static inline size_t
+array_is_empty (const void *array);
+
+/**
  * Removes the item at index "index".
  *
  * @param self The Array.
@@ -226,6 +236,12 @@ array_get_capacity (const void *self)
 {
 	assert (self);
 	return ARRAY (self)->capacity;
+}
+
+static inline size_t
+array_is_empty (const void *array)
+{
+	return ( (array == NULL) || !(array_get_length (array)) );
 }
 
 #endif

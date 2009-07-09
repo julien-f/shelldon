@@ -38,11 +38,11 @@ typedef enum
  * @param mode The execution mode (background, foreground, replace).
  * @param status If not NULL and if the program is started in foreground, it
  *               will contain the return value of the child process.
- * @return The return value of fork() in EXEC_BG or EXEC_FG modes, or, in
+ * @return The return value of fork () in EXEC_BG or EXEC_FG modes, or, in
  *         EXEC_REPLACE, -1 if we failed in starting the program.
  **/
 int
-execute(const char *file, void **args, exec_mode mode, int *status);
+execute (const char *file, void **args, exec_mode mode, int *status);
 
 /**
  * Counts the number of items in a NULL-terminated vector of strings
@@ -52,7 +52,7 @@ execute(const char *file, void **args, exec_mode mode, int *status);
  * @return The number of items.
  **/
 size_t
-get_args_lg(const char *const *args);
+get_args_lg (const char *const *args);
 
 /**
  * Concatenates a variable number of strings into @dest. @dest is automatically
@@ -65,7 +65,7 @@ get_args_lg(const char *const *args);
  *         string (it might have changed).
  **/
 char *
-strcat2(char *dest, ...);
+strcat2 (char *dest, ...);
 
 /**
  * Returns the current user's config directory according to XDG spec.
@@ -76,17 +76,17 @@ strcat2(char *dest, ...);
  * @return The config directory.
  **/
 const char *
-get_config_dir();
+get_config_dir ();
 
 /**
  * Returns the current user's home directory.
  * The directory is search in the password database and in the HOME environment
- * variable in that order. If none found, the value returned is get_tmp_dir().
+ * variable in that order. If none found, the value returned is get_tmp_dir ().
  *
  * @return The home directory.
  **/
 const char *
-get_home_dir();
+get_home_dir ();
 
 /**
  * Returns the current user's name or NULL if not found.
@@ -94,7 +94,7 @@ get_home_dir();
  * @param The user name.
  **/
 const char
-*get_user_name();
+*get_user_name ();
 
 /**
  * Returns the current user's real name or NULL if not found.
@@ -102,7 +102,7 @@ const char
  * @param The real name.
  **/
 const char *
-get_real_name();
+get_real_name ();
 
 /**
  * Returns the directory to use for temporary file.
@@ -112,9 +112,9 @@ get_real_name();
  * @param The real name.
  **/
 const char *
-get_tmp_dir();
+get_tmp_dir ();
 
-// get_current_dir_name() and strndup() are GNU extensions, so we have to define
+// get_current_dir_name () and strndup () are GNU extensions, so we have to define
 // them ourselves if they are not already defined.
 #ifndef _GNU_SOURCE
 
@@ -122,20 +122,20 @@ get_tmp_dir();
  * TODO: write help.
  **/
 char *
-strndup(const char *s, size_t n);
+strndup (const char *s, size_t n);
 
 /**
  * TODO: write help.
  **/
 char *
-get_cwd();
+get_cwd ();
 
 #else
 
 /**
  * TODO: write help.
  **/
-#define get_cwd() get_current_dir_name()
+#define get_cwd () get_current_dir_name ()
 
 #endif
 

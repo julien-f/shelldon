@@ -29,180 +29,180 @@
 #include "version.h"
 
 extern char **environ;
-extern int putenv(char *string);
+extern int putenv (char *string);
 
 int
-cmd_cd(void *args)
+cmd_cd (void *args)
 {
 	char *new_pwd;
-	if (args && array_get_length (args))
+	if (!array_is_empty (args))
 	{
-		if (0 == strcmp("-", array_get (args, 0)))
+		if (0 == strcmp ("-", array_get (args, 0)))
 		{
-			if ( (new_pwd = getenv("OLDPWD")) )
+			if ( (new_pwd = getenv ("OLDPWD")) )
 			{
-				new_pwd = strdup(new_pwd);
+				new_pwd = strdup (new_pwd);
 			}
 			else
 			{
-				fprintf(stderr, "Failed to get previous directory.\n");
+				fprintf (stderr, "Failed to get previous directory.\n");
 				return -1;
 			}
 		}
 		else
 		{
-			new_pwd = strdup(array_get (args, 0));
+			new_pwd = strdup (array_get (args, 0));
 		}
 	}
-	else if (!get_home_dir())
+	else if (!get_home_dir ())
 	{
-		fprintf(stderr, "Failed to get home directory.\n");
+		fprintf (stderr, "Failed to get home directory.\n");
 		return -1;
 	}
 	else
 	{
-		new_pwd = strdup(get_home_dir());
+		new_pwd = strdup (get_home_dir ());
 	}
 
-	char *old_pwd = get_cwd();
-	if (0 != chdir(new_pwd))
+	char *old_pwd = get_cwd ();
+	if (0 != chdir (new_pwd))
 	{
-		fprintf(stderr, "Failed to change directory to \"%s\".\n", new_pwd);
+		fprintf (stderr, "Failed to change directory to \"%s\".\n", new_pwd);
 		return -1;
 	}
 	// Because new_cwd does not contain an absolute path.
-	free(new_pwd);
+	free (new_pwd);
 
 	if (old_pwd)
 	{
-		setenv("OLDPWD", old_pwd, 1);
-		free(old_pwd);
+		setenv ("OLDPWD", old_pwd, 1);
+		free (old_pwd);
 	}
 	else
 	{
-		unsetenv("OLDPWD");
+		unsetenv ("OLDPWD");
 	}
 
-	if ( (new_pwd = get_cwd()) )
+	if ( (new_pwd = get_cwd ()) )
 	{
-		setenv("PWD", new_pwd, 1);
-		free(new_pwd);
+		setenv ("PWD", new_pwd, 1);
+		free (new_pwd);
 	}
 	else
 	{
-		unsetenv("PWD");
+		unsetenv ("PWD");
 	}
 
 	return 0;
 }
 
 int
-cmd_exec(void *args)
+cmd_exec (void *args)
 {
-	if (!args || !array_get_length (args)) // No args.
+	if (array_is_empty (args))
 	{
-		fprintf(stderr, "The command exec expects at least one argument.\n");
+		fprintf (stderr, "The command exec expects at least one argument.\n");
 		return -1;
 	}
 
-	execute(array_get (args, 0), args, EXEC_REPLACE, NULL);
+	execute (array_get (args, 0), args, EXEC_REPLACE, NULL);
 	error (0, errno, "Error");
 	return -1;
 }
 
 int
-cmd_execbg(void *args)
+cmd_execbg (void *args)
 {
-	if (!args || !array_get_length (args)) // No args.
+	if (array_is_empty (args))
 	{
-		fprintf(stderr, "The command execbg expects at least one argument.\n");
+		fprintf (stderr, "The command execbg expects at least one argument.\n");
 		return -1;
 	}
 
-	return execute(array_get (args, 0), args, EXEC_BG, NULL);
+	return execute (array_get (args, 0), args, EXEC_BG, NULL);
 }
 
 int
-cmd_execfg(void *args)
+cmd_execfg (void *args)
 {
-	if (!args || !array_get_length (args)) // No args.
+	if (array_is_empty (args))
 	{
-		fprintf(stderr, "The command execfg expects at least one argument.\n");
+		fprintf (stderr, "The command execfg expects at least one argument.\n");
 		return -1;
 	}
 
 	int status;
-	if (-1 == execute(array_get (args, 0), args, EXEC_FG, &status))
+	if (-1 == execute (array_get (args, 0), args, EXEC_FG, &status))
 	{
-		fprintf(stderr, "fork() failed.\n");
+		fprintf (stderr, "fork () failed.\n");
 		return -1;
 	}
 	return status;
 }
 
 int
-cmd_exit(void *args)
+cmd_exit (void *args)
 {
-	stop_shell();
+	stop_shell ();
 	return 0;
 }
 
 int
-cmd_help(void *args)
+cmd_help (void *args)
 {
-	if (!args || !array_get_length (args)) // No args.
+	if (array_is_empty (args))
 	{
-		printf("Available commands:\n");
+		printf ("Available commands:\n");
 
-		const cmd *p = get_cmd_list();
+		const cmd *p = get_cmd_list ();
 		while (p->cmd)
 		{
-			printf(" %s\n", p->cmd);
+			printf (" %s\n", p->cmd);
 			++p;
 		}
 	}
 	else
 	{
 		const char *name = array_get (args, 0);
-		const cmd *p = get_cmd(name);
+		const cmd *p = get_cmd (name);
 		if (!p) // Command not found.
 		{
-			fprintf(stderr, "No command \"%s\" found.\n", name);
+			fprintf (stderr, "No command \"%s\" found.\n", name);
 			return -1;
 		}
 		if (!p->help)
 		{
-			fprintf(stderr, "No help available for this command.\n");
+			fprintf (stderr, "No help available for this command.\n");
 			return -1;
 		}
-		printf("%s\n", p->help);
+		printf ("%s\n", p->help);
 	}
 	return 0;
 }
 
 int
-cmd_pwd(void *args)
+cmd_pwd (void *args)
 {
-	char *cwd = get_cwd();
+	char *cwd = get_cwd ();
 	if (!cwd)
 	{
-		fprintf(stderr, "Failed to get current working directory.\n");
+		fprintf (stderr, "Failed to get current working directory.\n");
 		return -1;
 	}
-	printf("%s\n", cwd);
-	free(cwd);
+	printf ("%s\n", cwd);
+	free (cwd);
 	return 0;
 }
 
 int
-cmd_setenv(void *args)
+cmd_setenv (void *args)
 {
-	if (!args || !array_get_length (args)) // No args.
+	if (array_is_empty (args))
 	{
 		char **p = environ;
 		while (*p)
 		{
-			printf("%s\n", *p);
+			printf ("%s\n", *p);
 			++p;
 		}
 	}
@@ -218,23 +218,23 @@ cmd_setenv(void *args)
 }
 
 int
-cmd_version(void *args)
+cmd_version (void *args)
 {
-	if (args && array_get_length (args))
+	if (!array_is_empty (args))
 	{
 		const char *arg = array_get (args, 0);
-		if (0 == strcmp("-v", arg) || 0 == strcmp("--version", arg))
+		if (0 == strcmp ("-v", arg) || 0 == strcmp ("--version", arg))
 		{
-			printf(prog_version "\n");
+			printf (prog_version "\n");
 			return 0;
 		}
-		else if (0 == strcmp("-vn", arg) || 0 == strcmp("--version-name", arg))
+		else if ( (0 == strcmp ("-vn", arg)) || (0 == strcmp ("--version-name", arg)) )
 		{
-			printf(prog_version_name "\n");
+			printf (prog_version_name "\n");
 			return 0;
 		}
 	}
-	print_version();
+	print_version ();
 	return 0;
 }
 

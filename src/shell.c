@@ -140,8 +140,8 @@ get_default_cmd ()
 int
 exec_cmd (void **cl, int *status)
 {
-	assert (cl);
-	assert_cmpuint (array_get_length (cl), !=, 0);
+	assert (!array_is_empty (cl));
+
 	const cmd *p = get_cmd (array_get (cl, 0));
 	if (p)
 	{

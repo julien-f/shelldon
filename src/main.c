@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "array.h"
+#include "object.h"
 #include "parser.h"
 #include "shell.h"
 #include "version.h"

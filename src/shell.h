@@ -31,7 +31,7 @@ typedef struct
 	/**
 	 * A pointer to the function to execute for this command.
 	 **/
-	int (*function)(void *);
+	int (*function) (void *);
 
 	/**
 	 * String containing a help message for this command, or NULL if none.
@@ -48,13 +48,13 @@ extern char shell_done;
  * TODO: write help.
  **/
 const cmd *
-get_cmd(const char *);
+get_cmd (const char *);
 
 /**
  * TODO: write help.
  **/
 const cmd *
-get_cmd_list();
+get_cmd_list ();
 
 /**
  * TODO: write help.
@@ -62,25 +62,25 @@ get_cmd_list();
  * @return
  **/
 const cmd *
-get_default_cmd();
+get_default_cmd ();
 
 /**
  * TODO: write help.
  **/
 int
-exec_cmd(void **cl, int *status);
+exec_cmd (void **cl, int *status);
 
 /**
  * Initializes the shell.
  **/
 void
-initialize_shell();
+initialize_shell ();
 
 /**
  * Finalizes the shell.
  **/
 void
-finalize_shell();
+finalize_shell ();
 
 /**
  * TODO: write help.
@@ -88,13 +88,13 @@ finalize_shell();
  * @return
  **/
 char *
-get_cmd_line();
+get_cmd_line ();
 
 /**
  * TODO: write help.
  **/
 void
-stop_shell();
+stop_shell ();
 
 #endif
 
