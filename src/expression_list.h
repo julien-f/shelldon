@@ -55,7 +55,7 @@ expression_list_class_allocate (size_t size, void *parent_class, char *name);
  *
  * This function is only useful to create a derivated class of ExpressionList.
  */
-const ExpressionListClass *
+ExpressionListClass *
 expression_list_class_get ();
 
 /**

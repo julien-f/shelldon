@@ -35,7 +35,7 @@ expression_class_allocate (size_t size, void *parent_class, char *name)
 	return expression_class;
 }
 
-const ExpressionClass *
+ExpressionClass *
 expression_class_get ()
 {
 	if (!klass) // The Object class is not yet initalized.

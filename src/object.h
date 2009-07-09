@@ -20,15 +20,27 @@
 
 #include <stdlib.h>
 
+/**
+ * This macro casts the pointer to "Object *".
+ */
 #define OBJECT(pointer) ((Object *) pointer)
 
+/**
+ * This macro casts the pointer to "ObjectClass *".
+ */
 #define OBJECT_CLASS(pointer) ((ObjectClass *) pointer)
 
+/**
+ * This macro returns the parent class (seen as "ObjectClass *") of the class
+ * designated by this pointer.
+ */
 #define OBJECT_CLASS_GET_PARENT(pointer) (OBJECT_CLASS (OBJECT_CLASS (pointer)->parent_class))
 
+/**
+ * This macro returns the class (seen as "ObjectClass *") of the object
+ * designated by this pointer.
+ */
 #define OBJECT_GET_CLASS(pointer) (OBJECT(pointer)->klass)
-
-//#define OBJECT_GET_PARENT_CLASS(pointer) (OBJECT_CLASS_GET_PARENT (OBJECT_GET_CLASS (pointer)))
 
 typedef struct Object Object;
 typedef struct ObjectClass ObjectClass;
@@ -122,7 +134,15 @@ object_class_unref (void *klass);
  * Represents an instance of the Object type.
  */
 struct Object {
+	/**
+	 * An owned reference to the object's class.
+	 */
 	ObjectClass *klass;
+
+	/**
+	 * This counter indicates the number of owned references to this object.
+	 * When it reaches zero, the ibject is automatically deallocated.
+	 */
 	unsigned int ref_count;
 };
 
