@@ -129,7 +129,7 @@ object_class_is_a (const void *klass, const void *name);
 /**
  * Registers a new reference to this class.
  *
- * @param klass The class (must not be null).
+ * @param klass The class (must not be NULL).
  * @return The same class.
  */
 void *
@@ -139,7 +139,7 @@ object_class_ref (void *klass);
  * Unregisters a reference of this class. If there is no references left, the
  * class is freed.
  *
- * @param klass The class (must not be null).
+ * @param klass The class (must not be NULL).
  */
 void
 object_class_unref (void *klass);
@@ -179,7 +179,7 @@ object_new ();
 /**
  * Returns the class name of the object.
  *
- * @param self The object (must not be null).
+ * @param self The object (must not be NULL).
  * @return The class name.
  */
 const char *
@@ -199,7 +199,7 @@ object_is_a (const void *object, const void *name);
 /**
  * Registers a new reference to this object.
  *
- * @param self The object (must not be null).
+ * @param self The object (must not be NULL).
  * @return The same object.
  */
 void *
@@ -209,7 +209,7 @@ object_ref (void *self);
  * Unregisters a reference of this object. If there is no references left, the
  * object is freed.
  *
- * @param self The object (must not be null).
+ * @param self The object (must not be NULL).
  */
 void
 object_unref (void *self);
