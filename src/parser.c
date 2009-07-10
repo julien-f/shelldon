@@ -45,7 +45,7 @@ parse_cmd_line(const char *cmd_line)
 		{
 			if (string_get_length (buffer) != 0)
 			{
-				array_append (result, strdup (string_get_str (buffer)));
+				array_append (result, strdup (string_get_chars (buffer)));
 				string_clear (buffer);
 			}
 		}
@@ -54,7 +54,7 @@ parse_cmd_line(const char *cmd_line)
 		{
 			if (string_get_length (buffer) != 0)
 			{
-				array_append (result, strdup (string_get_str (buffer)));
+				array_append (result, strdup (string_get_chars (buffer)));
 				string_clear (buffer);
 			}
 			if (current_delim == ' ')
@@ -77,7 +77,7 @@ parse_cmd_line(const char *cmd_line)
 	}
 	if (string_get_length (buffer) != 0)
 	{
-		array_append (result, strdup (string_get_str (buffer)));
+		array_append (result, strdup (string_get_chars (buffer)));
 	}
 	object_unref (buffer);
 

@@ -178,6 +178,26 @@ static inline size_t
 string_get_capacity (const void *self);
 
 /**
+ * Gets the character at the given index.
+ *
+ * @param self The String.
+ * @param index Index of the character to retrieve (must be lesser than the
+ *              String's length).
+ * @return The character.
+ */
+static inline const char
+string_get_char (const void *self, size_t index);
+
+/**
+ * Returns the string of the String.
+ *
+ * @param self The String.
+ * @return The string contained
+ */
+static inline const char *
+string_get_chars (const void *self);
+
+/**
  * Returns the size of the String.
  *
  * @param self The String.
@@ -188,13 +208,15 @@ static inline size_t
 string_get_length (const void *self);
 
 /**
- * Returns the string of the String.
+ * Sets the character at the given index.
  *
  * @param self The String.
- * @return The string contained
+ * @param index Index of the character to set (must be lesser than the String's
+ *              length).
+ * @param c The character to set.
  */
-static inline const char *
-string_get_str (const void *self);
+static inline void
+string_set_char (const void *self, size_t index, char c);
 
 
 // Inline functions:
@@ -208,16 +230,14 @@ string_new ()
 static inline void
 string_append (void *self, const char *str)
 {
-	assert (str);
 	string_append_n (self, str, strlen (str));
 }
 
 static inline void
 string_append_string (void *self, void *string)
 {
-	assert (self);
 	assert (string);
-	string_append_n (self, string_get_str (string), string_get_length (string));
+	string_append_n (self, string_get_chars (string), string_get_length (string));
 }
 
 static inline void
@@ -235,6 +255,21 @@ string_get_capacity (const void *self)
 	return STRING (self)->capacity;
 }
 
+static inline const char
+string_get_char (const void *self, size_t index)
+{
+	assert (index < STRING (self)->length);
+
+	return STRING (self)->string[index];
+}
+
+static inline const char *
+string_get_chars (const void *self)
+{
+	assert (self);
+	return STRING (self)->string;
+}
+
 static inline size_t
 string_get_length (const void *self)
 {
@@ -242,11 +277,12 @@ string_get_length (const void *self)
 	return STRING (self)->length;
 }
 
-static inline const char *
-string_get_str (const void *self)
+static inline void
+string_set_char (const void *self, size_t index, char c)
 {
-	assert (self);
-	return STRING (self)->string;
+	assert (index < STRING (self)->length);
+
+	STRING (self)->string[index] = c;
 }
 
 #endif

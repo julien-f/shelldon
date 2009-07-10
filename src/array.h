@@ -203,6 +203,7 @@ array_remove_at (void *self, size_t index);
  * @param self The Array.
  * @param index Index where to set the item (must be lesser than the Array's
  *              length).
+ * @param item The item to set.
  */
 void
 array_set (void *self, size_t index, void *item);
