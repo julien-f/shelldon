@@ -130,6 +130,19 @@ string_ensure_capacity (void *self, size_t capacity)
 	debug ("New String capacity: %u", new_capacity);
 }
 
+void
+string_reverse (void *self)
+{
+	assert (self);
+
+	for (size_t i = 0, n = STRING (self)->length - 1; i < n; ++i, --n)
+	{
+		char c = STRING (self)->string[i];
+		STRING (self)->string[i] = STRING (self)->string[n];
+		STRING (self)->string[n] = c;
+	}
+}
+
 static void
 string_real_finalize (void *self)
 {

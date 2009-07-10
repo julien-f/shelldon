@@ -208,6 +208,12 @@ static inline size_t
 string_get_length (const void *self);
 
 /**
+ * TODO: write doc.
+ */
+void
+string_reverse (void *self);
+
+/**
  * Sets the character at the given index.
  *
  * @param self The String.
@@ -216,7 +222,7 @@ string_get_length (const void *self);
  * @param c The character to set.
  */
 static inline void
-string_set_char (const void *self, size_t index, char c);
+string_set_char (void *self, size_t index, char c);
 
 
 // Inline functions:
@@ -278,7 +284,7 @@ string_get_length (const void *self)
 }
 
 static inline void
-string_set_char (const void *self, size_t index, char c)
+string_set_char (void *self, size_t index, char c)
 {
 	assert (index < STRING (self)->length);
 

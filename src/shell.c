@@ -44,6 +44,7 @@ char shell_done = 0;
 static const cmd cmd_list[] = {
 	{"cd", cmd_cd, "cd [DIR]: Changes the current directory to DIR if specified, "
 			"else to your home directory."},
+	{"clear-history", cmd_clear_history, "clear the history."},
 	{"exec", cmd_exec, "exec PATH: Replaces the current shell with the program "
 			"PATH."},
 	{"execbg", cmd_execbg, NULL},

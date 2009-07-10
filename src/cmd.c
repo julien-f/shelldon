@@ -97,6 +97,13 @@ cmd_cd (void *args)
 }
 
 int
+cmd_clear_history (void *args)
+{
+	clear_history ();
+	return 0;
+}
+
+int
 cmd_exec (void *args)
 {
 	if (array_is_empty (args))
