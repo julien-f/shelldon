@@ -31,7 +31,7 @@ cmd_cd (void *args);
  * TODO: write help.
  **/
 int
-cmd_clear_history (void *args);
+cmd_history (void *args);
 
 /**
  * Replaces the shell by the program args[0].

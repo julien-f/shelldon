@@ -97,10 +97,20 @@ cmd_cd (void *args)
 }
 
 int
-cmd_clear_history (void *args)
+cmd_history (void *args)
 {
-	clear_history ();
-	return 0;
+	if (array_is_empty (args))
+	{
+		fprintf (stderr, "The command history expects at least one argument.\n");
+		return -1;
+	}
+	const char *opt = array_get (args, 0);
+	if (0 == strcmp ("-c", opt) || 0 ==  strcmp ("--clear", opt))
+	{
+		clear_history ();
+		return 0;
+	}
+	return -1;
 }
 
 int
