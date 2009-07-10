@@ -41,7 +41,7 @@ typedef enum
  * @return The return value of fork () in EXEC_BG or EXEC_FG modes, or, in
  *         EXEC_REPLACE, -1 if we failed in starting the program.
  **/
-int
+pid_t
 execute (const char *file, void **args, exec_mode mode, int *status);
 
 /**
@@ -91,7 +91,7 @@ get_home_dir ();
 /**
  * Returns the current user's name or NULL if not found.
  *
- * @param The user name.
+ * @return The user name.
  **/
 const char
 *get_user_name ();
@@ -99,7 +99,7 @@ const char
 /**
  * Returns the current user's real name or NULL if not found.
  *
- * @param The real name.
+ * @return The real name.
  **/
 const char *
 get_real_name ();

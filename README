@@ -18,7 +18,7 @@ Frequently Asked Questions
 --------------------------
 
 - It does not compile.
-  Be sure that gcc is available on your system, if another c99 compliant C
+  Be sure that gcc is available on your system, if another GNU99 compliant C
   compiler is installed, modify the "Makefile" file in replacing the following
   line: "COMPILER=gcc" by "COMPILER=the name of your compiler here".
 

@@ -57,7 +57,7 @@ get_passwd_info ()
 	return passwd;
 }
 
-int
+pid_t
 execute (const char *file, void **args, exec_mode mode, int *status)
 {
 	pid_t pid;
@@ -86,10 +86,10 @@ execute (const char *file, void **args, exec_mode mode, int *status)
 	}
 	if (EXEC_BG == mode) // The program is run in bakground.
 	{
-		return 0;
+		return pid;
 	}
 	waitpid (pid, status, 0);
-	return 0;
+	return pid;
 }
 
 size_t

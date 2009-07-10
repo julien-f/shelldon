@@ -242,12 +242,12 @@ cmd_version (void *args)
 		const char *arg = array_get (args, 0);
 		if (0 == strcmp ("-v", arg) || 0 == strcmp ("--version", arg))
 		{
-			printf (prog_version "\n");
+			printf ("%s\n", get_prog_version ());
 			return 0;
 		}
 		else if ( (0 == strcmp ("-vn", arg)) || (0 == strcmp ("--version-name", arg)) )
 		{
-			printf (prog_version_name "\n");
+			printf ("%s\n", get_prog_version_name ());
 			return 0;
 		}
 	}

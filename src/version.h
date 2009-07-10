@@ -20,8 +20,23 @@
 
 #define prog_name "Shelldon"
 
-#define prog_version "0.10"
-#define prog_version_name "Caterpie"
+#define prog_version "0.11a"
+#define prog_version_name "Ocean's"
+
+/**
+ * TODO: write help.
+ **/
+#define get_prog_name() prog_name
+
+/**
+ * TODO: write help.
+ **/
+#define get_prog_version() prog_version
+
+/**
+ * TODO: write help.
+ **/
+#define get_prog_version_name() prog_version_name
 
 /**
  * Prints version.

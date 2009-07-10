@@ -60,12 +60,12 @@ static const cmd cmd_list[] = {
 
 static char *default_cmd = "execfg";
 
+static char *history_file = NULL;
+
 /**
  * The prompt (pretty obvious isn't it?).
  **/
 static char *prompt = NULL;
-
-static char *history_file = NULL;
 
 static char *shell_config_dir = NULL;
 
@@ -77,7 +77,7 @@ get_shell_config_dir ()
 		const char *config_dir = get_config_dir ();
 		if (config_dir)
 		{
-			shell_config_dir = strcat2 (NULL, config_dir, "/" prog_name, NULL);
+			shell_config_dir = strcat2 (NULL, config_dir, "/", get_prog_name (), NULL);
 			if (-1 == mkdir (shell_config_dir, 0777) && EEXIST != errno)
 			{
 				free (shell_config_dir),
@@ -91,7 +91,7 @@ get_shell_config_dir ()
 static void
 initialize_readline ()
 {
-	rl_readline_name = prog_name;
+	rl_readline_name = get_prog_name ();
 	using_history ();
 	const char *shell_config_dir = get_shell_config_dir ();
 	if (shell_config_dir)
