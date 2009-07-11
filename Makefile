@@ -1,6 +1,6 @@
 COMPILER=gcc
-#COM_OPTS=-std=gnu99 -Wall -pedantic -DDISABLE_DEBUG -DDISABLE_ASSERTS -O3 -D_GNU_SOURCE
-COM_OPTS=-std=gnu99 -Wall -pedantic -ggdb -DDISABLE_DEBUG
+#COM_OPTS=-std=gnu99 -Wall -pedantic -O3 -D_GNU_SOURCE -DDISABLE_DEBUG -DDISABLE_ASSERTS
+COM_OPTS=-std=gnu99 -Wall -Winline -pedantic -ggdb -O -DDISABLE_DEBUG
 LNK_OPTS=-lreadline
 MAIN_FILE=main
 

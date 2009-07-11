@@ -229,6 +229,7 @@ static inline size_t
 array_get_length (const void *self)
 {
 	assert (self);
+
 	return ARRAY (self)->length;
 }
 
@@ -236,6 +237,7 @@ static inline size_t
 array_get_capacity (const void *self)
 {
 	assert (self);
+
 	return ARRAY (self)->capacity;
 }
 

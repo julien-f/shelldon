@@ -30,6 +30,8 @@
 #include "tools.h"
 #include "version.h"
 
+
+#define DEFAULT_COMMAND "execfg"
 #define DEFAULT_PROMPT "\33[31;1m>\33[0m "
 
 char shell_done = 0;
@@ -58,7 +60,7 @@ static const cmd cmd_list[] = {
 	{NULL}
 };
 
-static char *default_cmd = "execfg";
+static char *default_cmd = NULL;
 
 static char *history_file = NULL;
 
@@ -167,6 +169,11 @@ exec_cmd (void **cl, int *status)
 void
 initialize_shell ()
 {
+	if (!default_cmd)
+	{
+		default_cmd = strdup (DEFAULT_COMMAND);
+	}
+
 	if (!prompt)
 	{
 		prompt = strdup (DEFAULT_PROMPT);
@@ -180,21 +187,31 @@ void
 finalize_shell ()
 {
 	finalize_readline ();
+
+	if (default_cmd)
+	{
+		free (default_cmd);
+		default_cmd = NULL;
+	}
+
 	if (history_file)
 	{
 		free (history_file);
 		history_file = NULL;
 	}
+
 	if (prompt)
 	{
 		free (prompt);
 		prompt = NULL;
 	}
+
 	if (shell_config_dir)
 	{
 		free (shell_config_dir);
 		shell_config_dir = NULL;
 	}
+
 	shell_done = 1;
 }
 

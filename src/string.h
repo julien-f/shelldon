@@ -243,6 +243,7 @@ static inline void
 string_append_string (void *self, void *string)
 {
 	assert (string);
+
 	string_append_n (self, string_get_chars (string), string_get_length (string));
 }
 
@@ -250,6 +251,7 @@ static inline void
 string_clear (void *self)
 {
 	assert (self);
+
 	STRING (self)->length = 0;
 	STRING (self)->string[0] = 0;
 }
@@ -258,6 +260,7 @@ static inline size_t
 string_get_capacity (const void *self)
 {
 	assert (self);
+
 	return STRING (self)->capacity;
 }
 
@@ -273,6 +276,7 @@ static inline const char *
 string_get_chars (const void *self)
 {
 	assert (self);
+
 	return STRING (self)->string;
 }
 
@@ -280,6 +284,7 @@ static inline size_t
 string_get_length (const void *self)
 {
 	assert (self);
+
 	return STRING (self)->length;
 }
 

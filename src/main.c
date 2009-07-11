@@ -25,13 +25,8 @@
 #include "shell.h"
 #include "version.h"
 
-#include "array.h"
-#include "expression.h"
-#include "expression_list.h"
-#include "string.h"
-
 int
-main (int argc, char *const *argv)
+main ()
 {
 	{
 		// Prevents SIGINT & SIGTSTP from stopping the process.
