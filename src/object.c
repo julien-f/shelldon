@@ -16,7 +16,7 @@ object_class_real_finalize (void *klass);
 static ObjectClass *klass = NULL;
 
 ObjectClass *
-object_class_allocate (size_t size, void *parent_class, char *name)
+object_class_allocate (size_t size, void *parent, char *name)
 {
 	assert (name);
 	assert_cmpuint (size, >=, sizeof (ObjectClass));
@@ -29,7 +29,7 @@ object_class_allocate (size_t size, void *parent_class, char *name)
 		return NULL;
 	}
 
-	object_class->parent_class = parent_class;
+	object_class->parent = parent;
 	object_class->name = name;
 	object_class->ref_count = 1;
 	object_class->finalize = object_real_finalize;

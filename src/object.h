@@ -37,7 +37,7 @@
  * This macro returns the parent class (seen as "ObjectClass *") of the class
  * designated by this pointer.
  */
-#define OBJECT_CLASS_GET_PARENT(pointer) (OBJECT_CLASS (OBJECT_CLASS (pointer)->parent_class))
+#define OBJECT_CLASS_GET_PARENT(pointer) (OBJECT_CLASS (OBJECT_CLASS (pointer)->parent))
 
 /**
  * This macro returns the class (seen as "ObjectClass *") of the object
@@ -56,7 +56,7 @@ struct ObjectClass {
 	 * An owned reference to the parent class (must not be NULL, except for the
 	 * Object class).
 	 */
-	void *parent_class;
+	void *parent;
 
 	/**
 	 * The name of this class (must not be NULL).
@@ -93,14 +93,15 @@ struct ObjectClass {
  *
  * This function is only useful to create a Object-based class.
  *
- * @param size The size of the structure of the class to allocate (must be
- *             greater or equal to "sizeof (ArrayClass)".
- * @param parent_class An owned reference to the parent class.
- * @param name The name of the class (must not be NULL).
+ * @param size   The size of the structure of the class to allocate (must be
+ *               greater or equal to "sizeof (ArrayClass)".
+ * @param parent An owned reference to the parent class.
+ * @param name   The name of the class (must not be NULL).
+ *
  * @return The new allocated memory with all fields filled.
  */
 ObjectClass *
-object_class_allocate (size_t size, void *parent_class, char *name);
+object_class_allocate (size_t size, void *parent, char *name);
 
 /**
  * Returns an owned reference the Object class.
@@ -120,7 +121,8 @@ object_class_get ();
  * subclass of it.
  *
  * @param klass The klass to check (must not be NULL);
- * @param name The name of the class.
+ * @param name  The name of the class.
+ *
  * @return True if yes, else false.
  */
 bool
@@ -130,6 +132,7 @@ object_class_is_a (const void *klass, const void *name);
  * Registers a new reference to this class.
  *
  * @param klass The class (must not be NULL).
+ *
  * @return The same class.
  */
 void *
@@ -155,23 +158,26 @@ struct Object {
 
 	/**
 	 * This counter indicates the number of owned references to this object.
-	 * When it reaches zero, the ibject is automatically deallocated.
+	 * When it reaches zero, the object is automatically deallocated.
 	 */
 	unsigned int ref_count;
 };
 
 /**
- * Allocates a memory space of size "size" and initializes the object.
+ * Allocates a memory space of size "size" and initializes the Object instance.
  *
- * "size" must be greater or equal to "sizeof (Object)".
+ * @param size  The memory space to allocate (greater or equal to
+ *              "sizeof (Object)").
+ * @param klass An owned reference to the class of this object (must not be
+ *              NULL).
+ *
+ * @return An owned reference to the newly allocated Object.
  */
 Object *
 object_construct (size_t size, void *klass);
 
 /**
  * Creates a new object.
- *
- * Equivalent to "object_construct (sizeof (Object), object_class_get ())".
  */
 static inline Object *
 object_new ();
@@ -180,6 +186,7 @@ object_new ();
  * Returns the class name of the object.
  *
  * @param self The object (must not be NULL).
+ *
  * @return The class name.
  */
 const char *
@@ -190,7 +197,8 @@ object_get_class_name (const void *self);
  * "name" or a of a subclass of it.
  *
  * @param object The object to check (must not be NULL);
- * @param name The name of the class.
+ * @param name   The name of the class.
+ *
  * @return True if yes, else false.
  */
 static inline bool
@@ -200,6 +208,7 @@ object_is_a (const void *object, const void *name);
  * Registers a new reference to this object.
  *
  * @param self The object (must not be NULL).
+ *
  * @return The same object.
  */
 void *

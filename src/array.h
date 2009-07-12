@@ -46,14 +46,15 @@ struct ArrayClass {
  *
  * This function is only useful to create a Array-based class.
  *
- * @param size The size of the structure of the class to allocate (must be
- *             greater or equal to "sizeof (ArrayClass)".
- * @param parent_class An owned reference to the parent class.
- * @param name The name of the class (must not be NULL).
+ * @param size   The size of the structure of the class to allocate (must be
+ *               greater or equal to "sizeof (ArrayClass)".
+ * @param parent An owned reference to the parent class.
+ * @param name   The name of the class (must not be NULL).
+ *
  * @return The new allocated memory with all fields filled.
  */
 ArrayClass *
-array_class_allocate (size_t size, void *parent_class, char *name);
+array_class_allocate (size_t size, void *parent, char *name);
 
 /**
  * Returns an owned reference the Array class.
@@ -87,9 +88,16 @@ struct Array {
 };
 
 /**
- * Allocates a memory space of size "size" and initializes the Array object.
+ * Allocates a memory space of size "size" and initializes the Array instance.
  *
- * "size" must be greater or equal to "sizeof (Array)".
+ * @param size         The memory space to allocate (greater or equal to
+ *                     "sizeof (Array)").
+ * @param klass        An owned reference to the class of this object (must not
+ *                     be NULL).
+ * @param destroy_func The function which will be called before removing any
+ *                     non-NULL item from the Array, or NULL.
+ *
+ * @return An owned reference to the newly allocated Array.
  */
 Array *
 array_construct (size_t size, void *klass, destroy_func_t destroy_func);
@@ -97,10 +105,9 @@ array_construct (size_t size, void *klass, destroy_func_t destroy_func);
 /**
  * Allocates and initializes a new Array object.
  *
- * Equivalent to "array_construct (sizeof (Array), array_class_get (), destroy_func)".
- *
  * @param destroy_func The function which will be called before removing any
  *                     non-NULL item from the Array, or NULL.
+ *
  * @return The new Array or NULL if there was an error.
  */
 static inline Array *
@@ -127,8 +134,8 @@ array_clear (void *self);
  * Increases the Array's capacity if necessary to ensure that it can hold
  * "capacity" items.
  *
- * @param self The Array.
- * @param capacity
+ * @param self     The Array.
+ * @param capacity The number of items the Array should be able to contain.
  */
 void
 array_ensure_capacity (void *self, size_t capacity);
@@ -136,9 +143,10 @@ array_ensure_capacity (void *self, size_t capacity);
 /**
  * Gets the item at the given index.
  *
- * @param self The Array.
+ * @param self  The Array.
  * @param index Index of the item to retrieve (must be lesser than the Array's
  *              length).
+ *
  * @return The item.
  */
 static inline void *
@@ -152,8 +160,9 @@ array_get (const void *self, size_t index);
  *
  * The array should be freed when no longer needed.
  *
- * @param self The Array.
+ * @param self            The Array.
  * @param null_terminated If true, the array will have one more item: NULL.
+ *
  * @return The C-array.
  */
 void **
@@ -163,6 +172,7 @@ array_get_array (const void *self, bool null_terminated);
  * Returns the capacity of the Array.
  *
  * @param self The Array.
+ *
  * @return The number of items the Array can contain.
  */
 static inline size_t
@@ -172,6 +182,7 @@ array_get_capacity (const void *self);
  * Returns the size of the Array.
  *
  * @param self The Array.
+ *
  * @return The number of items the Array contains.
  */
 static inline size_t
@@ -182,6 +193,7 @@ array_get_length (const void *self);
  * empty Array.
  *
  * @param array The reference.
+ *
  * @return True if "array" is NULL or references an empty Array.
  */
 static inline size_t
@@ -200,10 +212,10 @@ array_remove_at (void *self, size_t index);
 /**
  * Sets the item at the given index.
  *
- * @param self The Array.
+ * @param self  The Array.
  * @param index Index where to set the item (must be lesser than the Array's
  *              length).
- * @param item The item to set.
+ * @param item  The item to set.
  */
 void
 array_set (void *self, size_t index, void *item);

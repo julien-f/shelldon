@@ -18,12 +18,12 @@ array_class_real_finalize (void *);
 static ArrayClass *klass = NULL;
 
 ArrayClass *
-array_class_allocate (size_t size, void *parent_class, char *name)
+array_class_allocate (size_t size, void *parent, char *name)
 {
 	assert (name);
 	assert_cmpuint (size, >=, sizeof (ArrayClass));
 
-	ArrayClass *array_class = ARRAY_CLASS (object_class_allocate (size, parent_class, name));
+	ArrayClass *array_class = ARRAY_CLASS (object_class_allocate (size, parent, name));
 	if (!array_class) // Allocation failed
 	{
 		return NULL;
@@ -191,7 +191,7 @@ array_real_finalize (void *self)
 {
 	assert (self);
 
-	array_clear (ARRAY (self));
+	array_clear (self);
 
 	free (ARRAY (self)->array);
 
