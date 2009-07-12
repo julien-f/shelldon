@@ -38,7 +38,7 @@ expression_class_allocate (size_t size, void *parent_class, char *name)
 ExpressionClass *
 expression_class_get ()
 {
-	if (!klass) // The Object class is not yet initalized.
+	if (!klass) // The Expression class is not yet initalized.
 	{
 		klass = expression_class_allocate (sizeof (ExpressionClass), (void *) object_class_get (), "Expression");
 		OBJECT_CLASS (klass)->finalize_class = expression_class_real_finalize;

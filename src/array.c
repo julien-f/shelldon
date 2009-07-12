@@ -37,7 +37,7 @@ array_class_allocate (size_t size, void *parent, char *name)
 ArrayClass *
 array_class_get ()
 {
-	if (!klass) // The Object class is not yet initalized.
+	if (!klass) // The Array class is not yet initalized.
 	{
 		klass = array_class_allocate (sizeof (ArrayClass), object_class_get (), "Array");
 		OBJECT_CLASS (klass)->finalize_class = array_class_real_finalize;

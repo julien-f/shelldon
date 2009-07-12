@@ -37,7 +37,7 @@ string_class_allocate (size_t size, void *parent, char *name)
 StringClass *
 string_class_get ()
 {
-	if (!klass) // The Object class is not yet initalized.
+	if (!klass) // The String class is not yet initalized.
 	{
 		klass = string_class_allocate (sizeof (StringClass), object_class_get (), "String");
 		OBJECT_CLASS (klass)->finalize_class = string_class_real_finalize;

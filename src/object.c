@@ -4,7 +4,6 @@
 #include <string.h>
 
 #include "assert.h"
-//#define DISABLE_DEBUG
 #include "debug.h"
 
 static void
@@ -23,7 +22,7 @@ object_class_allocate (size_t size, void *parent, char *name)
 
 	debug ("Class creation: %s", name);
 
-	ObjectClass *object_class = (ObjectClass *) malloc (size);
+	ObjectClass *object_class = malloc (size);
 	if (!object_class) // Allocation failed
 	{
 		return NULL;
