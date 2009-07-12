@@ -44,7 +44,7 @@ array_class_get ()
 		return klass;
 	}
 
-	return object_class_ref (klass);
+	return ARRAY_CLASS (object_class_ref (klass));
 }
 
 Array *
@@ -196,7 +196,7 @@ array_real_finalize (void *self)
 	free (ARRAY (self)->array);
 
 	assert (klass);
-	OBJECT_CLASS (object_class_get_parent (klass))->finalize (self);
+	object_class_get_parent (klass)->finalize (self);
 }
 
 static void

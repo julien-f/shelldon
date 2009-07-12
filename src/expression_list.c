@@ -45,7 +45,7 @@ expression_list_class_get ()
 		return klass;
 	}
 
-	return object_class_ref (klass);
+	return EXPRESSION_LIST_CLASS (object_class_ref (klass));
 }
 
 ExpressionList *
@@ -70,7 +70,7 @@ expression_list_real_finalize (void *self)
 	// Finalizes if necessary.
 
 	assert (klass);
-	OBJECT_CLASS (object_class_get_parent (klass))->finalize (self);
+	object_class_get_parent (klass)->finalize (self);
 }
 
 static void

@@ -194,7 +194,7 @@ array_get_length (const void *self);
  *
  * @return True if "array" is NULL or references an empty Array.
  */
-static inline size_t
+static inline bool
 array_is_empty (const void *array);
 
 /**
@@ -224,7 +224,7 @@ array_set (void *self, size_t index, void *item);
 static inline Array *
 array_new (destroy_func_t destroy_func)
 {
-	return array_construct (sizeof (Array), (void *) array_class_get (), destroy_func);
+	return array_construct (sizeof (Array), array_class_get (), destroy_func);
 }
 
 static inline void *
@@ -251,7 +251,7 @@ array_get_capacity (const void *self)
 	return ARRAY (self)->capacity;
 }
 
-static inline size_t
+static inline bool
 array_is_empty (const void *array)
 {
 	return ( (array == NULL) || !(array_get_length (array)) );
