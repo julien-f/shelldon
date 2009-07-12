@@ -44,7 +44,7 @@ string_class_get ()
 		return klass;
 	}
 
-	return STRING_CLASS (object_class_ref (klass));
+	return object_class_ref (klass);
 }
 
 String *

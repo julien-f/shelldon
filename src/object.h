@@ -143,7 +143,7 @@ object_class_is_a (const void *klass, const void *name);
  *
  * @return The same class.
  */
-static inline ObjectClass *
+static inline void *
 object_class_ref (void *klass);
 
 /**
@@ -229,7 +229,7 @@ object_is_a (const void *object, const void *name);
  *
  * @return The same object.
  */
-static inline Object *
+static inline void *
 object_ref (void *self);
 
 /**
@@ -260,7 +260,7 @@ object_class_get_parent (const void *klass)
 	return OBJECT_CLASS (klass)->parent;
 }
 
-static inline ObjectClass *
+static inline void *
 object_class_ref (void *klass)
 {
 	assert (klass);
@@ -301,7 +301,7 @@ object_is_a (const void *object, const void *name)
 	return object_class_is_a (object_get_class (object), name);
 }
 
-static inline Object *
+static inline void *
 object_ref (void *self)
 {
 	assert (self);

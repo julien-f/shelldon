@@ -45,7 +45,7 @@ expression_list_class_get ()
 		return klass;
 	}
 
-	return EXPRESSION_LIST_CLASS (object_class_ref (klass));
+	return object_class_ref (klass);
 }
 
 ExpressionList *

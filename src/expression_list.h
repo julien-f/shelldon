@@ -75,7 +75,7 @@ expression_list_construct (size_t size, void *klass);
 static inline ExpressionList *
 expression_list_new ()
 {
-	return expression_list_construct (sizeof (ExpressionList), (void *) expression_list_class_get ());
+	return expression_list_construct (sizeof (ExpressionList), expression_list_class_get ());
 }
 
 #endif

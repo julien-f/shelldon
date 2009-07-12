@@ -44,7 +44,7 @@ array_class_get ()
 		return klass;
 	}
 
-	return ARRAY_CLASS (object_class_ref (klass));
+	return object_class_ref (klass);
 }
 
 Array *

@@ -75,7 +75,7 @@ expression_construct (size_t size, void *klass);
 static inline Expression *
 expression_new ()
 {
-	return expression_construct (sizeof (Expression), (void *) expression_class_get ());
+	return expression_construct (sizeof (Expression), expression_class_get ());
 }
 
 /**

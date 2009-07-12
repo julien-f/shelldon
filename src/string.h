@@ -257,13 +257,13 @@ string_set_char (void *self, size_t index, char c);
 static inline String *
 string_new ()
 {
-	return string_construct (sizeof (String), (void *) string_class_get (), NULL);
+	return string_construct (sizeof (String), string_class_get (), NULL);
 }
 
 static inline String *
 string_new_with_chars (const char *chars)
 {
-	return string_construct (sizeof (String), (void *) string_class_get (), chars);
+	return string_construct (sizeof (String), string_class_get (), chars);
 }
 
 static inline void
