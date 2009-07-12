@@ -164,7 +164,7 @@ string_real_finalize (void *self)
 	free (STRING (self)->string);
 
 	assert (klass);
-	OBJECT_CLASS_GET_PARENT (klass)->finalize (self);
+	OBJECT_CLASS (object_class_get_parent (klass))->finalize (self);
 }
 
 static void

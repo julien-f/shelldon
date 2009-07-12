@@ -30,8 +30,6 @@ typedef struct ExpressionListClass ExpressionListClass;
 
 #define EXPRESSION_LIST_CLASS(pointer) ((ExpressionListClass *) pointer)
 
-#define EXPRESSION_LIST_GET_CLASS(pointer) (EXPRESSION_LIST_CLASS(OBJECT(pointer)->klass))
-
 /**
  * Represents an ExpressionList class.
  */

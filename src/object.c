@@ -60,29 +60,20 @@ object_class_is_a (const void *klass, const void *name)
 	{
 		return true;
 	}
-	if (OBJECT_CLASS_GET_PARENT (klass))
+
+	void *parent = object_class_get_parent (klass);
+	if (parent)
 	{
-		return object_class_is_a (OBJECT_CLASS_GET_PARENT (klass), name);
+		return object_class_is_a (parent, name);
 	}
 	return false;
-}
-
-void *
-object_class_ref (void *klass)
-{
-	assert (klass);
-	assert (OBJECT_CLASS (klass)->ref_count > 0);
-
-	++(OBJECT_CLASS (klass)->ref_count);
-
-	return klass;
 }
 
 void
 object_class_unref (void *klass)
 {
 	assert (klass);
-	assert (OBJECT_CLASS (klass)->ref_count > 0);
+	assert (OBJECT_CLASS (klass)->ref_count);
 
 	--(OBJECT_CLASS (klass)->ref_count);
 
@@ -95,9 +86,10 @@ object_class_unref (void *klass)
 			OBJECT_CLASS (klass)->finalize_class (klass);
 		}
 
-		if (OBJECT_CLASS_GET_PARENT (klass))
+		void *parent = object_class_get_parent (klass);
+		if (parent)
 		{
-			object_class_unref (OBJECT_CLASS_GET_PARENT (klass));
+			object_class_unref (parent);
 		}
 		free (klass);
 	}
@@ -123,36 +115,17 @@ object_construct (size_t size, void *klass)
 	return self;
 }
 
-const char *
-object_get_class_name (const void *self)
-{
-	assert (self);
-
-	return OBJECT_GET_CLASS (self)->name;
-}
-
-void *
-object_ref (void *self)
-{
-	assert (self);
-	assert (OBJECT (self)->ref_count > 0);
-
-	++(OBJECT (self)->ref_count);
-
-	return self;
-}
-
 void
 object_unref (void *self)
 {
 	assert (self);
-	assert (OBJECT (self)->ref_count > 0);
+	assert (OBJECT (self)->ref_count);
 
 	--(OBJECT (self)->ref_count);
 
 	if (OBJECT (self)->ref_count == 0)
 	{
-		OBJECT_GET_CLASS (self)->finalize (self);
+		OBJECT_CLASS (object_get_class (self))->finalize (self);
 
 		free (self);
 	}
@@ -162,7 +135,7 @@ static void
 object_real_finalize (void *self)
 {
 	debug ("Instance deletion: %s", object_get_class_name (self));
-	object_class_unref (OBJECT_GET_CLASS (self));
+	object_class_unref (object_get_class (self));
 }
 
 static void

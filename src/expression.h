@@ -30,8 +30,6 @@ typedef struct ExpressionClass ExpressionClass;
 
 #define EXPRESSION_CLASS(pointer) ((ExpressionClass *) pointer)
 
-#define EXPRESSION_GET_CLASS(pointer) (EXPRESSION_CLASS(OBJECT(pointer)->klass))
-
 /**
  * Represents an Expression class.
  */
@@ -88,7 +86,7 @@ expression_evaluate (void *self)
 {
 	assert (self);
 
-	return EXPRESSION_GET_CLASS (self)->evaluate (self);
+	return EXPRESSION_CLASS (object_get_class (self))->evaluate (self);
 }
 
 #endif

@@ -44,19 +44,67 @@ char shell_done = 0;
  * The last entry MUST BE "{NULL}".
  **/
 static const cmd cmd_list[] = {
-	{"cd", cmd_cd, "cd [DIR]: Changes the current directory to DIR if specified, "
-			"else to your home directory."},
-	{"history", cmd_history, "Manages the history."},
-	{"exec", cmd_exec, "exec PATH: Replaces the current shell with the program "
-			"PATH."},
-	{"execbg", cmd_execbg, NULL},
-	{"execfg", cmd_execfg, NULL},
-	{"exit", cmd_exit, "Leaves the shell."},
-	{"help", cmd_help, "help [COMMAND]: Lists the available commands or shows "
-			"the help message of COMMAND."},
-	{"pwd", cmd_pwd, "Shows the current working directory."},
-	{"setenv", cmd_setenv, "Lists and sets environment variables."},
-	{"version", cmd_version, "Shows the version of Shelldon."},
+	{
+		"cd",
+		cmd_cd,
+		"Changes the current directory to DIR. If DIR is \"-\", tries to move to\n"
+		"the previous one. Finally, if DIR is not specified, tries to move to\n"
+		"your home directory.",
+		"[DIR]"
+	},
+	{
+		"history",
+		cmd_history,
+		"Manages the history.",
+		NULL
+	},
+	{
+		"exec",
+		cmd_exec,
+		"Replaces the current shell with the program PATH.",
+		"PATH"
+	},
+	{
+		"execbg",
+		cmd_execbg,
+		NULL,
+		NULL
+	},
+	{
+		"execfg",
+		cmd_execfg,
+		NULL,
+		NULL
+	},
+	{
+		"exit",
+		cmd_exit,
+		"Leaves the shell.",
+		NULL
+	},
+	{
+		"help",
+		cmd_help,
+		"Lists the available commands or shows the help message of COMMAND.",
+		"[COMMAND]"
+	},
+	{
+		"pwd",
+		cmd_pwd,
+		"Shows the current working directory.",
+		NULL
+	},
+	{
+		"setenv",
+		cmd_setenv,
+		"Lists and sets environment variables."
+	},
+	{
+		"version",
+		cmd_version,
+		"Shows the version of Shelldon.",
+		NULL
+	},
 	{NULL}
 };
 

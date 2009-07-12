@@ -67,7 +67,7 @@ cmd_exit (void *args);
  * Lists available commands and their description.
  *
  * @param args An Array which contains the arguments.
- * @return 0 if success, else -1.
+ * @return 0 if success, else minus the number of errors.
  **/
 int
 cmd_help (void *args);

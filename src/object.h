@@ -33,18 +33,6 @@
  */
 #define OBJECT_CLASS(pointer) ((ObjectClass *) pointer)
 
-/**
- * This macro returns the parent class (seen as "ObjectClass *") of the class
- * designated by this pointer.
- */
-#define OBJECT_CLASS_GET_PARENT(pointer) (OBJECT_CLASS (OBJECT_CLASS (pointer)->parent))
-
-/**
- * This macro returns the class (seen as "ObjectClass *") of the object
- * designated by this pointer.
- */
-#define OBJECT_GET_CLASS(pointer) (OBJECT(pointer)->klass)
-
 typedef struct Object Object;
 typedef struct ObjectClass ObjectClass;
 
@@ -117,6 +105,26 @@ ObjectClass *
 object_class_get ();
 
 /**
+ * Returns the name of the class.
+ *
+ * @param klass The class (must not be NULL).
+ *
+ * @return The class name.
+ */
+static inline const char *
+object_class_get_name (const void *klass);
+
+/**
+ * Returns an unowned reference to the parent class of the class.
+ *
+ * @param klass The class (must not be NULL).
+ *
+ * @return The parent name.
+ */
+static inline void *
+object_class_get_parent (const void *klass);
+
+/**
  * Returns true if "klass" is a reference to the class called "name" or a
  * subclass of it.
  *
@@ -135,7 +143,7 @@ object_class_is_a (const void *klass, const void *name);
  *
  * @return The same class.
  */
-void *
+static inline void *
 object_class_ref (void *klass);
 
 /**
@@ -183,13 +191,23 @@ static inline Object *
 object_new ();
 
 /**
+ * Returns an unowned reference to the class of the object.
+ *
+ * @param self The object (must not be NULL).
+ *
+ * @return The class.
+ */
+static inline void *
+object_get_class (const void *self);
+
+/**
  * Returns the class name of the object.
  *
  * @param self The object (must not be NULL).
  *
  * @return The class name.
  */
-const char *
+static inline const char *
 object_get_class_name (const void *self);
 
 /**
@@ -211,7 +229,7 @@ object_is_a (const void *object, const void *name);
  *
  * @return The same object.
  */
-void *
+static inline void *
 object_ref (void *self);
 
 /**
@@ -226,6 +244,49 @@ object_unref (void *self);
 
 // Inline functions.
 
+static inline const char *
+object_class_get_name (const void *klass)
+{
+	assert (klass);
+
+	return OBJECT_CLASS (klass)->name;
+}
+
+static inline void *
+object_class_get_parent (const void *klass)
+{
+	assert (klass);
+
+	return OBJECT_CLASS (klass)->parent;
+}
+
+static inline void *
+object_class_ref (void *klass)
+{
+	assert (klass);
+	assert (OBJECT_CLASS (klass)->ref_count);
+
+	++(OBJECT_CLASS (klass)->ref_count);
+
+	return klass;
+}
+
+static inline void *
+object_get_class (const void *self)
+{
+	assert (self);
+
+	return OBJECT (self)->klass;
+}
+
+static inline const char *
+object_get_class_name (const void *self)
+{
+	assert (self);
+
+	return object_class_get_name (object_get_class (self));
+}
+
 static inline Object *
 object_new ()
 {
@@ -237,7 +298,18 @@ object_is_a (const void *object, const void *name)
 {
 	assert (object);
 
-	return object_class_is_a (OBJECT_GET_CLASS (object), name);
+	return object_class_is_a (object_get_class (object), name);
+}
+
+static inline void *
+object_ref (void *self)
+{
+	assert (self);
+	assert (OBJECT (self)->ref_count);
+
+	++(OBJECT (self)->ref_count);
+
+	return self;
 }
 
 #endif

@@ -31,8 +31,6 @@ typedef struct ArrayClass ArrayClass;
 
 #define ARRAY_CLASS(pointer) ((ArrayClass *) pointer)
 
-#define ARRAY_GET_CLASS(pointer) (ARRAY_CLASS(OBJECT(pointer)->klass))
-
 /**
  * Represents the Array class or an Array-based class.
  */
@@ -232,7 +230,7 @@ array_new (destroy_func_t destroy_func)
 static inline void *
 array_get (const void *self, size_t index)
 {
-	assert (index < ARRAY (self)->length);
+	assert_cmpuint (index, <, ARRAY (self)->length);
 
 	return ARRAY (self)->array[index];
 }

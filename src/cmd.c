@@ -29,7 +29,6 @@
 #include "version.h"
 
 extern char **environ;
-extern int putenv (char *string);
 
 int
 cmd_cd (void *args)
@@ -174,27 +173,42 @@ cmd_help (void *args)
 		const cmd *p = get_cmd_list ();
 		while (p->cmd)
 		{
-			printf (" %s\n", p->cmd);
+			printf ("  %s\n", p->cmd);
 			++p;
 		}
+		return 0;
 	}
-	else
+
+	int return_value = 0;
+	for (size_t i = 0, n = array_get_length (args); i < n; ++i)
 	{
-		const char *name = array_get (args, 0);
+		const char *name = array_get (args, i);
 		const cmd *p = get_cmd (name);
 		if (!p) // Command not found.
 		{
 			fprintf (stderr, "No command \"%s\" found.\n", name);
-			return -1;
+			--return_value;
 		}
-		if (!p->help)
+		else
 		{
-			fprintf (stderr, "No help available for this command.\n");
-			return -1;
+			printf ("%s: %s", name, name);
+			if (p->args_list)
+			{
+				printf (" %s", p->args_list);
+			}
+			printf ("\n  ");
+			if (p->help)
+			{
+				printf ("%s", p->help);
+			}
+			else
+			{
+				printf ("%s", "No help available for this command.");
+			}
+			printf ("\n");
 		}
-		printf ("%s\n", p->help);
 	}
-	return 0;
+	return return_value;
 }
 
 int

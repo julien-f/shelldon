@@ -31,8 +31,6 @@ typedef struct StringClass StringClass;
 
 #define STRING_CLASS(pointer) ((StringClass *) pointer)
 
-#define STRING_GET_CLASS(pointer) (STRING_CLASS(OBJECT(pointer)->klass))
-
 /**
  * Represents the String class or a String-based class.
  */
@@ -87,7 +85,7 @@ struct String {
 	size_t length;
 
 	/**
-	 * The string.
+	 * The content.
 	 */
 	char *string;
 };
@@ -211,11 +209,12 @@ static inline const char
 string_get_char (const void *self, size_t index);
 
 /**
- * Returns the string of the String.
+ * Returns the content of the String.
+ *
  *
  * @param self The String.
  *
- * @return The string contained
+ * @return The content.
  */
 static inline const char *
 string_get_chars (const void *self);
@@ -286,8 +285,11 @@ string_clear (void *self)
 {
 	assert (self);
 
-	STRING (self)->length = 0;
-	STRING (self)->string[0] = 0;
+	if (STRING (self)->length) // The string is allocated and not empty.
+	{
+		STRING (self)->length = 0;
+		STRING (self)->string[0] = 0;
+	}
 }
 
 static inline size_t
@@ -301,7 +303,7 @@ string_get_capacity (const void *self)
 static inline const char
 string_get_char (const void *self, size_t index)
 {
-	assert (index < STRING (self)->length);
+	assert_cmpuint (index, <, STRING (self)->length);
 
 	return STRING (self)->string[index];
 }
@@ -325,8 +327,8 @@ string_get_length (const void *self)
 static inline void
 string_set_char (void *self, size_t index, char c)
 {
-	assert (index < STRING (self)->length);
 	assert (c);
+	assert_cmpuint (index, <, STRING (self)->length);
 
 	STRING (self)->string[index] = c;
 }

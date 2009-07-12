@@ -37,6 +37,11 @@ typedef struct
 	 * String containing a help message for this command, or NULL if none.
 	 **/
 	char *help;
+
+	/**
+	 * String containing the arguments list, or NULL if none.
+	 **/
+	char *args_list;
 } cmd;
 
 /**
