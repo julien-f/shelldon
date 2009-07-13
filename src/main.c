@@ -69,9 +69,7 @@ main ()
 		Array *cl;
 		if ( (cl = shell_get_command_line (shell)) ) // The command line is not empty.
 		{
-			int status;
-			shell_execute_command_line (shell, cl, &status);
-			printf ("Return value: %d\n", statut);
+			shell_execute_command_line (shell, cl, NULL);
 			object_unref (cl);
 		}
 	}
