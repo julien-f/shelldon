@@ -23,14 +23,14 @@
 #include "array.h"
 #include "string.h"
 
-void *
+Array *
 parse_cmd_line(const char *cmd_line)
 {
 	size_t cmd_line_lg = strlen (cmd_line);
 
-	void *result = array_new (free);
+	Array *result = array_new (free);
 
-	void *buffer = string_new ();
+	String *buffer = string_new ();
 
 	char current_delim = ' ';
 	bool escaped = false;

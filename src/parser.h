@@ -18,6 +18,8 @@
 #ifndef SHELLDON_PARSER_H
 #define SHELLDON_PARSER_H
 
+#include "array.h"
+
 /**
  * Parses a command line and return a string containing Array which should be
  * deallocate when no longer needed with "object_unref (void *)".
@@ -25,8 +27,8 @@
  * @param cmd_line The command line to parse.
  * @return The Array.
  **/
-void *
-parse_cmd_line(const char *cmd_line);
+Array *
+parse_cmd_line(const char *command_line);
 
 #endif
 

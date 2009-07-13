@@ -31,7 +31,7 @@
 extern char **environ;
 
 int
-cmd_cd (void *args)
+cmd_cd (Shell *shell, void *args)
 {
 	char *new_pwd;
 	if (!array_is_empty (args))
@@ -96,7 +96,7 @@ cmd_cd (void *args)
 }
 
 int
-cmd_history (void *args)
+cmd_history (Shell *shell, void *args)
 {
 	if (array_is_empty (args))
 	{
@@ -104,7 +104,7 @@ cmd_history (void *args)
 		return -1;
 	}
 	const char *opt = array_get (args, 0);
-	if (0 == strcmp ("-c", opt) || 0 ==  strcmp ("--clear", opt))
+	if (0 == strcmp ("-c", opt))
 	{
 		clear_history ();
 		return 0;
@@ -113,7 +113,7 @@ cmd_history (void *args)
 }
 
 int
-cmd_exec (void *args)
+cmd_exec (Shell *shell, void *args)
 {
 	if (array_is_empty (args))
 	{
@@ -127,7 +127,7 @@ cmd_exec (void *args)
 }
 
 int
-cmd_execbg (void *args)
+cmd_execbg (Shell *shell, void *args)
 {
 	if (array_is_empty (args))
 	{
@@ -139,7 +139,7 @@ cmd_execbg (void *args)
 }
 
 int
-cmd_execfg (void *args)
+cmd_execfg (Shell *shell, void *args)
 {
 	if (array_is_empty (args))
 	{
@@ -157,24 +157,25 @@ cmd_execfg (void *args)
 }
 
 int
-cmd_exit (void *args)
+cmd_exit (Shell *shell, void *args)
 {
-	stop_shell ();
+	shell_stop (shell);
 	return 0;
 }
 
 int
-cmd_help (void *args)
+cmd_help (Shell *shell, void *args)
 {
 	if (array_is_empty (args))
 	{
 		printf ("Available commands:\n");
 
-		const cmd *p = get_cmd_list ();
-		while (p->cmd)
+		const Array *a = shell_get_commands (shell);
+		for (size_t i = 0, n = array_get_length (a); i < n; ++i)
 		{
-			printf ("  %s\n", p->cmd);
-			++p;
+			const command_t *command = array_get (a, i);
+			printf ("  %s\n", command->name);
+
 		}
 		return 0;
 	}
@@ -183,7 +184,7 @@ cmd_help (void *args)
 	for (size_t i = 0, n = array_get_length (args); i < n; ++i)
 	{
 		const char *name = array_get (args, i);
-		const cmd *p = get_cmd (name);
+		const command_t *p = shell_get_command (shell, name);
 		if (!p) // Command not found.
 		{
 			fprintf (stderr, "No command \"%s\" found.\n", name);
@@ -212,7 +213,7 @@ cmd_help (void *args)
 }
 
 int
-cmd_pwd (void *args)
+cmd_pwd (Shell *shell, void *args)
 {
 	char *cwd = get_cwd ();
 	if (!cwd)
@@ -226,7 +227,7 @@ cmd_pwd (void *args)
 }
 
 int
-cmd_setenv (void *args)
+cmd_setenv (Shell *shell, void *args)
 {
 	if (array_is_empty (args))
 	{
@@ -249,23 +250,36 @@ cmd_setenv (void *args)
 }
 
 int
-cmd_version (void *args)
+cmd_version (Shell *shell, void *args)
 {
 	if (!array_is_empty (args))
 	{
 		const char *arg = array_get (args, 0);
-		if (0 == strcmp ("-v", arg) || 0 == strcmp ("--version", arg))
+		if (0 == strcmp ("-v", arg))
 		{
 			printf ("%s\n", get_prog_version ());
 			return 0;
 		}
-		else if ( (0 == strcmp ("-vn", arg)) || (0 == strcmp ("--version-name", arg)) )
+		else if (0 == strcmp ("-n", arg))
 		{
 			printf ("%s\n", get_prog_version_name ());
 			return 0;
 		}
 	}
 	print_version ();
+	return 0;
+}
+
+int
+cmd_sdc (Shell *s, void *args)
+{
+	if (array_is_empty (args))
+	{
+		fprintf (stderr, "The command sdc expects at least one argument.\n");
+		return -1;
+	}
+
+	shell_set_default_command (s, array_get (args, 0));
 	return 0;
 }
 

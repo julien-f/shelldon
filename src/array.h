@@ -187,7 +187,7 @@ static inline size_t
 array_get_length (const void *self);
 
 /**
- * Class method which returns true if "array" is NULL or if it references an
+ * Static method which returns true if "array" is NULL or if it references an
  * empty Array.
  *
  * @param array The reference.

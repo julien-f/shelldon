@@ -55,19 +55,6 @@ size_t
 get_args_lg (const char *const *args);
 
 /**
- * Concatenates a variable number of strings into @dest. @dest is automatically
- * resized to fit. If @dest is NULL, a new string will be allocated via malloc.
- *
- * @param dest The destination string or NULL.
- * @param ... The strings to concatenate to @dest, the last argument must be
- *            NULL.
- * @return NULL if the concatenation failed, else a pointer to the destination
- *         string (it might have changed).
- **/
-char *
-strcat2 (char *dest, ...);
-
-/**
  * Returns the current user's config directory according to XDG spec.
  * The directory is search in the XDG_CONFIG_HOME environment variable, or set
  * to "~/.config". If the directory does not exist or could not be made, NULL
@@ -135,7 +122,7 @@ get_cwd ();
 /**
  * TODO: write help.
  **/
-#define get_cwd () get_current_dir_name ()
+#define get_cwd() get_current_dir_name ()
 
 #endif
 

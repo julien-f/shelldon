@@ -18,6 +18,8 @@
 #ifndef SHELLDON_CMD_H
 #define SHELLDON_CMD_H
 
+#include "shell.h"
+
 /**
  * Changes current directory.
  *
@@ -25,13 +27,13 @@
  * @return 0 if success, else -1.
  **/
 int
-cmd_cd (void *args);
+cmd_cd (Shell *shell, void *args);
 
 /**
  * TODO: write help.
  **/
 int
-cmd_history (void *args);
+cmd_history (Shell *shell, void *args);
 
 /**
  * Replaces the shell by the program args[0].
@@ -40,19 +42,19 @@ cmd_history (void *args);
  * @return 0 if success, else -1.
  **/
 int
-cmd_exec (void *args);
+cmd_exec (Shell *shell, void *args);
 
 /**
  * TODO: write help.
  **/
 int
-cmd_execbg (void *args);
+cmd_execbg (Shell *shell, void *args);
 
 /**
  * TODO: write help.
  **/
 int
-cmd_execfg (void *args);
+cmd_execfg (Shell *shell, void *args);
 
 /**
  * Ends the shell.
@@ -61,7 +63,7 @@ cmd_execfg (void *args);
  * @return Nothing, because the process is destroyed.
  **/
 int
-cmd_exit (void *args);
+cmd_exit (Shell *shell, void *args);
 
 /**
  * Lists available commands and their description.
@@ -70,7 +72,7 @@ cmd_exit (void *args);
  * @return 0 if success, else minus the number of errors.
  **/
 int
-cmd_help (void *args);
+cmd_help (Shell *shell, void *args);
 
 /**
  * Shows the current working directory.
@@ -79,7 +81,7 @@ cmd_help (void *args);
  * @return 0 if success, else -1.
  **/
 int
-cmd_pwd (void *args);
+cmd_pwd (Shell *shell, void *args);
 
 /**
  * If there are no arguments, shows the list of environment vars, else, defines,
@@ -89,7 +91,7 @@ cmd_pwd (void *args);
  * @return 0 if success, else -1.
  **/
 int
-cmd_setenv (void *args);
+cmd_setenv (Shell *shell, void *args);
 
 /**
  * Shows the version of Shelldon.
@@ -98,7 +100,10 @@ cmd_setenv (void *args);
  * @return 0 if success, else -1.
  **/
 int
-cmd_version (void *args);
+cmd_version (Shell *shell, void *args);
+
+int
+cmd_sdc (Shell *s, void *args);
 
 #endif
 

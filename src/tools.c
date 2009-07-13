@@ -32,6 +32,7 @@
 #include "tools.h"
 
 #include "array.h"
+#include "string.h"
 
 static void cleaner (int i, void *ptr)
 {
@@ -108,65 +109,6 @@ get_args_lg (const char *const *args)
 	return lg;
 }
 
-char *
-strcat2 (char *dest, ...)
-{
-	va_list strings;
-	char *string;
-	size_t dest_length;
-	size_t length;
-
-	if (!dest)
-	{
-		dest_length = 0;
-	}
-	else
-	{
-		dest_length = strlen (dest);
-	}
-
-	// Computes the length of the final string.
-	length = dest_length;
-	va_start (strings, dest);
-	while ( (string = va_arg (strings, char *)) )
-	{
-		length += strlen (string);
-	}
-	va_end (strings);
-
-	// Nothing to concatenate, we can stop here.
-	if (dest_length == length)
-	{
-		return dest;
-	}
-
-	// Resizes the memory space pointed by dest to ensure it will fit.
-	dest = (char *) realloc ( (void *) dest, length + 1);
-
-	// The reallocation failed, so stops.
-	if (!dest)
-	{
-		return NULL;
-	}
-
-	// For an efficient copy.
-	char *p = dest + dest_length; // <=> &dest[dest_length]
-
-	// Copies each string.
-	va_start (strings, dest);
-	while ( (string = va_arg (strings, char *)) )
-	{
-		while ('\0' != (*p = *string))
-		{
-			++p;
-			++string;
-		}
-	}
-	va_end (strings);
-
-	return dest;
-}
-
 const char *
 get_config_dir ()
 {
@@ -180,7 +122,7 @@ get_config_dir ()
 		}
 		else
 		{
-			config_dir = strcat2 (NULL, get_home_dir (), "/.config", NULL);
+			config_dir = string_concat (NULL, get_home_dir (), "/.config", NULL);
 		}
 		if (-1 == mkdir (config_dir, 0777) && EEXIST != errno)
 		{

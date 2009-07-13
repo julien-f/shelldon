@@ -175,6 +175,22 @@ static inline void
 string_clear (void *self);
 
 /**
+ * Static method which concatenates a variable number of strings into @dest.
+ *
+ * If necessary, @dest is resized. If @dest is NULL, a new string will be
+ * allocated via malloc.
+ *
+ * @param dest The destination string or NULL.
+ * @param ...  The strings to concatenate to @dest, the last argument must be
+ *             NULL.
+ *
+ * @return NULL if the concatenation failed, else a pointer to the destination
+ *         string (it might have changed).
+ **/
+char *
+string_concat (char *dest, ...);
+
+/**
  * Increases the String's capacity if necessary to ensure that it can hold
  * "capacity" characters (including the trailing '\0').
  *

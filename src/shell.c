@@ -1,290 +1,294 @@
-/**
- * This file is a part of Shelldon.
- *
- * Shelldon is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Shelldon is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Shelldon.  If not, see <http://www.gnu.org/licenses/>.
- **/
+#include "shell.h"
 
 #include <errno.h>
+#include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 
 #include <readline/readline.h>
 #include <readline/history.h>
 
 #include "assert.h"
-#include "array.h"
-#include "cmd.h"
-#include "shell.h"
+#include "debug.h"
+#include "object.h"
+#include "parser.h"
+#include "string.h"
 #include "tools.h"
-#include "version.h"
-
-
-#define DEFAULT_COMMAND "execfg"
-#define DEFAULT_PROMPT "\33[31;1m>\33[0m "
-
-char shell_done = 0;
-
-/**
- * This list contains all the internal commands.
- *
- * The functions are defined in "cmd.{h,c}.
- *
- * The last entry MUST BE "{NULL}".
- **/
-static const cmd cmd_list[] = {
-	{
-		"cd",
-		cmd_cd,
-		"Changes the current directory to DIR. If DIR is \"-\", tries to move to\n"
-		"the previous one. Finally, if DIR is not specified, tries to move to\n"
-		"your home directory.",
-		"[DIR]"
-	},
-	{
-		"history",
-		cmd_history,
-		"Manages the history.",
-		NULL
-	},
-	{
-		"exec",
-		cmd_exec,
-		"Replaces the current shell with the program PATH.",
-		"PATH"
-	},
-	{
-		"execbg",
-		cmd_execbg,
-		NULL,
-		NULL
-	},
-	{
-		"execfg",
-		cmd_execfg,
-		NULL,
-		NULL
-	},
-	{
-		"exit",
-		cmd_exit,
-		"Leaves the shell.",
-		NULL
-	},
-	{
-		"help",
-		cmd_help,
-		"Lists the available commands or shows the help message of COMMAND.",
-		"[COMMAND]"
-	},
-	{
-		"pwd",
-		cmd_pwd,
-		"Shows the current working directory.",
-		NULL
-	},
-	{
-		"setenv",
-		cmd_setenv,
-		"Lists and sets environment variables."
-	},
-	{
-		"version",
-		cmd_version,
-		"Shows the version of Shelldon.",
-		NULL
-	},
-	{NULL}
-};
-
-static char *default_cmd = NULL;
-
-static char *history_file = NULL;
-
-/**
- * The prompt (pretty obvious isn't it?).
- **/
-static char *prompt = NULL;
-
-static char *shell_config_dir = NULL;
-
-static const char *
-get_shell_config_dir ()
-{
-	if (!shell_config_dir)
-	{
-		const char *config_dir = get_config_dir ();
-		if (config_dir)
-		{
-			shell_config_dir = strcat2 (NULL, config_dir, "/", get_prog_name (), NULL);
-			if (-1 == mkdir (shell_config_dir, 0777) && EEXIST != errno)
-			{
-				free (shell_config_dir),
-				shell_config_dir = NULL;
-			}
-		}
-	}
-	return shell_config_dir;
-}
 
 static void
-initialize_readline ()
-{
-	rl_readline_name = get_prog_name ();
-	using_history ();
-	const char *shell_config_dir = get_shell_config_dir ();
-	if (shell_config_dir)
-	{
-		history_file = strcat2 (NULL, shell_config_dir, "/history", NULL);
-		read_history (history_file);
-	}
-}
+shell_real_finalize (void *);
 
 static void
-finalize_readline ()
-{
-	if (history_file)
-	{
-		write_history (history_file);
-	}
-}
+shell_class_real_finalize (void *);
 
-const cmd *
-get_cmd (const char *name)
+static ShellClass *klass = NULL;
+
+ShellClass *
+shell_class_allocate (size_t size, void *parent, char *name)
 {
-	const cmd *p = cmd_list;
-	while (p->cmd && 0 != strcmp (p->cmd, name))
-	{
-		++p;
-	}
-	if (!p->cmd)
+	assert (name);
+	assert_cmpuint (size, >=, sizeof (ShellClass));
+
+	ShellClass *klass = SHELL_CLASS (object_class_allocate (size, parent, name));
+	if (!klass) // Allocation failed
 	{
 		return NULL;
 	}
-	return p;
+
+	OBJECT_CLASS (klass)->finalize = shell_real_finalize;
+
+	return klass;
 }
 
-const cmd *
-get_cmd_list ()
+ShellClass *
+shell_class_get ()
 {
-	return cmd_list;
+	if (!klass) // The Shell class is not yet initalized.
+	{
+		klass = shell_class_allocate (sizeof (ShellClass), object_class_get (), "Shell");
+		OBJECT_CLASS (klass)->finalize_class = shell_class_real_finalize;
+		return klass;
+	}
+
+	return object_class_ref (klass);
 }
 
-const cmd *
-get_default_cmd ()
+Shell *
+shell_construct (size_t size, void *klass, const char *name, const char *prompt)
 {
-	return get_cmd (default_cmd);
+	assert_cmpuint (size, >=, sizeof (Shell));
+	assert (klass);
+	assert (name);
+	assert (prompt);
+
+	Shell *self =  SHELL (object_construct (size, klass));
+
+	self->name = strdup (name);
+	self->prompt = strdup (prompt);
+	self->default_command = strdup (DEFAULT_COMMAND);
+	self->commands = array_new (free);
+	self->history_file = NULL;
+	self->config_dir = NULL;
+	self->done = true;
+
+	shell_reset (self);
+
+	return self;
 }
 
+void
+shell_add_command (const void *self, const char *name, func_cmd_t function,
+	const char *args_list, const char *help)
+{
+	assert (self);
+	assert (name);
+	assert (function);
+
+	command_t *p = malloc (sizeof (command_t));
+	assert (p);
+
+	if (name)
+	{
+		p->name = strdup (name);
+	}
+	else
+	{
+		p->name = NULL;
+	}
+
+	p->function = function;
+
+	if (args_list)
+	{
+		p->args_list = strdup (args_list);
+	}
+	else
+	{
+		p->args_list = NULL;
+	}
+
+	if (help)
+	{
+		p->help = strdup (help);
+	}
+	else
+	{
+		p->help = NULL;
+	}
+
+	array_append (SHELL (self)->commands, p);
+}
 
 int
-exec_cmd (void **cl, int *status)
+shell_execute_command_line (void *self, Array *command_line, int *status)
 {
-	assert (!array_is_empty (cl));
+	assert (self);
+	assert (!array_is_empty (command_line));
 
-	const cmd *p = get_cmd (array_get (cl, 0));
+	const command_t *p = shell_get_command (self, array_get (command_line, 0));
 	if (p)
 	{
-		array_remove_at (cl, 0);
+		array_remove_at (command_line, 0);
 	}
-	else if ( ! (p = get_default_cmd ()) )
+	else if ( !(p = shell_get_default_command (self)) )
 	{
 		return -1;
 	}
 	if (status)
 	{
-		*status = p->function (cl);
+		*status = p->function (self, command_line);
 	}
 	else
 	{
-		p->function (cl);
+		p->function (self, command_line);
 	}
 
 	return 0;
 }
 
-void
-initialize_shell ()
+const command_t *
+shell_get_command (const void *self, const char *name)
 {
-	if (!default_cmd)
+	assert (self);
+	assert (name);
+
+	size_t i = 0;
+	size_t n = array_get_length (shell_get_commands (self));
+	const command_t *c;
+	while (i < n)
 	{
-		default_cmd = strdup (DEFAULT_COMMAND);
+		c = array_get (SHELL (self)->commands, i);
+		if (!strcmp (c->name, name))
+		{
+			break;
+		}
+		++i;
 	}
 
-	if (!prompt)
+	if (i < n)
 	{
-		prompt = strdup (DEFAULT_PROMPT);
+		return c;
 	}
-
-	initialize_readline ();
-	shell_done = 0;
+	return NULL;
 }
 
-void
-finalize_shell ()
+Array *
+shell_get_command_line (void *self)
 {
-	finalize_readline ();
+	assert (self);
 
-	if (default_cmd)
+	if (shell_is_done (self))
 	{
-		free (default_cmd);
-		default_cmd = NULL;
+		shell_reset (self);
 	}
 
-	if (history_file)
-	{
-		free (history_file);
-		history_file = NULL;
-	}
-
-	if (prompt)
-	{
-		free (prompt);
-		prompt = NULL;
-	}
-
-	if (shell_config_dir)
-	{
-		free (shell_config_dir);
-		shell_config_dir = NULL;
-	}
-
-	shell_done = 1;
-}
-
-char *
-get_cmd_line ()
-{
-	char *string = readline (prompt);
+	char *string = readline (shell_get_prompt (self));
 	if (!string)
 	{
 		putchar ('\n');
-		stop_shell ();
+		shell_stop (self);
 		return NULL;
 	}
-	if ('\0' == *string || shell_done)
+	if ('\0' == *string || shell_is_done (self))
 	{
 		free (string);
 		return NULL;
 	}
 	add_history (string);
-	return string;
+
+	Array *a = parse_cmd_line (string);
+	free (string);
+
+	return a;
+}
+
+const char *
+shell_get_config_dir (void *self)
+{
+	assert (self);
+
+	if ( !(SHELL (self)->config_dir) )
+	{
+		const char *config_dir = get_config_dir ();
+		if (config_dir)
+		{
+			SHELL (self)->config_dir = string_concat (NULL, config_dir, "/",
+				shell_get_name (self), NULL);
+			if (-1 == mkdir (SHELL (self)->config_dir, 0777) && EEXIST != errno)
+			{
+				free (SHELL (self)->config_dir),
+				SHELL (self)->config_dir = NULL;
+			}
+		}
+	}
+
+	return SHELL (self)->config_dir;
+}
+
+const char *
+shell_get_history_file (void *self)
+{
+	assert (self);
+
+	if ( !(SHELL (self)->history_file) )
+	{
+		const char *config_dir = shell_get_config_dir (self);
+		if (config_dir)
+		{
+			SHELL (self)->history_file = string_concat (NULL, config_dir,
+				"/history", NULL);
+		}
+	}
+
+	return SHELL (self)->history_file;
 }
 
 void
-stop_shell ()
+shell_reset (void *self)
 {
-	shell_done = 1;
+	assert (self);
+
+	rl_readline_name = shell_get_name (self);
+
+	using_history ();
+	const char *history_file = shell_get_history_file (self);
+	if (history_file)
+	{
+		read_history (history_file);
+	}
+
+	rl_initialize ();
+
+	SHELL (self)->done = false;
+}
+
+static void
+shell_real_finalize (void *self)
+{
+	assert (self);
+	assert (klass);
+
+	if (SHELL (self)->history_file)
+	{
+		write_history (SHELL (self)->history_file);
+		free (SHELL (self)->history_file);
+	}
+	clear_history ();
+
+	free (SHELL (self)->name);
+	free (SHELL (self)->prompt);
+	free (SHELL (self)->default_command);
+	free (SHELL (self)->config_dir);
+	object_unref (SHELL (self)->commands);
+
+	object_class_get_parent (klass)->finalize (self);
+}
+
+static void
+shell_class_real_finalize (void *_klass)
+{
+	assert (_klass == klass);
+	klass = NULL;
 }
 

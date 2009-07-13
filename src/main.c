@@ -20,8 +20,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "array.h"
+#include "cmd.h"
 #include "object.h"
-#include "parser.h"
 #include "shell.h"
 #include "version.h"
 
@@ -33,34 +34,51 @@ main ()
 		struct sigaction handler;
 		handler.sa_handler = SIG_IGN;
 		handler.sa_flags = 0;
-//		handler.sa_mask = 0;
+		sigemptyset (&handler.sa_mask);
 		sigaction (SIGINT, &handler, NULL);
 		sigaction (SIGTSTP, &handler, NULL);
 	}
 
-	initialize_shell ();
+	Shell *shell = shell_new (get_prog_name ());
+
+	shell_add_command (shell, "cd", cmd_cd, "[DIR]",
+		"Changes the current directory to DIR. If DIR is \"-\", tries to move to\n"
+		"the previous one. Finally, if DIR is not specified, tries to move to\n"
+		"your home directory.");
+	shell_add_command (shell, "history", cmd_history, "-c",
+		"Manages the history.");
+	shell_add_command (shell, "exec", cmd_exec, "PATH",
+		"Replaces the current shell with the program PATH.");
+	shell_add_command (shell, "execbg", cmd_execbg, "PATH", NULL);
+	shell_add_command (shell, "execfg", cmd_execfg, "PATH", NULL);
+	shell_add_command (shell, "exit", cmd_exit, NULL, "Leaves the shell.");
+	shell_add_command (shell, "help", cmd_help, "[COMMAND]",
+		"Lists the available commands or shows the help message of COMMAND.");
+	shell_add_command (shell, "pwd", cmd_pwd, NULL,
+		"Shows the current working directory.");
+	shell_add_command (shell, "setenv", cmd_setenv, NULL,
+		"Lists and sets environment variables.");
+	shell_add_command (shell, "version", cmd_version, "[-n|-v]",
+		"Shows the version of Shelldon.");
+	shell_add_command (shell, "sdc", cmd_sdc, NULL, NULL);
 
 	print_version ();
 
-	char *string = NULL;
-	void *parsed_cmd_line = NULL;
-	while (!shell_done)
+	while (!shell_is_done (shell))
 	{
-		if ( (string = get_cmd_line ()) ) // The string is not empty.
+		Array *cl;
+		if ( (cl = shell_get_command_line (shell)) ) // The command line is not empty.
 		{
-			parsed_cmd_line = parse_cmd_line (string);
-			if (parsed_cmd_line)
-			{
-				exec_cmd (parsed_cmd_line, NULL);
-				object_unref (parsed_cmd_line);
-			}
-			free (string);
+			int status;
+			shell_execute_command_line (shell, cl, &status);
+			printf ("Return value: %d\n", statut);
+			object_unref (cl);
 		}
 	}
 
-	finalize_shell ();
-
 	printf ("Bye.\n");
+
+	object_unref (shell);
 
 	return EXIT_SUCCESS;
 }
