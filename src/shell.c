@@ -17,6 +17,9 @@
 #include "tools.h"
 
 static void
+shell_free_command (void *command);
+
+static void
 shell_real_finalize (void *);
 
 static void
@@ -67,7 +70,7 @@ shell_construct (size_t size, void *klass, const char *name, const char *prompt)
 	self->name = strdup (name);
 	self->prompt = strdup (prompt);
 	self->default_command = strdup (DEFAULT_COMMAND);
-	self->commands = array_new (free);
+	self->commands = array_new (shell_free_command);
 	self->history_file = NULL;
 	self->config_dir = NULL;
 	self->done = true;
@@ -236,6 +239,20 @@ shell_reset (void *self)
 	rl_initialize ();
 
 	SHELL (self)->done = false;
+}
+
+static void
+shell_free_command (void *p)
+{
+	assert (p);
+
+	command_t *command = p;
+
+	free (command->name);
+	free (command->args_list);
+	free (command->help);
+
+	free (command);
 }
 
 static void
