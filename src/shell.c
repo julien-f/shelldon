@@ -88,34 +88,11 @@ shell_add_command (const void *self, const char *name, func_cmd_t function,
 	command_t *p = malloc (sizeof (command_t));
 	assert (p);
 
-	if (name)
-	{
-		p->name = strdup (name);
-	}
-	else
-	{
-		p->name = NULL;
-	}
+	p->name = strdup (name);
+	p->args_list = (args_list ? strdup (args_list) : NULL);
+	p->help = (help ? strdup (help) : NULL);
 
 	p->function = function;
-
-	if (args_list)
-	{
-		p->args_list = strdup (args_list);
-	}
-	else
-	{
-		p->args_list = NULL;
-	}
-
-	if (help)
-	{
-		p->help = strdup (help);
-	}
-	else
-	{
-		p->help = NULL;
-	}
 
 	array_append (SHELL (self)->commands, p);
 }
@@ -153,23 +130,21 @@ shell_get_command (const void *self, const char *name)
 	assert (self);
 	assert (name);
 
-	size_t i = 0;
-	size_t n = array_get_length (shell_get_commands (self));
-	const command_t *c;
-	while (i < n)
+
+	const Array *commands = shell_get_commands (self);
+	for (
+		size_t i = 0, n = array_get_length (commands);
+		i < n;
+		++i
+	)
 	{
-		c = array_get (SHELL (self)->commands, i);
+		const command_t *c = array_get (commands, i);
 		if (!strcmp (c->name, name))
 		{
-			break;
+			return c;
 		}
-		++i;
 	}
 
-	if (i < n)
-	{
-		return c;
-	}
 	return NULL;
 }
 

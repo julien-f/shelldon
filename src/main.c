@@ -69,7 +69,10 @@ main ()
 		Array *cl;
 		if ( (cl = shell_get_command_line (shell)) ) // The command line is not empty.
 		{
-			shell_execute_command_line (shell, cl, NULL);
+			if (shell_execute_command_line (shell, cl, NULL) == -1)
+			{
+				fprintf (stderr, "Unable to execute your last command.\n");
+			}
 			object_unref (cl);
 		}
 	}
