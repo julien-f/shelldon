@@ -55,7 +55,7 @@ object_class_is_a (const void *klass, const void *name)
 	assert (klass);
 	assert (name);
 
-	if (strcmp (OBJECT_CLASS (klass)->name, name) == 0)
+	if (strcmp (object_class_get_name (klass), name) == 0)
 	{
 		return true;
 	}
@@ -78,7 +78,7 @@ object_class_unref (void *klass)
 
 	if (OBJECT_CLASS (klass)->ref_count == 0)
 	{
-		debug ("Class deletion: %s", OBJECT_CLASS (klass)->name);
+		debug ("Class deletion: %s", object_class_get_name (klass));
 
 		if (OBJECT_CLASS (klass)->finalize_class)
 		{
@@ -100,9 +100,9 @@ object_construct (size_t size, void *klass)
 	assert (klass);
 	assert_cmpuint (size, >=, sizeof (Object));
 
-	debug ("Instance creation: %s", OBJECT_CLASS (klass)->name);
+	debug ("Instance creation: %s", object_class_get_name (klass));
 
-	Object *self = (Object *) malloc (size);
+	Object *self = malloc (size);
 	if (!self) // Allocation failed.
 	{
 		return NULL;
@@ -124,7 +124,7 @@ object_unref (void *self)
 
 	if (OBJECT (self)->ref_count == 0)
 	{
-		OBJECT_CLASS (object_get_class (self))->finalize (self);
+		object_get_class (self)->finalize (self);
 
 		free (self);
 	}

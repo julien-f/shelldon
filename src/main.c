@@ -52,7 +52,7 @@ main ()
 	shell_add_command (shell, "execbg", cmd_execbg, "PATH", NULL);
 	shell_add_command (shell, "execfg", cmd_execfg, "PATH", NULL);
 	shell_add_command (shell, "exit", cmd_exit, NULL, "Leaves the shell.");
-	shell_add_command (shell, "help", cmd_help, "[COMMAND]",
+	shell_add_command (shell, "help", cmd_help, "[COMMAND...]",
 		"Lists the available commands or shows the help message of COMMAND.");
 	shell_add_command (shell, "pwd", cmd_pwd, NULL,
 		"Shows the current working directory.");
@@ -60,7 +60,7 @@ main ()
 		"Lists and sets environment variables.");
 	shell_add_command (shell, "version", cmd_version, "[-n|-v]",
 		"Shows the version of Shelldon.");
-	shell_add_command (shell, "sdc", cmd_sdc, NULL, NULL);
+	shell_add_command (shell, "sdc", cmd_sdc, NULL, "COMMAND");
 
 	print_version ();
 

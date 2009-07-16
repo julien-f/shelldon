@@ -192,7 +192,7 @@ cmd_help (Shell *shell, void *args)
 		}
 		else
 		{
-			printf ("%s: %s", name, name);
+			printf ("- %s: %s", name, name);
 			if (p->args_list)
 			{
 				printf (" %s", p->args_list);
