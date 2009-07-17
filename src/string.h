@@ -267,6 +267,25 @@ string_reverse (void *self);
 static inline void
 string_set_char (void *self, size_t index, char c);
 
+/**
+ * Steals the content of the String.
+ *
+ * The new content is an empty string.
+ *
+ * @param self  The String.
+ *
+ * @return The previous content of the String.
+ */
+char *
+string_steal (void *self);
+
+/**
+ * Reduces, if possible, the memory space used by the String.
+ *
+ * @param self  The String.
+ */
+void
+string_trim_size (void *self);
 
 // Inline functions:
 
@@ -329,7 +348,12 @@ string_get_chars (const void *self)
 {
 	assert (self);
 
-	return STRING (self)->string;
+	if (STRING (self)->string)
+	{
+		return STRING (self)->string;
+	}
+
+	return "";
 }
 
 static inline size_t

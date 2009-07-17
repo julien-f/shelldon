@@ -55,27 +55,21 @@ string_construct (size_t size, void *klass, const char *chars)
 
 	String *self =  STRING (object_construct (size, klass));
 
-	if (chars)
+	if (chars && *chars) // Not empty
 	{
 		self->length = strlen (chars);
 		self->capacity = self->length + 1;
-	}
-	else
-	{
-		self->capacity = INITIAL_CAPACITY;
-		self->length = 0;
-	}
 
-	self->string = (char *) malloc (sizeof (char) * self->capacity);
-	assert (self->string);
+		self->string = malloc (sizeof (char) * self->capacity);
+		assert (self->string);
 
-	if (chars && *chars) // The string is not empty.
-	{
 		memcpy (self->string, chars, self->length);
 	}
 	else
 	{
-		self->string[0] = 0;
+		self->capacity = 0;
+		self->length = 0;
+		self->string = NULL;
 	}
 
 	return self;
@@ -186,8 +180,15 @@ string_ensure_capacity (void *self, size_t capacity)
 		return;
 	}
 
-	assert (STRING (self)->capacity);
-	size_t new_capacity = STRING (self)->capacity << 1;
+	size_t new_capacity;
+	if (STRING (self)->capacity == 0)
+	{
+		new_capacity = INITIAL_CAPACITY;
+	}
+	else
+	{
+		new_capacity = STRING (self)->capacity << 1;
+	}
 
 	while (new_capacity < capacity)
 	{
@@ -214,6 +215,40 @@ string_reverse (void *self)
 		STRING (self)->string[i] = STRING (self)->string[n];
 		STRING (self)->string[n] = c;
 	}
+}
+
+char *
+string_steal (void *self)
+{
+	assert (self);
+
+	string_trim_size (self);
+
+	char *content = STRING (self)->string;
+
+	STRING (self)->capacity = 0;
+	STRING (self)->length = 0;
+	STRING (self)->string = NULL;
+
+	return content;
+}
+
+void
+string_trim_size (void *self)
+{
+	assert (self);
+
+	size_t new_capacity = string_get_length (self) + 1;
+
+	if (new_capacity == string_get_capacity (self)) // We cannot do more.
+	{
+		return;
+	}
+
+	STRING (self)->string = realloc (STRING (self)->string, sizeof (char) * new_capacity);
+	assert (STRING (self)->string);
+
+	STRING (self)->capacity = new_capacity;
 }
 
 static void

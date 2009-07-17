@@ -63,12 +63,11 @@ shell_construct (size_t size, void *klass, const char *name, const char *prompt)
 	assert_cmpuint (size, >=, sizeof (Shell));
 	assert (klass);
 	assert (name);
-	assert (prompt);
 
 	Shell *self =  SHELL (object_construct (size, klass));
 
 	self->name = strdup (name);
-	self->prompt = strdup (prompt);
+	self->prompt = (prompt && *prompt ? strdup (prompt) : NULL);
 	self->default_command = strdup (DEFAULT_COMMAND);
 	self->commands = array_new (shell_free_command);
 	self->history_file = NULL;

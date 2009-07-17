@@ -29,7 +29,7 @@
 #include "object.h"
 
 #define DEFAULT_COMMAND "execfg"
-#define DEFAULT_PROMPT "\33[31;1m>\33[0m "
+#define DEFAULT_PROMPT "\001\033[31;1m\002>\001\033[0m\002 "
 
 typedef struct Shell Shell;
 typedef struct ShellClass ShellClass;
@@ -107,12 +107,43 @@ typedef struct
  */
 struct Shell {
 	Object parent;
+
+	/**
+	 * The name of the shell (used for configuration).
+	 */
 	char *name;
+
+	/**
+	 * The prompt (may be NULL).
+	 */
 	char *prompt;
+
+	/**
+	 * The name of the default command.
+	 *
+	 * When the command entered by the user is not a valid command, the default
+	 * command is runned with the command line as arguments.
+	 */
 	char *default_command;
+
+	/**
+	 * Array of command_t.
+	 */
 	Array *commands;
+
+	/**
+	 * The configuration directory of the shell (usually $HOME/.config/@name/).
+	 */
 	char *config_dir;
+
+	/**
+	 * The file which contains the history (@config_dir/history).
+	 */
 	char *history_file;
+
+	/**
+	 * True if the shell has been stop, else false.
+	 */
 	bool done;
 };
 
@@ -124,7 +155,7 @@ struct Shell {
  * @param klass  An owned reference to the class of this object (must not be
  *               NULL).
  * @param name   The shell's name (must not be NULL).
- * @param prompt A prompt (must not be NULL).
+ * @param prompt A prompt (may be NULL).
  *
  * @return An owned reference to the newly allocated Shell.
  */
@@ -132,7 +163,7 @@ Shell *
 shell_construct (size_t size, void *klass, const char *name, const char *prompt);
 
 /**
- * Allocates and initializes a new Shell object.
+ * Allocates and initializes a new Shell object with a default prompt.
  *
  * @param name The shell's name (must not be NULL).
  *
@@ -146,7 +177,7 @@ shell_new (const char *name);
  * Allocates and initializes a new Shell object with a prompt.
  *
  * @param name   The shell's name (must not be NULL).
- * @param prompt A prompt (must not be NULL).
+ * @param prompt A prompt (may be NULL).
  *
  * @return An owned reference to the newly allocated Shell or NULL if there was
  *         an error.

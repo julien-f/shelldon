@@ -62,7 +62,7 @@ main ()
 		"Shows the version of Shelldon.");
 	shell_add_command (shell, "sdc", cmd_sdc, NULL, "COMMAND");
 
-	print_version ();
+/*	print_version ();*/
 
 	while (!shell_is_done (shell))
 	{
