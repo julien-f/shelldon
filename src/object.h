@@ -67,6 +67,11 @@ struct ObjectClass {
 	void (*finalize) (void *);
 
 	/**
+	 * TODO: write doc.
+	 */
+	char *(*to_string) (const void *);
+
+	/**
 	 * This method is called when the class is about to be deallocated (may be
 	 * NULL).
 	 *
@@ -185,15 +190,15 @@ Object *
 object_construct (size_t size, void *klass);
 
 /**
- * Creates a new object.
+ * Creates a new Object.
  */
 static inline Object *
 object_new ();
 
 /**
- * Returns an unowned reference to the class of the object.
+ * Returns an unowned reference to the class of the Object.
  *
- * @param self The object (must not be NULL).
+ * @param self The Object (must not be NULL).
  *
  * @return The class.
  */
@@ -201,9 +206,9 @@ static inline ObjectClass *
 object_get_class (const void *self);
 
 /**
- * Returns the class name of the object.
+ * Returns the class name of the Object.
  *
- * @param self The object (must not be NULL).
+ * @param self The Object (must not be NULL).
  *
  * @return The class name.
  */
@@ -214,7 +219,7 @@ object_get_class_name (const void *self);
  * Returns true if "object" is a reference to an instance of the class called
  * "name" or a of a subclass of it.
  *
- * @param object The object to check (must not be NULL);
+ * @param object The Object to check (must not be NULL);
  * @param name   The name of the class.
  *
  * @return True if yes, else false.
@@ -223,24 +228,33 @@ static inline bool
 object_is_a (const void *object, const void *name);
 
 /**
- * Registers a new reference to this object.
+ * Registers a new reference to this Object.
  *
- * @param self The object (must not be NULL).
+ * @param self The Object (must not be NULL).
  *
- * @return The same object.
+ * @return The same Object.
  */
 static inline void *
 object_ref (void *self);
 
 /**
- * Unregisters a reference of this object. If there is no references left, the
- * object is freed.
+ * Unregisters a reference of this Object. If there is no references left, the
+ * Object is freed.
  *
- * @param self The object (must not be NULL).
+ * @param self The Object (must not be NULL).
  */
 void
 object_unref (void *self);
 
+/**
+ * Returs the string representation of the Object.
+ *
+ * @param self The Object (must not be NULL).
+ *
+ * @return The string representation.
+ */
+static inline char *
+object_to_string (const void *self);
 
 // Inline functions.
 
@@ -248,6 +262,7 @@ static inline const char *
 object_class_get_name (const void *klass)
 {
 	assert (klass);
+	assert (OBJECT_CLASS (klass)->name);
 
 	return OBJECT_CLASS (klass)->name;
 }
@@ -275,6 +290,7 @@ static inline ObjectClass *
 object_get_class (const void *self)
 {
 	assert (self);
+	assert (OBJECT (self)->klass);
 
 	return OBJECT (self)->klass;
 }
@@ -310,6 +326,15 @@ object_ref (void *self)
 	++(OBJECT (self)->ref_count);
 
 	return self;
+}
+
+static inline char *
+object_to_string (const void *self)
+{
+	assert (self);
+	assert (object_get_class (self)->to_string);
+
+	return object_get_class (self)->to_string (self);
 }
 
 #endif

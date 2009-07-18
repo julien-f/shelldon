@@ -10,6 +10,11 @@
 
 #define INITIAL_CAPACITY 16
 
+/**
+ * Used by string_from_integer and string_from_uinteger.
+ */
+static const char digits[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 static void
 string_real_finalize (void *);
 
@@ -204,6 +209,34 @@ string_ensure_capacity (void *self, size_t capacity)
 	debug ("New String capacity: %u", new_capacity);
 }
 
+String *
+string_from_integer (int n, unsigned char base)
+{
+	assert_cmpuint (base, >=, 2);
+	assert_cmpuint (base, <=, 36);
+
+	String *s = string_new ();
+	bool neg = false;
+
+	if (n < 0)
+	{
+		neg = true;
+		n = -n;
+	}
+
+	do
+	{
+		string_append_char (s, digits[n % base]);
+	} while ( (n /= base) );
+
+	if (neg)
+	{
+		string_append_char (s, '-');
+	}
+	string_reverse (s);
+	return s;
+}
+
 void
 string_reverse (void *self)
 {
@@ -238,17 +271,45 @@ string_trim_size (void *self)
 {
 	assert (self);
 
-	size_t new_capacity = string_get_length (self) + 1;
-
-	if (new_capacity == string_get_capacity (self)) // We cannot do more.
+	size_t length = string_get_length (self);
+	if (length) // The string is not empty.
 	{
-		return;
+		size_t new_capacity = length + 1;
+
+		if (new_capacity == string_get_capacity (self)) // We cannot do more.
+		{
+			return;
+		}
+
+		STRING (self)->string = realloc (STRING (self)->string, sizeof (char) * new_capacity);
+		assert (STRING (self)->string);
+
+		STRING (self)->capacity = new_capacity;
 	}
+	else if (STRING (self)->string)
+	{
+		free (STRING (self)->string);
 
-	STRING (self)->string = realloc (STRING (self)->string, sizeof (char) * new_capacity);
-	assert (STRING (self)->string);
+		STRING (self)->string = NULL;
+		STRING (self)->capacity = 0;
+	}
+}
 
-	STRING (self)->capacity = new_capacity;
+String *
+string_from_uinteger (unsigned int n, unsigned char base)
+{
+	assert_cmpuint (base, >=, 2);
+	assert_cmpuint (base, <=, 36);
+
+	String *s = string_new ();
+
+	do
+	{
+		string_append_char (s, digits[n % base]);
+	} while ( (n /= base) );
+
+	string_reverse (s);
+	return s;
 }
 
 static void

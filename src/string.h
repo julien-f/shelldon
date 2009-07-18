@@ -158,6 +158,12 @@ void
 string_append_char (void *self, char c);
 
 /**
+ * TODO: write doc
+ */
+static inline void
+string_append_integer (void *self, int n, unsigned char base);
+
+/**
  * Appends the content of "string" to the String.
  *
  * @param self   The String.
@@ -165,6 +171,12 @@ string_append_char (void *self, char c);
  */
 static inline void
 string_append_string (void *self, void *string);
+
+/**
+ * TODO: write doc
+ */
+static inline void
+string_append_uinteger (void *self, unsigned int n, unsigned char base);
 
 /**
  * Clears the String (i.e. sets its length to 0).
@@ -200,6 +212,12 @@ string_concat (char *dest, ...);
  */
 void
 string_ensure_capacity (void *self, size_t capacity);
+
+/**
+ * TODO: write doc
+ */
+String *
+string_from_integer (int n, unsigned char base);
 
 /**
  * Returns the capacity of the String.
@@ -270,11 +288,11 @@ string_set_char (void *self, size_t index, char c);
 /**
  * Steals the content of the String.
  *
- * The new content is an empty string.
+ * The String will be empty.
  *
- * @param self  The String.
+ * @param self The String.
  *
- * @return The previous content of the String.
+ * @return The previous String's content or NULL if there wasn't.
  */
 char *
 string_steal (void *self);
@@ -282,10 +300,16 @@ string_steal (void *self);
 /**
  * Reduces, if possible, the memory space used by the String.
  *
- * @param self  The String.
+ * @param self The String.
  */
 void
 string_trim_size (void *self);
+
+/**
+ * TODO: write doc
+ */
+String *
+string_from_uinteger (unsigned int n, unsigned char base);
 
 // Inline functions:
 
@@ -305,6 +329,28 @@ static inline void
 string_append (void *self, const char *chars)
 {
 	string_append_n (self, chars, strlen (chars));
+}
+
+static inline void
+string_append_integer (void *self, int n, unsigned char base)
+{
+	assert (self);
+
+	String *s = string_from_integer (n, base);
+	string_append_string (self, s);
+
+	object_unref (s);
+}
+
+static inline void
+string_append_uinteger (void *self, unsigned int n, unsigned char base)
+{
+	assert (self);
+
+	String *s = string_from_uinteger (n, base);
+	string_append_string (self, s);
+
+	object_unref (s);
 }
 
 static inline void

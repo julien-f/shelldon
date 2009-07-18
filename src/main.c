@@ -26,6 +26,8 @@
 #include "shell.h"
 #include "version.h"
 
+#include "string.h"
+
 int
 main ()
 {
