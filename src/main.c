@@ -62,7 +62,7 @@ main ()
 		"Lists and sets environment variables.");
 	shell_add_command (shell, "version", cmd_version, "[-n|-v]",
 		"Shows the version of Shelldon.");
-	shell_add_command (shell, "sdc", cmd_sdc, NULL, "COMMAND");
+	shell_add_command (shell, "sdc", cmd_sdc, "COMMAND", NULL);
 
 /*	print_version ();*/
 
