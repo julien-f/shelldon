@@ -219,6 +219,16 @@ shell_get_prompt (const void *self);
 static inline bool
 shell_is_done (const void *self);
 
+/**
+ * Class method which parse a given command line.
+ *
+ * @param cmd_line The command line.
+ *
+ * @return The command line parsed.
+ */
+Array *
+shell_parse_command_line(const char *cmd_line);
+
 void
 shell_reset (void *self);
 

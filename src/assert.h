@@ -44,7 +44,7 @@
 	{\
 		if (!(expr)) \
 		{\
-			fprintf (stderr, "**\nAssertion failed (%s:%d:%s) %s\n", __FILE__, __LINE__, G_STRFUNC, #expr);\
+			fprintf (stderr, "**\nassertion failed in file %s, function %s(), line %d: %s\n", __FILE__, G_STRFUNC, __LINE__, #expr);\
 			abort ();\
 		}\
 	}
@@ -55,7 +55,7 @@
 		int _i2 = i2;\
 		if (!(_i1 op _i2)) \
 		{\
-			fprintf (stderr, "**\nAssertion failed (%s:%d:%s) (%s = %d) %s (%s = %d)\n", __FILE__, __LINE__, G_STRFUNC, #i1, _i1, #op, #i2, _i2);\
+			fprintf (stderr, "**\nassertion failed in file %s, function %s(), line %d: (%s = %d) %s (%s = %d)\n", __FILE__, G_STRFUNC, __LINE__, #i1, _i1, #op, #i2, _i2);\
 			abort ();\
 		}\
 	}
@@ -66,7 +66,7 @@
 		unsigned int _i2 = i2;\
 		if (!(_i1 op _i2)) \
 		{\
-			fprintf (stderr, "**\nAssertion failed (%s:%d:%s) (%s = %u) %s (%s = %u)\n", __FILE__, __LINE__, G_STRFUNC, #i1, _i1, #op, #i2, _i2);\
+			fprintf (stderr, "**\nassertion failed in file %s, function %s(), line %d: (%s = %u) %s (%s = %u)\n", __FILE__, G_STRFUNC, __LINE__, #i1, _i1, #op, #i2, _i2);\
 			abort ();\
 		}\
 	}

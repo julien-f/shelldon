@@ -9,10 +9,10 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#include "array.h"
 #include "assert.h"
 #include "debug.h"
 #include "object.h"
-#include "parser.h"
 #include "string.h"
 #include "tools.h"
 
@@ -174,7 +174,7 @@ shell_get_command_line (void *self)
 	}
 	add_history (string);
 
-	Array *a = parse_cmd_line (string);
+	Array *a = shell_parse_command_line (string);
 	free (string);
 
 	return a;
@@ -219,6 +219,65 @@ shell_get_history_file (void *self)
 	}
 
 	return SHELL (self)->history_file;
+}
+
+Array *
+shell_parse_command_line(const char *cmd_line)
+{
+	size_t cmd_line_lg = strlen (cmd_line);
+
+	Array *result = array_new (free);
+
+	String *buffer = string_new ();
+
+	char current_delim = ' ';
+	bool escaped = false;
+
+	for (register size_t i = 0; i < cmd_line_lg; ++i)
+	{
+		if (!escaped && cmd_line[i] == '\\')
+		{
+			escaped = true;
+		}
+		else if (!escaped && cmd_line[i] == ' ' && current_delim == ' ')
+		{
+			if (string_get_length (buffer) != 0)
+			{
+				array_append (result, string_steal (buffer));
+			}
+		}
+		else if (!escaped && ((cmd_line[i] == '\'' && current_delim != '"')
+				|| (cmd_line[i] == '"' && current_delim != '\'')))
+		{
+			if (string_get_length (buffer) != 0)
+			{
+				array_append (result, string_steal (buffer));
+			}
+			if (current_delim == ' ')
+			{
+				current_delim = cmd_line[i];
+			}
+			else
+			{
+				current_delim = ' ';
+			}
+		}
+		else
+		{
+			if (escaped)
+			{
+				escaped = false;
+			}
+			string_append_char (buffer, cmd_line[i]);
+		}
+	}
+	if (string_get_length (buffer) != 0)
+	{
+		array_append (result, string_steal (buffer));
+	}
+	object_unref (buffer);
+
+	return result;
 }
 
 void
