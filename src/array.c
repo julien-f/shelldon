@@ -9,13 +9,26 @@
 
 #define INITIAL_CAPACITY 16
 
+/**
+ * Sets the size of the array.
+ *
+ * /!\ This is just a setter, it does not check anything.
+ *
+ * @param self The Array.
+ * @param size The new size.
+ */
+static inline void
+array_set_size (void *self, size_t size);
+
 static void
 array_real_finalize (void *);
 
 static void
 array_class_real_finalize (void *);
 
+
 static ArrayClass *klass = NULL;
+
 
 ArrayClass *
 array_class_allocate (size_t size, void *parent, char *name)
@@ -55,7 +68,7 @@ array_construct (size_t size, void *klass, destroy_func_t destroy_func)
 	Array *self =  ARRAY (object_construct (size, klass));
 
 	self->capacity = 0;
-	self->length = 0;
+	self->size = 0;
 	self->array = NULL;
 	self->destroy_func = destroy_func;
 
@@ -67,11 +80,13 @@ array_append (void *self, void *item)
 {
 	assert (self);
 
-	size_t new_length = ARRAY (self)->length + 1;
-	array_ensure_capacity (self, new_length);
+	size_t old_size = array_get_size (self);
+	size_t new_size = old_size + 1;
 
-	ARRAY (self)->array[ARRAY (self)->length] = item;
-	ARRAY (self)->length = new_length;
+	array_ensure_capacity (self, new_size);
+	ARRAY (self)->array[old_size] = item;
+
+	array_set_size (self, new_size);
 }
 
 void
@@ -81,7 +96,7 @@ array_clear (void *self)
 
 	if (ARRAY (self)->destroy_func)
 	{
-		for (size_t i = 0; i < ARRAY (self)->length; ++i)
+		for (size_t i = 0, n = array_get_size (self); i < n; ++i)
 		{
 			if (ARRAY (self)->array[i])
 			{
@@ -90,7 +105,7 @@ array_clear (void *self)
 		}
 	}
 
-	ARRAY (self)->length = 0;
+	array_set_size (self, 0);
 }
 
 void **
@@ -98,26 +113,27 @@ array_get_array (const void *self, bool null_terminated)
 {
 	assert (self);
 
+	size_t size = array_get_size (self);
 	void **array;
 	if (null_terminated)
 	{
-		array = (void **) malloc (sizeof (void *) * (ARRAY (self)->length + 1));
+		array = (void **) malloc (sizeof (void *) * (size + 1));
 		if (!array)
 		{
 			return NULL;
 		}
-		array[ARRAY (self)->length] = NULL;
+		array[size] = NULL;
 	}
 	else
 	{
-		array = (void **) malloc (sizeof (void *) * (ARRAY (self)->length));
+		array = (void **) malloc (sizeof (void *) * size);
 		if (!array)
 		{
 			return NULL;
 		}
 	}
 
-	memcpy (array, ARRAY (self)->array, sizeof (void *) * ARRAY (self)->length);
+	memcpy (array, ARRAY (self)->array, sizeof (void *) * size);
 	return array;
 }
 
@@ -159,7 +175,10 @@ void
 array_remove_at (void *self, size_t index)
 {
 	assert (self);
-	assert_cmpuint (index, <, ARRAY (self)->length);
+
+	size_t size = array_get_size (self);
+
+	assert_cmpuint (index, <, size);
 
 	if (ARRAY (self)->destroy_func && ARRAY (self)->array[index])
 	{
@@ -167,16 +186,16 @@ array_remove_at (void *self, size_t index)
 	}
 
 	void **p = ARRAY (self)->array + index;
-	memmove (p, p + 1, sizeof (void *) * (ARRAY (self)->length - index));
+	memmove (p, p + 1, sizeof (void *) * (size - index));
 
-	--(ARRAY (self)->length);
+	--(ARRAY (self)->size);
 }
 
 void
 array_set (void *self, size_t index, void *item)
 {
 	assert (self);
-	assert_cmpuint (index, <, ARRAY (self)->length);
+	assert_cmpuint (index, <, array_get_size (self));
 
 	if (ARRAY (self)->destroy_func && ARRAY (self)->array[index])
 	{
@@ -184,6 +203,14 @@ array_set (void *self, size_t index, void *item)
 	}
 
 	ARRAY (self)->array[index] = item;
+}
+
+static inline void
+array_set_size (void *self, size_t size)
+{
+	assert (self);
+
+	ARRAY (self)->size = size;
 }
 
 static void
@@ -205,4 +232,3 @@ array_class_real_finalize (void *_klass)
 	assert (_klass == klass);
 	klass = NULL;
 }
-

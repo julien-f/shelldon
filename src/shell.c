@@ -135,7 +135,7 @@ shell_get_command (const void *self, const char *name)
 
 	const Array *commands = shell_get_commands (self);
 	for (
-		size_t i = 0, n = array_get_length (commands);
+		size_t i = 0, n = array_get_size (commands);
 		i < n;
 		++i
 	)
@@ -241,7 +241,7 @@ shell_parse_command_line(const char *cmd_line)
 		}
 		else if (!escaped && cmd_line[i] == ' ' && current_delim == ' ')
 		{
-			if (string_get_length (buffer) != 0)
+			if (string_get_length (buffer))
 			{
 				array_append (result, string_steal (buffer));
 			}
@@ -249,7 +249,7 @@ shell_parse_command_line(const char *cmd_line)
 		else if (!escaped && ((cmd_line[i] == '\'' && current_delim != '"')
 				|| (cmd_line[i] == '"' && current_delim != '\'')))
 		{
-			if (string_get_length (buffer) != 0)
+			if (string_get_length (buffer))
 			{
 				array_append (result, string_steal (buffer));
 			}
@@ -271,7 +271,7 @@ shell_parse_command_line(const char *cmd_line)
 			string_append_char (buffer, cmd_line[i]);
 		}
 	}
-	if (string_get_length (buffer) != 0)
+	if (string_get_length (buffer))
 	{
 		array_append (result, string_steal (buffer));
 	}

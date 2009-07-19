@@ -80,7 +80,7 @@ struct Array {
 	Object parent;
 
 	size_t capacity;
-	size_t length;
+	size_t size;
 	void **array;
 	destroy_func_t destroy_func;
 };
@@ -143,7 +143,7 @@ array_ensure_capacity (void *self, size_t capacity);
  *
  * @param self  The Array.
  * @param index Index of the item to retrieve (must be lesser than the Array's
- *              length).
+ *              size).
  *
  * @return The item.
  */
@@ -184,7 +184,7 @@ array_get_capacity (const void *self);
  * @return The number of items the Array contains.
  */
 static inline size_t
-array_get_length (const void *self);
+array_get_size (const void *self);
 
 /**
  * Static method which returns true if "array" is NULL or if it references an
@@ -202,7 +202,7 @@ array_is_empty (const void *array);
  *
  * @param self The Array.
  * @param index Index of the item to remove (must be lesser than the Array's
- *              length).
+ *              size).
  */
 void
 array_remove_at (void *self, size_t index);
@@ -212,7 +212,7 @@ array_remove_at (void *self, size_t index);
  *
  * @param self  The Array.
  * @param index Index where to set the item (must be lesser than the Array's
- *              length).
+ *              size).
  * @param item  The item to set.
  */
 void
@@ -230,17 +230,17 @@ array_new (destroy_func_t destroy_func)
 static inline void *
 array_get (const void *self, size_t index)
 {
-	assert_cmpuint (index, <, ARRAY (self)->length);
+	assert_cmpuint (index, <, ARRAY (self)->size);
 
 	return ARRAY (self)->array[index];
 }
 
 static inline size_t
-array_get_length (const void *self)
+array_get_size (const void *self)
 {
 	assert (self);
 
-	return ARRAY (self)->length;
+	return ARRAY (self)->size;
 }
 
 static inline size_t
@@ -254,8 +254,7 @@ array_get_capacity (const void *self)
 static inline bool
 array_is_empty (const void *array)
 {
-	return ( (array == NULL) || !(array_get_length (array)) );
+	return ( (array == NULL) || !(array_get_size (array)) );
 }
 
 #endif
-

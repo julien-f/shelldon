@@ -171,7 +171,7 @@ cmd_help (Shell *shell, void *args)
 		printf ("Available commands:\n");
 
 		const Array *a = shell_get_commands (shell);
-		for (size_t i = 0, n = array_get_length (a); i < n; ++i)
+		for (size_t i = 0, n = array_get_size (a); i < n; ++i)
 		{
 			const command_t *command = array_get (a, i);
 			printf ("  %s\n", command->name);
@@ -181,7 +181,7 @@ cmd_help (Shell *shell, void *args)
 	}
 
 	int return_value = 0;
-	for (size_t i = 0, n = array_get_length (args); i < n; ++i)
+	for (size_t i = 0, n = array_get_size (args); i < n; ++i)
 	{
 		const char *name = array_get (args, i);
 		const command_t *p = shell_get_command (shell, name);
@@ -240,7 +240,7 @@ cmd_setenv (Shell *shell, void *args)
 	}
 	else
 	{
-		for (size_t i = 0, n = array_get_length (args); i < n; ++i)
+		for (size_t i = 0, n = array_get_size (args); i < n; ++i)
 		{
 			putenv (strdup (array_get (args, i)));
 		}

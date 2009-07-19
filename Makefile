@@ -5,7 +5,7 @@ LNK_OPTS=-lreadline
 MAIN_FILE=main
 
 PRG_NAME=shelldon
-MODULES=cmd.o shell.o tools.o version.o array.o string.o object.o expression.o expression_list.o
+MODULES=cmd.o shell.o tools.o version.o array.o string.o object.o radix-tree.o
 
 # Rules to always execute.
 .PHONY: all clean mrproper

@@ -49,6 +49,12 @@
 		}\
 	}
 
+#	define assert_not_reached() \
+	{\
+		fprintf (stderr, "**\nassertion failed in file %s, function %s(), line %d: should not be reached\n", __FILE__, G_STRFUNC, __LINE__);\
+		abort ();\
+	}
+
 #	define assert_cmpint(i1, op, i2) \
 	{\
 		int _i1 = i1;\

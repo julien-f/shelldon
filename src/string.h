@@ -306,7 +306,14 @@ void
 string_trim_size (void *self);
 
 /**
- * TODO: write doc
+ * Creates a new String which will contain the string representation
+ * of the unsigned integer @n.
+ *
+ * @param n    The unsigned integer.
+ * @param base The base with wich the unsigned integer should be
+ *             written.
+ *
+ * @return The new String.
  */
 String *
 string_from_uinteger (unsigned int n, unsigned char base);
