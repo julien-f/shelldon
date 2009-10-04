@@ -239,7 +239,7 @@ string_get_capacity (const void *self);
  *
  * @return The character.
  */
-static inline const char
+static inline char
 string_get_char (const void *self, size_t index);
 
 /**
@@ -388,7 +388,7 @@ string_get_capacity (const void *self)
 	return STRING (self)->capacity;
 }
 
-static inline const char
+static inline char
 string_get_char (const void *self, size_t index)
 {
 	assert_cmpuint (index, <, STRING (self)->length);
