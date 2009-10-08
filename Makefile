@@ -9,11 +9,13 @@ SOURCES=\
 	src/string.c \
 	src/object.c
 
+CC = gcc
+CFLAGS += -MMD
 CFLAGS += -W -Wall -Winline -Wconversion
 CFLAGS += -pedantic -std=gnu99 -ggdb
 CFLAGS += -fno-strict-aliasing -funroll-loops -O3
 #CFLAGS += -DDISABLE_DEBUG -DDISABLE_ASSERTS
-LDFLAGS=-lreadline
+LDFLAGS = -lreadline
 
 DEPS=$(patsubst %.c,%.d,$(SOURCES))
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
@@ -26,17 +28,14 @@ all: $(PRG_NAME)
 
 # Delete the object files.
 clean:
-	rm -f $(OBJECTS)
+	$(RM) $(OBJECTS) $(DEPS)
 
 # Delete the object files and the compiled program.
 mrproper: clean
-	rm $(PRG_NAME)
+	$(RM) $(PRG_NAME)
 
 # Linkage.
 $(PRG_NAME): $(OBJECTS)
-	@$(CC) $(LDFLAGS) -o $@ $^
-
-%.o: %.c Makefile
-	@$(CC) $(CFLAGS) -DNDEBUG -MMD -MP -c $< -o $@
+	$(CC) $(LDFLAGS) -o $@ $^
 
 -include $(DEPS)
