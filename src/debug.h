@@ -18,7 +18,7 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#ifdef DISABLE_DEBUG
+#ifdef NDEBUG
 
 #	define debug(...)
 

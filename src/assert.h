@@ -18,9 +18,9 @@
 #ifndef ASSERT_H
 #define ASSERT_H
 
-#ifdef DISABLE_ASSERTS
+#include <assert.h>
 
-#	define assert(expr)
+#ifdef NDEBUG
 
 #	define assert_cmpint(i1, op, i2)
 
@@ -40,19 +40,10 @@
 # 	 define G_STRFUNC     ((const char*) ("???"))
 #	endif
 
-#	define assert(expr) \
-	{\
-		if (!(expr)) \
-		{\
-			fprintf (stderr, "**\nassertion failed in file %s, function %s(), line %d: %s\n", __FILE__, G_STRFUNC, __LINE__, #expr);\
-			abort ();\
-		}\
-	}
-
 #	define assert_not_reached() \
 	{\
-		fprintf (stderr, "**\nassertion failed in file %s, function %s(), line %d: should not be reached\n", __FILE__, G_STRFUNC, __LINE__);\
-		abort ();\
+		fprintf(stderr, "**\nassertion failed in file %s, function %s(), line %d: should not be reached\n", __FILE__, G_STRFUNC, __LINE__);\
+		abort();\
 	}
 
 #	define assert_cmpint(i1, op, i2) \
@@ -61,8 +52,8 @@
 		int _i2 = i2;\
 		if (!(_i1 op _i2)) \
 		{\
-			fprintf (stderr, "**\nassertion failed in file %s, function %s(), line %d: (%s = %d) %s (%s = %d)\n", __FILE__, G_STRFUNC, __LINE__, #i1, _i1, #op, #i2, _i2);\
-			abort ();\
+			fprintf(stderr, "**\nassertion failed in file %s, function %s(), line %d: (%s = %d) %s (%s = %d)\n", __FILE__, G_STRFUNC, __LINE__, #i1, _i1, #op, #i2, _i2);\
+			abort();\
 		}\
 	}
 
@@ -72,8 +63,8 @@
 		unsigned int _i2 = i2;\
 		if (!(_i1 op _i2)) \
 		{\
-			fprintf (stderr, "**\nassertion failed in file %s, function %s(), line %d: (%s = %u) %s (%s = %u)\n", __FILE__, G_STRFUNC, __LINE__, #i1, _i1, #op, #i2, _i2);\
-			abort ();\
+			fprintf(stderr, "**\nassertion failed in file %s, function %s(), line %d: (%s = %u) %s (%s = %u)\n", __FILE__, G_STRFUNC, __LINE__, #i1, _i1, #op, #i2, _i2);\
+			abort();\
 		}\
 	}
 
