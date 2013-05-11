@@ -40,7 +40,7 @@ static void cleaner (int i, void *ptr)
 }
 
 static const struct passwd *
-get_passwd_info ()
+get_passwd_info (void)
 {
 	static struct passwd *passwd = NULL;
 	if (!passwd)
@@ -110,7 +110,7 @@ get_args_lg (const char *const *args)
 }
 
 const char *
-get_config_dir ()
+get_config_dir (void)
 {
 	static char *config_dir = NULL;
 	if (!config_dir)
@@ -135,7 +135,7 @@ get_config_dir ()
 }
 
 const char *
-get_home_dir ()
+get_home_dir (void)
 {
 	static char *home_dir = NULL;
 	if (!home_dir)
@@ -159,7 +159,7 @@ get_home_dir ()
 }
 
 const char *
-get_user_name ()
+get_user_name (void)
 {
 	const struct passwd *passwd = get_passwd_info ();
 	if (!passwd)
@@ -170,7 +170,7 @@ get_user_name ()
 }
 
 const char *
-get_real_name ()
+get_real_name (void)
 {
 	char *real_name = NULL;
 	if (!real_name)
@@ -197,7 +197,7 @@ get_real_name ()
 }
 
 const char *
-get_tmp_dir ()
+get_tmp_dir (void)
 {
 	static char *tmp_dir = NULL;
 	if (!tmp_dir)
@@ -249,7 +249,7 @@ strndup (const char *s, size_t n)
 }
 
 char *
-get_cwd ()
+get_cwd (void)
 {
 	char *cwd = NULL;
 	char *buffer = NULL;

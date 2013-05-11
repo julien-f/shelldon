@@ -29,7 +29,7 @@
 #include "string.h"
 
 int
-main ()
+main (void)
 {
 	{
 		// Prevents SIGINT & SIGTSTP from stopping the process.

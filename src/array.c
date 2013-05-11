@@ -48,7 +48,7 @@ array_class_allocate (size_t size, void *parent, char *name)
 }
 
 ArrayClass *
-array_class_get ()
+array_class_get (void)
 {
 	if (!klass) // The Array class is not yet initalized.
 	{

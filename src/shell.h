@@ -72,7 +72,7 @@ shell_class_allocate (size_t size, void *parent, char *name);
  * @return The reference.
  */
 ShellClass *
-shell_class_get ();
+shell_class_get (void);
 
 typedef int (*func_cmd_t) (Shell *s, void *args);
 

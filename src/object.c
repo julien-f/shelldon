@@ -43,7 +43,7 @@ object_class_allocate (size_t size, void *parent, char *name)
 }
 
 ObjectClass *
-object_class_get ()
+object_class_get (void)
 {
 	if (!klass) // The Object class is not yet initalized.
 	{
@@ -142,7 +142,7 @@ object_real_to_string (const void *self)
 {
 	String *s = string_new_with_chars (object_get_class_name (self));
 	string_append_char (s, '@');
-	string_append_uinteger (s, (unsigned int) self, 16);
+	string_append_uinteger (s, (unsigned long long) self, 16);
 	char *r = string_steal (s);
 	object_unref (s);
 

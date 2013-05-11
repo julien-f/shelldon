@@ -20,7 +20,7 @@
 #include "version.h"
 
 void
-print_version()
+print_version(void)
 {
 	#if defined(__DATE__) && defined(__TIME__)
 		printf(prog_name " v" prog_version " aka \"" prog_version_name "\" "

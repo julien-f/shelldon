@@ -41,7 +41,7 @@ string_class_allocate (size_t size, void *parent, char *name)
 }
 
 StringClass *
-string_class_get ()
+string_class_get (void)
 {
 	if (!klass) // The String class is not yet initalized.
 	{

@@ -65,7 +65,7 @@ array_class_allocate (size_t size, void *parent, char *name);
  * @return The reference.
  */
 ArrayClass *
-array_class_get ();
+array_class_get (void);
 
 /**
  * A function of this type is called when a non-NULL item is about to be

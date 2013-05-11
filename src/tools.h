@@ -63,7 +63,7 @@ get_args_lg (const char *const *args);
  * @return The config directory.
  **/
 const char *
-get_config_dir ();
+get_config_dir (void);
 
 /**
  * Returns the current user's home directory.
@@ -73,7 +73,7 @@ get_config_dir ();
  * @return The home directory.
  **/
 const char *
-get_home_dir ();
+get_home_dir (void);
 
 /**
  * Returns the current user's name or NULL if not found.
@@ -81,7 +81,7 @@ get_home_dir ();
  * @return The user name.
  **/
 const char
-*get_user_name ();
+*get_user_name (void);
 
 /**
  * Returns the current user's real name or NULL if not found.
@@ -89,7 +89,7 @@ const char
  * @return The real name.
  **/
 const char *
-get_real_name ();
+get_real_name (void);
 
 /**
  * Returns the directory to use for temporary file.
@@ -99,7 +99,7 @@ get_real_name ();
  * @param The real name.
  **/
 const char *
-get_tmp_dir ();
+get_tmp_dir (void);
 
 // get_current_dir_name () and strndup () are GNU extensions, so we have to define
 // them ourselves if they are not already defined.
@@ -115,7 +115,7 @@ strndup (const char *s, size_t n);
  * TODO: write help.
  **/
 char *
-get_cwd ();
+get_cwd (void);
 
 #else
 

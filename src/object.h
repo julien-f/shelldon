@@ -107,7 +107,7 @@ object_class_allocate (size_t size, void *parent, char *name);
  * @return The reference.
  */
 ObjectClass *
-object_class_get ();
+object_class_get (void);
 
 /**
  * Returns the name of the class.
@@ -304,7 +304,7 @@ object_get_class_name (const void *self)
 }
 
 static inline Object *
-object_new ()
+object_new (void)
 {
 	return object_construct (sizeof (Object), (void *) object_class_get ());
 }

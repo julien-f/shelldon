@@ -42,7 +42,7 @@
  * Prints version.
  **/
 void
-print_version();
+print_version(void);
 
 #endif
 

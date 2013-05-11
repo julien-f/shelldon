@@ -45,7 +45,7 @@ shell_class_allocate (size_t size, void *parent, char *name)
 }
 
 ShellClass *
-shell_class_get ()
+shell_class_get (void)
 {
 	if (!klass) // The Shell class is not yet initalized.
 	{

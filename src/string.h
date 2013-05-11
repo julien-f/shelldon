@@ -65,7 +65,7 @@ string_class_allocate (size_t size, void *parent, char *name);
  * @return The reference.
  */
 StringClass *
-string_class_get ();
+string_class_get (void);
 
 /**
  * Represents an instance of the String type.
@@ -112,7 +112,7 @@ string_construct (size_t size, void *klass, const char *chars);
  *         an error.
  */
 static inline String *
-string_new ();
+string_new (void);
 
 /**
  * Allocates and initializes a new String object from an array of characters.
@@ -321,7 +321,7 @@ string_from_uinteger (unsigned int n, unsigned char base);
 // Inline functions:
 
 static inline String *
-string_new ()
+string_new (void)
 {
 	return string_construct (sizeof (String), string_class_get (), NULL);
 }
