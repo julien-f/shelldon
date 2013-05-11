@@ -1,15 +1,12 @@
 # Because we use  the default project, the default  target is “bin/default”, but
 # I prefer this one.
-default_TARGET := bin/shelldon
+default_NAME := bin/shelldon
 
 # Shelldon depends on the readline library.
 LIBRARIES := readline
 
 CFLAGS := -std=gnu99 -pedantic -Wall
-
-# Because it is  an old program, it  has a lots of problems,  disables the extra
-# warnings.
-EXTRA_WARNINGS := 0
+DEBUG  := 0
 
 ########################################
 
