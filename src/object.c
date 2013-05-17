@@ -1,5 +1,6 @@
 #include "object.h"
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -142,7 +143,7 @@ object_real_to_string (const void *self)
 {
 	String *s = string_new_with_chars (object_get_class_name (self));
 	string_append_char (s, '@');
-	string_append_uinteger (s, (unsigned long long) self, 16);
+	string_append_uinteger (s, (uintptr_t) self, 16);
 	char *r = string_steal (s);
 	object_unref (s);
 
