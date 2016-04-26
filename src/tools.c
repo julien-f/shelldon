@@ -223,7 +223,7 @@ get_tmp_dir (void)
 	return tmp_dir;
 }
 
-#ifndef _GNU_SOURCE
+#if !(_GNU_SOURCE || _POSIX_C_SOURCE >= 200809L)
 
 char *
 strndup (const char *s, size_t n)
@@ -247,6 +247,10 @@ strndup (const char *s, size_t n)
 	}
 	return r;
 }
+
+#endif
+
+#ifndef _GNU_SOURCE
 
 char *
 get_cwd (void)

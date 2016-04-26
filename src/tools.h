@@ -103,7 +103,8 @@ get_tmp_dir (void);
 
 // get_current_dir_name () and strndup () are GNU extensions, so we have to define
 // them ourselves if they are not already defined.
-#ifndef _GNU_SOURCE
+
+#if !(_GNU_SOURCE || _POSIX_C_SOURCE >= 200809L)
 
 /**
  * TODO: write help.
@@ -111,18 +112,22 @@ get_tmp_dir (void);
 char *
 strndup (const char *s, size_t n);
 
+#endif
+
+#ifdef _GNU_SOURCE
+
 /**
  * TODO: write help.
  **/
-char *
-get_cwd (void);
+#define get_cwd() get_current_dir_name ()
 
 #else
 
 /**
  * TODO: write help.
  **/
-#define get_cwd() get_current_dir_name ()
+char *
+get_cwd (void);
 
 #endif
 
